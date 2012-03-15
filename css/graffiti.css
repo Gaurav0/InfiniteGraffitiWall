@@ -1,0 +1,19 @@
+body {
+    background-image: url('../images/brickwall.jpg');
+    cursor: none;
+}
+
+#c {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#can {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
