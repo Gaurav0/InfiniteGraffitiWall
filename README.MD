@@ -3,6 +3,10 @@ Introduction
 
 This is the repository for the app Infinite Graffiti Wall, located at infinitegraffitiwall.appspot.com
 
+Team Members
+------------
+Gaurav Munjal
+
 What is it?
 -----------
 
