@@ -36,6 +36,30 @@ $(document).ready(function() {
 		ok($("#can").is(":hidden"));
 	});
 	
+	test("left", function() {
+		$("#left").simulate("mouseover", {});
+		equal($("body").css("background-position"), "4px 0px");
+		$("#left").simulate("mouseout", {});
+	});
+	
+	test("right", function() {
+		$("#right").simulate("mouseover", {});
+		equal($("body").css("background-position"), "0px 0px");
+		$("#right").simulate("mouseout", {});
+	});
+	
+	test("top", function() {
+		$("#top").simulate("mouseover", {});
+		equal($("body").css("background-position"), "0px 4px");
+		$("#top").simulate("mouseout", {});
+	});
+	
+	test("bottom", function() {
+		$("#bottom").simulate("mouseover", {});
+		equal($("body").css("background-position"), "0px 0px");
+		$("#bottom").simulate("mouseout", {});
+	});
+	
 	QUnit.log = function(result, message) {
 		console.log(result + "::" + message);
 	};

@@ -3,6 +3,10 @@ $(document).ready(function() {
 	var $c = $("#c");
 	var $can = $("#can");
 	var $canimg = $("#can img");
+	var $left = $("#left");
+	var $right = $("#right");
+	var $top = $("#top");
+	var $bottom = $("#bottom");
 	
 	// Makes the can move around like the cursor
 	$body.mousemove(function(e) {
@@ -24,6 +28,63 @@ $(document).ready(function() {
 	
 	$body.mouseover(function(e) {
 		$can.show();
+	});
+	
+	var animateDir = "";
+	var posX = 0;
+	var posY = 0;
+	
+	function animate() {
+		console.log(posX + "," + posY);
+		if (animateDir == "left")
+			posX += 4;
+		else if (animateDir == "right")
+			posX -= 4;
+		else if (animateDir == "up")
+			posY += 4;
+		else if (animateDir == "down")
+			posY -= 4;
+		else
+			return;
+		
+		$body.css("background-position", posX + "px " + posY + "px");
+		window.setTimeout(animate, 1000 / 60);
+	}
+	
+	$left.mouseover(function(e) {
+		animateDir = "left";
+		animate();
+	});
+	
+	$left.mouseout(function(e) {
+		animateDir = "";
+	});
+	
+	$right.mouseover(function(e) {
+		animateDir = "right";
+		animate();
+	});
+	
+	$right.mouseout(function(e) {
+		animateDir = "";
+	});
+	
+	$top.mouseover(function(e) {
+		animateDir = "up";
+		animate();
+	});
+	
+	$top.mouseout(function(e) {
+		animateDir = "";
+	});
+	
+	$bottom.mouseover(function(e) {
+		animateDir = "down";
+		animate();
+	});
+	
+	$bottom.mouseout(function(e) {
+		animateDir = "";
 	});
 });
 	

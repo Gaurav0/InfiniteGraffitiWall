@@ -18,3 +18,43 @@ body {
     display: none;
     overflow: hidden;
 }
+
+#left {
+	position: absolute;
+	top: 30px;
+	bottom: 30px;
+	left: 0;
+	width: 30px;
+	height: auto;
+	overflow: hidden;
+}
+
+#right {
+	position: absolute;
+	top: 30px;
+	bottom: 30px;
+	right: 0;
+	width: 30px;
+	height: auto;
+	overflow: hidden;
+}
+
+#top {
+	position: absolute;
+	top: 0;
+	left: 30px;
+	right: 30px;
+	width: auto;
+	height: 30px;
+	overflow: hidden;
+}
+
+#bottom {
+	position: absolute;
+	bottom: 0;
+	left: 30px;
+	right: 30px;
+	width: auto;
+	height: 30px;
+	overflow: hidden;
+}
