@@ -6,9 +6,13 @@ This is the repository for the app Infinite Graffiti Wall, located at infinitegr
 Team Members
 ------------
 Gaurav Munjal
+
 Joseph Ettikkalayil
+
 Hery Ratsimihah
+
 Mauro Oviedo
+
 
 What is it?
 -----------
