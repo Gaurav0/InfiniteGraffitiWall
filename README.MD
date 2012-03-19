@@ -8,6 +8,7 @@ Team Members
 Gaurav Munjal
 Joseph Ettikkalayil
 Hery Ratsimihah
+Mauro Oviedo
 
 What is it?
 -----------
