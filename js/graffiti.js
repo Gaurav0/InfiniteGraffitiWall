@@ -1,3 +1,7 @@
+// Fix for console.log in IE9
+if (!window.console) window.console = {};
+if (!window.console.log) window.console.log = function () {};
+
 $(document).ready(function() {
 	var $body = $("body");
 	var $c = $("#c");
@@ -52,6 +56,7 @@ $(document).ready(function() {
 	}
 	
 	$left.mouseover(function(e) {
+		console.log("left");
 		animateDir = "left";
 		animate();
 	});
