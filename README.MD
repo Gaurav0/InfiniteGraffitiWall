@@ -7,6 +7,7 @@ Team Members
 ------------
 Gaurav Munjal
 Joseph Ettikkalayil
+Hery Ratsimihah
 
 What is it?
 -----------
