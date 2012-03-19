@@ -22,7 +22,7 @@ $(document).ready(function() {
 	    var my = $c.height();
 	    var clipx = x + w > mx ? mx - x : w;
 	    var clipy = y + h > my ? my - y : h;
-	    var rect = "rect(0px " + clipx + "px " + clipy + "px 0px)";
+	    var rect = "rect(0px, " + clipx + "px, " + clipy + "px, 0px)";
 	    $can.css({ left: x, top: y, clip: rect });
 	});
 	
@@ -39,7 +39,6 @@ $(document).ready(function() {
 	var posY = 0;
 	
 	function animate() {
-		console.log(posX + "," + posY);
 		if (animateDir == "left")
 			posX += 4;
 		else if (animateDir == "right")
@@ -56,7 +55,6 @@ $(document).ready(function() {
 	}
 	
 	$left.mouseover(function(e) {
-		console.log("left");
 		animateDir = "left";
 		animate();
 	});

@@ -1,6 +1,7 @@
 body {
     background-image: url('../images/brickwall.jpg');
     cursor: none;
+    overflow: hidden;
 }
 
 #c {

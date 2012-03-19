@@ -24,7 +24,11 @@ $(document).ready(function() {
 		});
 		equal($("#can").css("left"), (w - 10) + "px");
 		equal($("#can").css("top"), (h - 15) + "px");
-		var rect = $("#can").css("clip").split(",");
+		var rect = $("#can").css("clip")
+		if (rect.indexOf(",") != -1)
+			rect = rect.split(",")
+		else
+			rect = rect.split(" ");
 		equal(rect[1].trim(), "10px");
 		equal(rect[2].trim(), "15px");
 		equal($(window).width(), w);
