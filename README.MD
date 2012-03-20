@@ -9,7 +9,7 @@ Gaurav Munjal
 Joseph Ettikkalayil  
 Hery Ratsimihah  
 Mauro Oviedo  
-
+Yuriy Stejko  
 
 What is it?
 -----------
