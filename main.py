@@ -16,3 +16,10 @@ class TestPage(webapp2.RequestHandler):
         self.response.out.write(template.render(''))
 		
 app = webapp2.WSGIApplication([('/', MainPage),('/unittests', TestPage)], debug=True)
+
+#tests  to check if the app loads
+response = app.get_response('/')
+assert response.status_int == 200
+
+response = app.get_response('/unittests')
+assert response.status_int == 200
