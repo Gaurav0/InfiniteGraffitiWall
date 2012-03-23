@@ -11,6 +11,10 @@ $(document).ready(function() {
 	var $right = $("#right");
 	var $top = $("#top");
 	var $bottom = $("#bottom");
+	var $top_left = $("#top_left")
+	var $top_right = $("#top_right")
+	var $bottom_left = $("#bottom_left")
+	var $bottom_right = $("#bottom_right")
 	
 	// Makes the can move around like the cursor
 	$body.mousemove(function(e) {
@@ -35,6 +39,7 @@ $(document).ready(function() {
 	});
 	
 	var animateDir = "";
+	var timeOut = null;
 	var posX = 0;
 	var posY = 0;
 	
@@ -47,11 +52,23 @@ $(document).ready(function() {
 			posY += 4;
 		else if (animateDir == "down")
 			posY -= 4;
-		else
+		else if (animateDir == "leftup") {
+			posX += 3;
+			posY += 3;
+		} else if (animateDir == "rightup") {
+			posX -= 3;
+			posY += 3;
+		} else if (animateDir == "leftdown") {
+			posX += 3;
+			posY -= 3;
+		} else if (animateDir == "rightdown") {
+			posX -= 3;
+			posY -= 3;
+		} else
 			return;
 		
 		$body.css("background-position", posX + "px " + posY + "px");
-		window.setTimeout(animate, 1000 / 60);
+		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
 	
 	$left.mouseover(function(e) {
@@ -61,6 +78,7 @@ $(document).ready(function() {
 	
 	$left.mouseout(function(e) {
 		animateDir = "";
+		window.clearTimeout(timeOut);
 	});
 	
 	$right.mouseover(function(e) {
@@ -70,6 +88,7 @@ $(document).ready(function() {
 	
 	$right.mouseout(function(e) {
 		animateDir = "";
+		window.clearTimeout(timeOut);
 	});
 	
 	$top.mouseover(function(e) {
@@ -79,6 +98,7 @@ $(document).ready(function() {
 	
 	$top.mouseout(function(e) {
 		animateDir = "";
+		window.clearTimeout(timeOut);
 	});
 	
 	$bottom.mouseover(function(e) {
@@ -88,6 +108,47 @@ $(document).ready(function() {
 	
 	$bottom.mouseout(function(e) {
 		animateDir = "";
+		window.clearTimeout(timeOut);
+	});
+	
+	$top_left.mouseover(function(e) {
+		animateDir = "leftup";
+		animate();
+	});
+	
+	$top_left.mouseout(function(e) {
+		animateDir = "";
+		window.clearTimeout(timeOut);
+	});
+	
+	$top_right.mouseover(function(e) {
+		animateDir = "rightup";
+		animate();
+	});
+	
+	$top_right.mouseout(function(e) {
+		animateDir = "";
+		window.clearTimeout(timeOut);
+	});
+	
+	$bottom_left.mouseover(function(e) {
+		animateDir = "leftdown";
+		animate();
+	});
+	
+	$bottom_left.mouseout(function(e) {
+		animateDir = "";
+		window.clearTimeout(timeOut);
+	});
+	
+	$bottom_right.mouseover(function(e) {
+		animateDir = "rightdown";
+		animate();
+	});
+	
+	$bottom_right.mouseout(function(e) {
+		animateDir = "";
+		window.clearTimeout(timeOut);
 	});
 });
 	
