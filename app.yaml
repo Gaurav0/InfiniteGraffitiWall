@@ -1,10 +1,13 @@
 application: infinitegraffitiwall
 version: 1
-runtime: python27
+runtime: python
 api_version: 1
-threadsafe: true
 
 handlers:
+- url: /(.*\.(html))
+  static_files: \1
+  upload: (.*\.(html))
+  
 - url: /css
   static_dir: css
 
@@ -13,10 +16,7 @@ handlers:
 
 - url: /js
   static_dir: js
-
-- url: /.*
-  script: main.app
   
-libraries:
-- name: jinja2
-  version: latest
+- url: /
+  static_files: index.html
+  upload: index.html
