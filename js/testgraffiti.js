@@ -64,6 +64,30 @@ $(document).ready(function() {
 		$("#bottom").simulate("mouseout", {});
 	});
 	
+	test("top_left", function() {
+		$("#top_left").simulate("mouseover", {});
+		equal($("body").css("background-position"), "3px 3px");
+		$("#top_left").simulate("mouseout", {});
+	});
+	
+	test("top_right", function() {
+		$("#top_right").simulate("mouseover", {});
+		equal($("body").css("background-position"), "0px 6px");
+		$("#top_right").simulate("mouseout", {});
+	});
+	
+	test("bottom_right", function() {
+		$("#bottom_right").simulate("mouseover", {});
+		equal($("body").css("background-position"), "-3px 3px");
+		$("#bottom_right").simulate("mouseout", {});
+	});
+	
+	test("bottom_left", function() {
+		$("#bottom_left").simulate("mouseover", {});
+		equal($("body").css("background-position"), "0px 0px");
+		$("#bottom_left").simulate("mouseout", {});
+	});
+	
 	QUnit.log = function(result, message) {
 		console.log(result + "::" + message);
 	};
