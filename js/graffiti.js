@@ -74,6 +74,7 @@ $(document).ready(function() {
 			return;
 		
 		$body.css("background-position", posX + "px " + posY + "px");
+		redraw();
 		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
 	
@@ -162,6 +163,7 @@ $(document).ready(function() {
 		posX += 24 * deltaX;
 		posY += 24 * deltaY;
 		$body.css("background-position", posX + "px " + posY + "px");
+		redraw();
 	});
 	
 	var TILE_SIZE = 256;
@@ -236,6 +238,30 @@ $(document).ready(function() {
 				currentCtx.fill();
 				ctx.drawImage(currentCanvas, cornerX, cornerY);
 			}
+	}
+	
+	var buffer = document.createElement('canvas');
+	buffer.width = c.width;
+	buffer.height = c.height;
+	var bufferCtx = buffer.getContext("2d");
+	
+	function redraw() {
+		bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+		var numTilesX = Math.ceil(buffer.width / TILE_SIZE);
+		var numTilesY = Math.ceil(buffer.height / TILE_SIZE);
+		var startX = Math.floor(-posX / TILE_SIZE);
+		var startY = Math.floor(-posY / TILE_SIZE);
+		var endX = startX + numTilesX;
+		var endY = startY + numTilesY;
+		for (var tileX = startX; tileX <= endX; ++tileX)
+			for (var tileY = startY; tileY <=  endY; ++tileY) {
+				var currentCanvas = getCanvas(tileX, tileY);
+				var cornerX = tileX * TILE_SIZE + posX;
+				var cornerY = tileY * TILE_SIZE + posY;
+				bufferCtx.drawImage(currentCanvas, cornerX, cornerY);
+			}
+		ctx.clearRect(0, 0, c.width, c.height);
+		ctx.drawImage(buffer, 0, 0);
 	}
 });
 	
