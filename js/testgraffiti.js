@@ -76,7 +76,7 @@ $(document).ready(function() {
 		$("#bottom_left").simulate("mouseout", {});
 	});
 	
-	module ("mousewheel-scroll");
+	module("mousewheel-scroll");
 	
 	/* Test does not work - simulate.js does not support mousewheel
 	test("mousewheel-scroll", function() {
@@ -88,7 +88,56 @@ $(document).ready(function() {
 	});
 	*/
 	
-	QUnit.log = function(result, message) {
-		console.log(result + "::" + message);
-	};
+	module("Infinite Viewport", {
+		setup: function() {
+			this.view = new InfiniteViewport($("#c").get(0));
+			this.view.drawSpray(300, 200);
+		}
+	});
+	
+	
+	test("makeCanvas", function() {
+		var c = this.view.makeCanvas();
+		equal(c.width, TILE_SIZE);
+		equal(c.height, TILE_SIZE);
+	});
+	
+	test("getCanvas", function() {
+		var c1 = this.view.getCanvas(0, 0);
+		var c2 = this.view.getCanvas(0, 1);
+		var c3 = this.view.getCanvas(1, 0);
+		var c4 = this.view.getCanvas(0, 0);
+		strictEqual(c1, c4);
+		deepEqual(c1, c4);
+		notEqual(c1, c2);
+		notEqual(c1, c3);
+	});
+	
+	test("drawSpray", function() {
+	
+		// All pixels in this 15 x 15 rectangle should be red
+		var pixels = this.view.ctx.getImageData(293, 193, 15, 15).data;
+		for (var i = 0, n = pixels.length; i < n; i += 4) {
+		    equal(pixels[i], 255) // red
+		    equal(pixels[i+1], 0) // green
+		    equal(pixels[i+2], 0) // blue
+		    equal(pixels[i+3], 255) // alpha
+		}
+	});
+	
+	test("redraw", function() {
+	
+		var pixels1 = this.view.ctx.getImageData(300, 200, 30, 30).data;
+		this.view.posX += 24;
+		this.view.posY += 24;
+		this.view.redraw();
+		var pixels2 = this.view.ctx.getImageData(324, 224, 30, 30).data;
+		
+		// Pixels after redraw (24 off) should be same as before redraw
+		for (var i = 0, n = pixels1.length; i < n; i += 4) {
+			equal(pixels1[i], pixels2[i]);
+			equal(pixels1[i+1], pixels2[i+1]);
+			equal(pixels1[i+2], pixels2[i+2]);
+		}
+	});
 });
