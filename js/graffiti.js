@@ -164,29 +164,27 @@ $(document).ready(function() {
 	c.width = $c.width();
 	c.height = $c.height();
 	var ctx = c.getContext("2d");
+	var mouseDown = false;
 	
 	// Draw to canvas on mousedown, drag
 	$body.mousedown(function(e) {
 		var x = -posX + e.pageX;
 		var y = -posY + e.pageY;
-		var tx = Math.floor(x / TILE_SIZE);
-		var ty = Math.floor(y / TILE_SIZE);
-		for (tileX = tx - 1; tileX <= tx + 1; ++tileX)
-			for (tileY = ty - 1; tileY <= ty + 1; ++tileY) {
-				var cx = x - tileX * TILE_SIZE;
-				var cy = y - tileY * TILE_SIZE;
-				var px = e.pageX - cx;
-				var py = e.pageY - cy;
-				console.log(cx + "," + cy);
-				var currentCanvas = getCanvas(tileX, tileY);
-				var currentCtx = currentCanvas.getContext("2d");
-				currentCtx.fillStyle="#000000";
-				currentCtx.beginPath();
-				currentCtx.arc(cx, cy, 30, 0, Math.PI*2, true);
-				currentCtx.closePath();
-				currentCtx.fill();
-				ctx.drawImage(currentCanvas, 0, 0, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
-			}
+		drawSpray(x, y, e.pageX, e.pageY)
+		mouseDown = true;
+	});
+	
+	$body.mouseup(function(e) {
+		mouseDown = false;
+	});
+	
+	$body.mousemove(function(e) {
+		if (mouseDown) {
+			var x = -posX + e.pageX;
+			var y = -posY + e.pageY;
+			drawSpray(x, y, e.pageX, e.pageY)
+			e.preventDefault();
+		}
 	});
 	
 	var canvases = {};
@@ -213,6 +211,26 @@ $(document).ready(function() {
 		newCanvas.width = TILE_SIZE;
 		newCanvas.height = TILE_SIZE;
 		return newCanvas;
+	}
+	
+	function drawSpray(worldX, worldY, screenX, screenY) {
+		var tx = Math.floor(worldX / TILE_SIZE);
+		var ty = Math.floor(worldY / TILE_SIZE);
+		for (tileX = tx - 1; tileX <= tx + 1; ++tileX)
+			for (tileY = ty - 1; tileY <= ty + 1; ++tileY) {
+				var canvasX = worldX - tileX * TILE_SIZE;
+				var canvasY = worldY - tileY * TILE_SIZE;
+				var cornerX = screenX - canvasX;
+				var cornerY = screenY - canvasY;
+				var currentCanvas = getCanvas(tileX, tileY);
+				var currentCtx = currentCanvas.getContext("2d");
+				currentCtx.fillStyle="#000000";
+				currentCtx.beginPath();
+				currentCtx.arc(canvasX, canvasY, 30, 0, Math.PI*2, true);
+				currentCtx.closePath();
+				currentCtx.fill();
+				ctx.drawImage(currentCanvas, cornerX, cornerY);
+			}
 	}
 });
 	
