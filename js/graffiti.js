@@ -16,6 +16,11 @@ $(document).ready(function() {
 	var $bottom_left = $("#bottom_left")
 	var $bottom_right = $("#bottom_right")
 	
+	// Disable dragging can image in Firefox
+	$canimg.bind("dragstart", function(e) {
+		return false;
+	});
+	
 	// Makes the can move around like the cursor
 	$body.mousemove(function(e) {
 	    var x = e.pageX;
@@ -216,8 +221,8 @@ $(document).ready(function() {
 	function drawSpray(worldX, worldY, screenX, screenY) {
 		var tx = Math.floor(worldX / TILE_SIZE);
 		var ty = Math.floor(worldY / TILE_SIZE);
-		for (tileX = tx - 1; tileX <= tx + 1; ++tileX)
-			for (tileY = ty - 1; tileY <= ty + 1; ++tileY) {
+		for (var tileX = tx - 1; tileX <= tx + 1; ++tileX)
+			for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
 				var canvasX = worldX - tileX * TILE_SIZE;
 				var canvasY = worldY - tileY * TILE_SIZE;
 				var cornerX = screenX - canvasX;
