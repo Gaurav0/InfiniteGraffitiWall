@@ -40,7 +40,9 @@ $(document).ready(function() {
 		ok($("#can").is(":hidden"));
 	});
 	
-	test("screen_movement", function() {
+	module("scroll");
+	
+	test("scroll", function() {
 		$("#left").simulate("mouseover", {});
 		equal($("body").css("background-position"), "4px 0px");
 		$("#left").simulate("mouseout", {});
@@ -48,31 +50,43 @@ $(document).ready(function() {
 		$("#right").simulate("mouseover", {});
 		equal($("body").css("background-position"), "0px 0px");
 		$("#right").simulate("mouseout", {});
-		
+
 		$("#top").simulate("mouseover", {});
 		equal($("body").css("background-position"), "0px 4px");
 		$("#top").simulate("mouseout", {});
-		
+
 		$("#bottom").simulate("mouseover", {});
 		equal($("body").css("background-position"), "0px 0px");
 		$("#bottom").simulate("mouseout", {});
-		
+
 		$("#top_left").simulate("mouseover", {});
 		equal($("body").css("background-position"), "3px 3px");
 		$("#top_left").simulate("mouseout", {});
-		
+
 		$("#top_right").simulate("mouseover", {});
 		equal($("body").css("background-position"), "0px 6px");
 		$("#top_right").simulate("mouseout", {});
-		
+
 		$("#bottom_right").simulate("mouseover", {});
 		equal($("body").css("background-position"), "-3px 3px");
 		$("#bottom_right").simulate("mouseout", {});
-		
+
 		$("#bottom_left").simulate("mouseover", {});
 		equal($("body").css("background-position"), "0px 0px");
 		$("#bottom_left").simulate("mouseout", {});
 	});
+	
+	module ("mousewheel-scroll");
+	
+	/* Test does not work - simulate.js does not support mousewheel
+	test("mousewheel-scroll", function() {
+		$("body").simulate("mousewheel", {
+			deltaX: 1,
+			deltaY: 1
+		});
+		equal($("body").css("background-position"), "24px 24px");
+	});
+	*/
 	
 	QUnit.log = function(result, message) {
 		console.log(result + "::" + message);
