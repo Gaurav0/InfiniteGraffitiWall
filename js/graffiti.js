@@ -158,5 +158,61 @@ $(document).ready(function() {
 		posY += 24 * deltaY;
 		$body.css("background-position", posX + "px " + posY + "px");
 	});
+	
+	var TILE_SIZE = 256;
+	var c = $c.get(0);
+	c.width = $c.width();
+	c.height = $c.height();
+	var ctx = c.getContext("2d");
+	
+	// Draw to canvas on mousedown, drag
+	$body.mousedown(function(e) {
+		var x = -posX + e.pageX;
+		var y = -posY + e.pageY;
+		var tx = Math.floor(x / TILE_SIZE);
+		var ty = Math.floor(y / TILE_SIZE);
+		for (tileX = tx - 1; tileX <= tx + 1; ++tileX)
+			for (tileY = ty - 1; tileY <= ty + 1; ++tileY) {
+				var cx = x - tileX * TILE_SIZE;
+				var cy = y - tileY * TILE_SIZE;
+				var px = e.pageX - cx;
+				var py = e.pageY - cy;
+				console.log(cx + "," + cy);
+				var currentCanvas = getCanvas(tileX, tileY);
+				var currentCtx = currentCanvas.getContext("2d");
+				currentCtx.fillStyle="#000000";
+				currentCtx.beginPath();
+				currentCtx.arc(cx, cy, 30, 0, Math.PI*2, true);
+				currentCtx.closePath();
+				currentCtx.fill();
+				ctx.drawImage(currentCanvas, 0, 0, TILE_SIZE, TILE_SIZE, px, py, TILE_SIZE, TILE_SIZE);
+			}
+	});
+	
+	var canvases = {};
+	
+	function getCanvas(x, y) {
+		if (canvases[x])
+			if (canvases[x][y])
+				return canvases[x][y];
+			else {
+				var made = makeCanvas();
+				canvases[x][y] = made;
+				return made;
+			}
+		else {
+			canvases[x] = {};
+			var made = makeCanvas();
+			canvases[x][y] = made;
+			return made;
+		}
+	}
+	
+	function makeCanvas() {
+		var newCanvas = document.createElement('canvas');
+		newCanvas.width = TILE_SIZE;
+		newCanvas.height = TILE_SIZE;
+		return newCanvas;
+	}
 });
 	
