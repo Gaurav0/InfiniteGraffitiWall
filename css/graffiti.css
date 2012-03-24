@@ -2,6 +2,13 @@ body {
 	height: 100%;
 }
 
+#tests {
+	z-index: 1;
+	position: absolute;
+	top: 15px;
+	left: 15px;
+}
+
 #wall {
 	position: absolute;
 	top: 0;
