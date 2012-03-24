@@ -38,6 +38,7 @@ $(document).ready(function() {
 		$can.show();
 	});
 	
+	// Makes the background scroll when the cursor is at the edges
 	var animateDir = "";
 	var timeOut = null;
 	var posX = 0;
@@ -149,6 +150,13 @@ $(document).ready(function() {
 	$bottom_right.mouseout(function(e) {
 		animateDir = "";
 		window.clearTimeout(timeOut);
+	});
+	
+	// Makes the background scroll with the mouse wheel
+	$body.mousewheel(function(event, delta, deltaX, deltaY) {
+		posX += 24 * deltaX;
+		posY += 24 * deltaY;
+		$body.css("background-position", posX + "px " + posY + "px");
 	});
 });
 	
