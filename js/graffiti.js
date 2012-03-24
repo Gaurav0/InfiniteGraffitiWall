@@ -87,7 +87,7 @@ function InfiniteViewport(canvas) {
 }
 
 $(document).ready(function() {
-	var $body = $("body");
+	var $wall = $("#wall");
 	var $c = $("#c");
 	var $can = $("#can");
 	var $canimg = $("#can img");
@@ -113,7 +113,7 @@ $(document).ready(function() {
 	var view = new InfiniteViewport(c);
 	
 	// Makes the can move around like the cursor
-	$body.mousemove(function(e) {
+	$wall.mousemove(function(e) {
 	    var x = e.pageX;
 	    var y = e.pageY;
 	    var w = $canimg.width();
@@ -126,11 +126,11 @@ $(document).ready(function() {
 	    $can.css({ left: x, top: y, clip: rect });
 	});
 	
-	$body.mouseout(function(e) {
+	$wall.mouseout(function(e) {
 		$can.hide();
 	});
 	
-	$body.mouseover(function(e) {
+	$wall.mouseover(function(e) {
 		$can.show();
 	});
 	
@@ -162,7 +162,7 @@ $(document).ready(function() {
 		} else
 			return;
 		
-		$body.css("background-position", view.posX + "px " + view.posY + "px");
+		$wall.css("background-position", view.posX + "px " + view.posY + "px");
 		view.redraw();
 		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
@@ -248,26 +248,26 @@ $(document).ready(function() {
 	});
 	
 	// Makes the background scroll with the mouse wheel
-	$body.mousewheel(function(event, delta, deltaX, deltaY) {
+	$wall.mousewheel(function(event, delta, deltaX, deltaY) {
 		view.posX += 24 * deltaX;
 		view.posY += 24 * deltaY;
-		$body.css("background-position", view.posX + "px " + view.posY + "px");
+		$wall.css("background-position", view.posX + "px " + view.posY + "px");
 		view.redraw();
 	});
 	
 	var mouseDown = false;
 	
 	// Draw to canvas on mousedown, drag
-	$body.mousedown(function(e) {
+	$wall.mousedown(function(e) {
 		view.drawSpray(e.pageX, e.pageY)
 		mouseDown = true;
 	});
 	
-	$body.mouseup(function(e) {
+	$wall.mouseup(function(e) {
 		mouseDown = false;
 	});
 	
-	$body.mousemove(function(e) {
+	$wall.mousemove(function(e) {
 		if (mouseDown) {
 			view.drawSpray(e.pageX, e.pageY)
 			e.preventDefault();

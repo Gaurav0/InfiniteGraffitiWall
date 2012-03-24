@@ -1,4 +1,13 @@
 body {
+	height: 100%;
+}
+
+#wall {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	bottom: 200px;
     background-image: url('../images/brickwall.jpg');
     cursor: none;
     overflow: hidden;
@@ -108,9 +117,11 @@ body {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-#sidewalk{
-	position: fixed;
+#sidewalk {
+	position: absolute;
 	bottom: 0;
 	right: 0;
 	height: 200px;
+	width: 100%;
+	background-image: url('../images/sample_sidewalk.png');
 }
