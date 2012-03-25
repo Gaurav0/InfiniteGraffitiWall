@@ -132,3 +132,9 @@ body {
 	width: 100%;
 	background-image: url('../images/sample_sidewalk.png');
 }
+
+a:link.sidewalk {color:white;padding:5px;text-decoration:none;}     
+a:visited.sidewalk {color:white;padding:5px;text-decoration:none;}     
+a:hover.sidewalk {color:white;padding:5px;text-decoration:underline;}     
+a:active.sidewalk {color:white;padding:5px;text-decoration:none;}     
+
