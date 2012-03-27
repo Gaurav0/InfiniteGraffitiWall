@@ -30,14 +30,14 @@ function InfiniteViewport(canvas) {
 			this.canvases[x][y] = made;
 			return made;
 		}
-	}
+	};
 
 	this.makeCanvas = function() {
 		var newCanvas = document.createElement("canvas");
 		newCanvas.width = TILE_SIZE;
 		newCanvas.height = TILE_SIZE;
 		return newCanvas;
-	}
+	};
 	
 	this.drawSpray = function(screenX, screenY) {
 		var worldX = this.posX + screenX;
@@ -57,9 +57,10 @@ function InfiniteViewport(canvas) {
 				currentCtx.arc(canvasX, canvasY, 12, 0, Math.PI*2, true);
 				currentCtx.closePath();
 				currentCtx.fill();
-				this.ctx.drawImage(currentCanvas, cornerX, cornerY);
+				this.ctx.drawImage(currentCanvas, cornerX, cornerY);				
+				currentCanvas.setAttribute("data-saved", "false");
 			}
-	}
+	};
 	
 	var buffer = document.createElement('canvas');
 	buffer.width = this.width;
@@ -83,6 +84,21 @@ function InfiniteViewport(canvas) {
 			}
 		this.ctx.clearRect(0, 0, this.width, this.height);
 		this.ctx.drawImage(buffer, 0, 0);
+	};
+	
+	this.saveCanvases = function() {
+		for (x in this.canvases)
+			for (y in this.canvases[x]) {
+				var canvasToSave = this.canvases[x][y];
+				if (canvasToSave.getAttribute &&
+					canvasToSave.getAttribute("data-saved") == "false") {
+					canvasToSave.setAttribute("data-saved", "true");
+					var data = canvasToSave.toDataURL("image/png");
+					data = data.replace("data:image/png;base64,", "");
+					var post = "{x:" + x + ",y:" + y + ",data:'" + data + "'}";
+					console.log(post);
+				}
+			}
 	}
 }
 
@@ -256,20 +272,30 @@ $(document).ready(function() {
 	});
 	
 	var mouseDown = false;
+	var saveTimeout = null;
 	
 	// Draw to canvas on mousedown, drag
 	$wall.mousedown(function(e) {
 		view.drawSpray(e.pageX, e.pageY)
 		mouseDown = true;
+		if (saveTimeout != null)
+			window.clearTimeout(saveTimeout);
 	});
 	
 	$wall.mouseup(function(e) {
 		mouseDown = false;
+		if (saveTimeout != null)
+			window.clearTimeout(saveTimeout);
+		saveTimeout = window.setTimeout(function() {
+			view.saveCanvases();
+		}, 5000);
 	});
 	
 	$wall.mousemove(function(e) {
 		if (mouseDown) {
-			view.drawSpray(e.pageX, e.pageY)
+			view.drawSpray(e.pageX, e.pageY);
+			if (saveTimeout != null)
+				window.clearTimeout(saveTimeout);
 			e.preventDefault();
 		}
 	});

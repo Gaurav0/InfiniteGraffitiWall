@@ -128,8 +128,8 @@ $(document).ready(function() {
 	test("redraw", function() {
 	
 		var pixels1 = this.view.ctx.getImageData(300, 200, 30, 30).data;
-		this.view.posX += 24;
-		this.view.posY += 24;
+		this.view.posX -= 24;
+		this.view.posY -= 24;
 		this.view.redraw();
 		var pixels2 = this.view.ctx.getImageData(324, 224, 30, 30).data;
 		
