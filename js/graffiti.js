@@ -40,8 +40,8 @@ function InfiniteViewport(canvas) {
 	}
 	
 	this.drawSpray = function(screenX, screenY) {
-		var worldX = -this.posX + screenX;
-		var worldY = -this.posY + screenY;
+		var worldX = this.posX + screenX;
+		var worldY = this.posY + screenY;
 		var tx = Math.floor(worldX / TILE_SIZE);
 		var ty = Math.floor(worldY / TILE_SIZE);
 		for (var tileX = tx - 1; tileX <= tx + 1; ++tileX)
@@ -70,15 +70,15 @@ function InfiniteViewport(canvas) {
 		bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
 		var numTilesX = Math.ceil(buffer.width / TILE_SIZE);
 		var numTilesY = Math.ceil(buffer.height / TILE_SIZE);
-		var startX = Math.floor(-this.posX / TILE_SIZE);
-		var startY = Math.floor(-this.posY / TILE_SIZE);
+		var startX = Math.floor(this.posX / TILE_SIZE);
+		var startY = Math.floor(this.posY / TILE_SIZE);
 		var endX = startX + numTilesX;
 		var endY = startY + numTilesY;
 		for (var tileX = startX; tileX <= endX; ++tileX)
 			for (var tileY = startY; tileY <=  endY; ++tileY) {
 				var currentCanvas = this.getCanvas(tileX, tileY);
-				var cornerX = tileX * TILE_SIZE + this.posX;
-				var cornerY = tileY * TILE_SIZE + this.posY;
+				var cornerX = tileX * TILE_SIZE - this.posX;
+				var cornerY = tileY * TILE_SIZE - this.posY;
 				bufferCtx.drawImage(currentCanvas, cornerX, cornerY);
 			}
 		this.ctx.clearRect(0, 0, this.width, this.height);
@@ -140,29 +140,29 @@ $(document).ready(function() {
 	
 	function animate() {
 		if (animateDir == "left")
-			view.posX += 4;
-		else if (animateDir == "right")
 			view.posX -= 4;
+		else if (animateDir == "right")
+			view.posX += 4;
 		else if (animateDir == "up")
-			view.posY += 4;
-		else if (animateDir == "down")
 			view.posY -= 4;
+		else if (animateDir == "down")
+			view.posY += 4;
 		else if (animateDir == "leftup") {
-			view.posX += 3;
-			view.posY += 3;
+			view.posX -= 3;
+			view.posY -= 3;
 		} else if (animateDir == "rightup") {
-			view.posX -= 3;
-			view.posY += 3;
-		} else if (animateDir == "leftdown") {
 			view.posX += 3;
 			view.posY -= 3;
-		} else if (animateDir == "rightdown") {
+		} else if (animateDir == "leftdown") {
 			view.posX -= 3;
-			view.posY -= 3;
+			view.posY += 3;
+		} else if (animateDir == "rightdown") {
+			view.posX += 3;
+			view.posY += 3;
 		} else
 			return;
 		
-		$wall.css("background-position", view.posX + "px " + view.posY + "px");
+		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
 		view.redraw();
 		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
@@ -249,9 +249,9 @@ $(document).ready(function() {
 	
 	// Makes the background scroll with the mouse wheel
 	$wall.mousewheel(function(event, delta, deltaX, deltaY) {
-		view.posX += 24 * deltaX;
-		view.posY += 24 * deltaY;
-		$wall.css("background-position", view.posX + "px " + view.posY + "px");
+		view.posX -= 24 * deltaX;
+		view.posY -= 24 * deltaY;
+		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
 		view.redraw();
 	});
 	
