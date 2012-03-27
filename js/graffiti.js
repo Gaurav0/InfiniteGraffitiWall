@@ -3,6 +3,7 @@ if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function () {};
 
 var TILE_SIZE = 256;
+var IDLE_TIME = 5000;
 
 function InfiniteViewport(canvas) {
 
@@ -39,6 +40,8 @@ function InfiniteViewport(canvas) {
 		return newCanvas;
 	};
 	
+	var RADIUS = 12;
+	
 	this.drawSpray = function(screenX, screenY) {
 		var worldX = this.posX + screenX;
 		var worldY = this.posY + screenY;
@@ -48,17 +51,20 @@ function InfiniteViewport(canvas) {
 			for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
 				var canvasX = worldX - tileX * TILE_SIZE;
 				var canvasY = worldY - tileY * TILE_SIZE;
-				var cornerX = screenX - canvasX;
-				var cornerY = screenY - canvasY;
-				var currentCanvas = this.getCanvas(tileX, tileY);
-				var currentCtx = currentCanvas.getContext("2d");
-				currentCtx.fillStyle="#ff0000";
-				currentCtx.beginPath();
-				currentCtx.arc(canvasX, canvasY, 12, 0, Math.PI*2, true);
-				currentCtx.closePath();
-				currentCtx.fill();
-				this.ctx.drawImage(currentCanvas, cornerX, cornerY);				
-				currentCanvas.setAttribute("data-saved", "false");
+				if (canvasX > -RADIUS && canvasX < TILE_SIZE + RADIUS &&
+				    	canvasY > -RADIUS && canvasY < TILE_SIZE + RADIUS) {
+					var cornerX = screenX - canvasX;
+					var cornerY = screenY - canvasY;
+					var currentCanvas = this.getCanvas(tileX, tileY);
+					var currentCtx = currentCanvas.getContext("2d");
+					currentCtx.fillStyle="#ff0000";
+					currentCtx.beginPath();
+					currentCtx.arc(canvasX, canvasY, RADIUS, 0, Math.PI*2, true);
+					currentCtx.closePath();
+					currentCtx.fill();
+					this.ctx.drawImage(currentCanvas, cornerX, cornerY);				
+					currentCanvas.setAttribute("data-saved", "false");
+				}
 			}
 	};
 	
@@ -87,8 +93,8 @@ function InfiniteViewport(canvas) {
 	};
 	
 	this.saveCanvases = function() {
-		for (x in this.canvases)
-			for (y in this.canvases[x]) {
+		for (var x in this.canvases)
+			for (var y in this.canvases[x]) {
 				var canvasToSave = this.canvases[x][y];
 				if (canvasToSave.getAttribute &&
 					canvasToSave.getAttribute("data-saved") == "false") {
@@ -288,7 +294,7 @@ $(document).ready(function() {
 			window.clearTimeout(saveTimeout);
 		saveTimeout = window.setTimeout(function() {
 			view.saveCanvases();
-		}, 5000);
+		}, IDLE_TIME);
 	});
 	
 	$wall.mousemove(function(e) {
