@@ -133,8 +133,9 @@ body {
 	background-image: url('../images/sample_sidewalk.png');
 }
 
+
 .button {
-   position:relative; left:85%; top:37.5%;
+   position:relative; left:85%; top:45%;
    border-top: 1px solid #96d1f8;
    background: #65a9d7;
    background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
@@ -165,3 +166,17 @@ body {
    border-top-color: #1b435e;
    background: #1b435e;
    }
+   
+#sizepicker{
+	position: absolute;
+	top:37.5%;
+	left:10%;
+	padding: 20px;
+}
+#colorpicker{
+	position: absolute;
+	top:37.5%;
+	left:25%;
+	padding: 20px;
+}
+ 
