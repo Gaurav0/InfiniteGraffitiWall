@@ -2,8 +2,92 @@
 if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function () {};
 
+var TILE_SIZE = 256;
+
+function InfiniteViewport(canvas) {
+
+	this.posX = 0;
+	this.posY = 0;
+	this.width = canvas.width;
+	this.height = canvas.height;
+	this.ctx = canvas.getContext("2d");
+	
+	// store and handle canvases
+	this.canvases = {};
+	
+	this.getCanvas = function(x, y) {
+		if (this.canvases[x])
+			if (this.canvases[x][y])
+				return this.canvases[x][y];
+			else {
+				var made = this.makeCanvas();
+				this.canvases[x][y] = made;
+				return made;
+			}
+		else {
+			this.canvases[x] = {};
+			var made = this.makeCanvas();
+			this.canvases[x][y] = made;
+			return made;
+		}
+	}
+
+	this.makeCanvas = function() {
+		var newCanvas = document.createElement("canvas");
+		newCanvas.width = TILE_SIZE;
+		newCanvas.height = TILE_SIZE;
+		return newCanvas;
+	}
+	
+	this.drawSpray = function(screenX, screenY) {
+		var worldX = this.posX + screenX;
+		var worldY = this.posY + screenY;
+		var tx = Math.floor(worldX / TILE_SIZE);
+		var ty = Math.floor(worldY / TILE_SIZE);
+		for (var tileX = tx - 1; tileX <= tx + 1; ++tileX)
+			for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
+				var canvasX = worldX - tileX * TILE_SIZE;
+				var canvasY = worldY - tileY * TILE_SIZE;
+				var cornerX = screenX - canvasX;
+				var cornerY = screenY - canvasY;
+				var currentCanvas = this.getCanvas(tileX, tileY);
+				var currentCtx = currentCanvas.getContext("2d");
+				currentCtx.fillStyle="#ff0000";
+				currentCtx.beginPath();
+				currentCtx.arc(canvasX, canvasY, 12, 0, Math.PI*2, true);
+				currentCtx.closePath();
+				currentCtx.fill();
+				this.ctx.drawImage(currentCanvas, cornerX, cornerY);
+			}
+	}
+	
+	var buffer = document.createElement('canvas');
+	buffer.width = this.width;
+	buffer.height = this.height;
+	var bufferCtx = buffer.getContext("2d");
+	
+	this.redraw = function() {
+		bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+		var numTilesX = Math.ceil(buffer.width / TILE_SIZE);
+		var numTilesY = Math.ceil(buffer.height / TILE_SIZE);
+		var startX = Math.floor(this.posX / TILE_SIZE);
+		var startY = Math.floor(this.posY / TILE_SIZE);
+		var endX = startX + numTilesX;
+		var endY = startY + numTilesY;
+		for (var tileX = startX; tileX <= endX; ++tileX)
+			for (var tileY = startY; tileY <=  endY; ++tileY) {
+				var currentCanvas = this.getCanvas(tileX, tileY);
+				var cornerX = tileX * TILE_SIZE - this.posX;
+				var cornerY = tileY * TILE_SIZE - this.posY;
+				bufferCtx.drawImage(currentCanvas, cornerX, cornerY);
+			}
+		this.ctx.clearRect(0, 0, this.width, this.height);
+		this.ctx.drawImage(buffer, 0, 0);
+	}
+}
+
 $(document).ready(function() {
-	var $body = $("body");
+	var $wall = $("#wall");
 	var $c = $("#c");
 	var $can = $("#can");
 	var $canimg = $("#can img");
@@ -16,8 +100,20 @@ $(document).ready(function() {
 	var $bottom_left = $("#bottom_left")
 	var $bottom_right = $("#bottom_right")
 	
+	// Disable dragging can image in Firefox
+	$canimg.bind("dragstart", function(e) {
+		return false;
+	});
+	
+	// Set canvas width and height
+	var c = $c.get(0);
+	c.width = $c.width();
+	c.height = $c.height();
+	
+	var view = new InfiniteViewport(c);
+	
 	// Makes the can move around like the cursor
-	$body.mousemove(function(e) {
+	$wall.mousemove(function(e) {
 	    var x = e.pageX;
 	    var y = e.pageY;
 	    var w = $canimg.width();
@@ -30,45 +126,44 @@ $(document).ready(function() {
 	    $can.css({ left: x, top: y, clip: rect });
 	});
 	
-	$body.mouseout(function(e) {
+	$wall.mouseout(function(e) {
 		$can.hide();
 	});
 	
-	$body.mouseover(function(e) {
+	$wall.mouseover(function(e) {
 		$can.show();
 	});
 	
 	// Makes the background scroll when the cursor is at the edges
 	var animateDir = "";
 	var timeOut = null;
-	var posX = 0;
-	var posY = 0;
 	
 	function animate() {
 		if (animateDir == "left")
-			posX += 4;
+			view.posX -= 4;
 		else if (animateDir == "right")
-			posX -= 4;
+			view.posX += 4;
 		else if (animateDir == "up")
-			posY += 4;
+			view.posY -= 4;
 		else if (animateDir == "down")
-			posY -= 4;
+			view.posY += 4;
 		else if (animateDir == "leftup") {
-			posX += 3;
-			posY += 3;
+			view.posX -= 3;
+			view.posY -= 3;
 		} else if (animateDir == "rightup") {
-			posX -= 3;
-			posY += 3;
+			view.posX += 3;
+			view.posY -= 3;
 		} else if (animateDir == "leftdown") {
-			posX += 3;
-			posY -= 3;
+			view.posX -= 3;
+			view.posY += 3;
 		} else if (animateDir == "rightdown") {
-			posX -= 3;
-			posY -= 3;
+			view.posX += 3;
+			view.posY += 3;
 		} else
 			return;
 		
-		$body.css("background-position", posX + "px " + posY + "px");
+		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
+		view.redraw();
 		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
 	
@@ -153,10 +248,29 @@ $(document).ready(function() {
 	});
 	
 	// Makes the background scroll with the mouse wheel
-	$body.mousewheel(function(event, delta, deltaX, deltaY) {
-		posX += 24 * deltaX;
-		posY += 24 * deltaY;
-		$body.css("background-position", posX + "px " + posY + "px");
+	$wall.mousewheel(function(event, delta, deltaX, deltaY) {
+		view.posX -= 24 * deltaX;
+		view.posY -= 24 * deltaY;
+		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
+		view.redraw();
+	});
+	
+	var mouseDown = false;
+	
+	// Draw to canvas on mousedown, drag
+	$wall.mousedown(function(e) {
+		view.drawSpray(e.pageX, e.pageY)
+		mouseDown = true;
+	});
+	
+	$wall.mouseup(function(e) {
+		mouseDown = false;
+	});
+	
+	$wall.mousemove(function(e) {
+		if (mouseDown) {
+			view.drawSpray(e.pageX, e.pageY)
+			e.preventDefault();
+		}
 	});
 });
-	

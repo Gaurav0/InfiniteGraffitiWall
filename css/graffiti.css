@@ -1,4 +1,20 @@
 body {
+	height: 100%;
+}
+
+#tests {
+	z-index: 1;
+	position: absolute;
+	top: 15px;
+	left: 15px;
+}
+
+#wall {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	bottom: 200px;
     background-image: url('../images/brickwall.jpg');
     cursor: none;
     overflow: hidden;
@@ -107,3 +123,60 @@ body {
 	overflow: hidden;
 	background-color: rgba(0, 0, 0, 0);
 }
+
+#sidewalk {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 200px;
+	width: 100%;
+	background-image: url('../images/sample_sidewalk.png');
+}
+
+
+.button {
+   position:relative; left:85%; top:45%;
+   border-top: 1px solid #96d1f8;
+   background: #65a9d7;
+   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+   background: -o-linear-gradient(top, #3e779d, #65a9d7);
+   padding: 5px 10px;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 14px;
+   font-family: Georgia, serif;
+   text-decoration: none;
+   vertical-align: middle;
+   }
+.button:hover {
+   border-top-color: #28597a;
+   background: #28597a;
+   color: #ccc;
+   }
+.button:active {
+   border-top-color: #1b435e;
+   background: #1b435e;
+   }
+   
+#sizepicker{
+	position: absolute;
+	top:37.5%;
+	left:10%;
+	padding: 20px;
+}
+#colorpicker{
+	position: absolute;
+	top:37.5%;
+	left:25%;
+	padding: 20px;
+}
+ 
