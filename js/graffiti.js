@@ -10,8 +10,7 @@ function InfiniteViewport(canvas) {
 
 	this.posX = 0;
 	this.posY = 0;
-	this.width = canvas.width;
-	this.height = canvas.height;
+	this.canvas = canvas;
 	this.ctx = canvas.getContext("2d");
 	
 	// store and handle canvases
@@ -70,9 +69,15 @@ function InfiniteViewport(canvas) {
 	};
 	
 	var buffer = document.createElement('canvas');
-	buffer.width = this.width;
-	buffer.height = this.height;
+	buffer.width = this.canvas.width;
+	buffer.height = this.canvas.height;
 	var bufferCtx = buffer.getContext("2d");
+	
+	this.resize = function() {
+		buffer.width = this.canvas.width;
+		buffer.height = this.canvas.height;
+		this.redraw();
+	};
 	
 	this.redraw = function() {
 		bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
@@ -89,7 +94,7 @@ function InfiniteViewport(canvas) {
 				var cornerY = tileY * TILE_SIZE - this.posY;
 				bufferCtx.drawImage(currentCanvas, cornerX, cornerY);
 			}
-		this.ctx.clearRect(0, 0, this.width, this.height);
+		this.ctx.clearRect(0, 0, buffer.width, buffer.height);
 		this.ctx.drawImage(buffer, 0, 0);
 	};
 	
@@ -135,6 +140,12 @@ $(document).ready(function() {
 	c.height = $c.height();
 	
 	var view = new InfiniteViewport(c);
+	
+	$(window).resize(function(e) {
+		c.width = $c.width();
+		c.height = $c.height();
+		view.resize();
+	});
 	
 	// Makes the can move around like the cursor
 	$wall.mousemove(function(e) {

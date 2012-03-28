@@ -88,13 +88,33 @@ $(document).ready(function() {
 	});
 	*/
 	
+	// This test never fails on modern browsers;
+	// they no longer let you change the size of a window.
+	/*
+	module("resize", {
+		setup: function() {
+			this.w = $(window).width();
+			this.h = $(window).height();
+			window.resizeTo(this.w + 100, this.h - 100);
+		},
+		
+		teardown: function() {
+			window.resizeTo(this.w, this.h);
+		}
+	});
+	
+	test("resize", function() {
+		equal($("#c").get(0).width, $("#c").width());
+		equal($("#c").get(0).height, $("#c").height());
+	});
+	*/
+	
 	module("Infinite Viewport", {
 		setup: function() {
 			this.view = new InfiniteViewport($("#c").get(0));
 			this.view.drawSpray(300, 200);
 		}
 	});
-	
 	
 	test("makeCanvas", function() {
 		var c = this.view.makeCanvas();
