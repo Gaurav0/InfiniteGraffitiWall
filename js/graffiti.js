@@ -4,6 +4,7 @@ if (!window.console.log) window.console.log = function () {};
 
 var TILE_SIZE = 256;
 var IDLE_TIME = 5000;
+var SIDEWALK_SCROLL_RATE = 1.37;
 
 function InfiniteViewport(canvas) {
 
@@ -186,7 +187,8 @@ $(document).ready(function() {
 			return;
 		
 		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
-		var sidewalkX = Modernizr.csstransforms3d ? Math.floor(-view.posX * 1.4) : -view.posX;
+		var sidewalkX = Modernizr.csstransforms3d ?
+			Math.floor(-view.posX * SIDEWALK_SCROLL_RATE) : -view.posX;
 		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
 		view.redraw();
 		timeOut = window.setTimeout(animate, 1000 / 60);
@@ -277,7 +279,8 @@ $(document).ready(function() {
 		view.posX -= 24 * deltaX;
 		view.posY -= 24 * deltaY;
 		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
-		var sidewalkX = Modernizr.csstransforms3d ? Math.floor(-view.posX * 1.4) : -view.posX;
+		var sidewalkX = Modernizr.csstransforms3d ?
+			Math.floor(-view.posX * SIDEWALK_SCROLL_RATE) : -view.posX;
 		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
 		view.redraw();
 	});
