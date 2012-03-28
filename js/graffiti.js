@@ -117,10 +117,11 @@ $(document).ready(function() {
 	var $right = $("#right");
 	var $top = $("#top");
 	var $bottom = $("#bottom");
-	var $top_left = $("#top_left")
-	var $top_right = $("#top_right")
-	var $bottom_left = $("#bottom_left")
-	var $bottom_right = $("#bottom_right")
+	var $top_left = $("#top_left");
+	var $top_right = $("#top_right");
+	var $bottom_left = $("#bottom_left");
+	var $bottom_right = $("#bottom_right");
+	var $sidewalkbg = $("#sidewalk-bg");
 	
 	// Disable dragging can image in Firefox
 	$canimg.bind("dragstart", function(e) {
@@ -185,6 +186,8 @@ $(document).ready(function() {
 			return;
 		
 		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
+		var sidewalkX = Modernizr.csstransforms3d ? Math.floor(-view.posX * 1.4) : -view.posX;
+		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
 		view.redraw();
 		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
@@ -274,6 +277,8 @@ $(document).ready(function() {
 		view.posX -= 24 * deltaX;
 		view.posY -= 24 * deltaY;
 		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
+		var sidewalkX = Modernizr.csstransforms3d ? Math.floor(-view.posX * 1.4) : -view.posX;
+		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
 		view.redraw();
 	});
 	
