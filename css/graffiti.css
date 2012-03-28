@@ -130,7 +130,24 @@ body {
 	right: 0;
 	height: 200px;
 	width: 100%;
-	background-image: url('../images/sample_sidewalk.png');
+	-webkit-perspective: 400px;
+	-moz-perspective: 400px;
+	-ms-perspective: 400px;
+	-o-perspective: 400px;
+	overflow: hidden;
+}
+
+#sidewalk-bg {
+	position: absolute;
+	top: -250px;
+	left: -25%;
+	width: 150%;
+	height: 600px;
+	background-image: url('../images/Pavement04.jpg');
+	-webkit-transform: rotateX(60deg);
+	-moz-transform: rotateX(60deg);
+	-ms-transform: rotateX(60deg);
+	-o-transform: rotateX(60deg);
 }
 
 
