@@ -127,7 +127,9 @@ $(document).ready(function() {
 	var $top_right = $("#top_right");
 	var $bottom_left = $("#bottom_left");
 	var $bottom_right = $("#bottom_right");
+	var $sidewalk = $("#sidewalk");
 	var $sidewalkbg = $("#sidewalk-bg");
+	var $tab = $("#sidewalk-tab");
 	
 	// Disable dragging can image in Firefox
 	$canimg.bind("dragstart", function(e) {
@@ -323,5 +325,48 @@ $(document).ready(function() {
 				window.clearTimeout(saveTimeout);
 			e.preventDefault();
 		}
+	});
+	
+	// Minimize sidewalk
+	$("#minimize").click(function() {
+		$sidewalk.animate({ height: 0 }, "slow", "easeInOutCubic");
+		$wall.animate({ bottom: 0 }, {
+			duration: "slow", 
+			easing: "easeInOutCubic", 
+			step: function() {
+				c.width = $c.width();
+				c.height = $c.height();
+				view.resize();
+			},
+			complete: function() {
+				$tab.animate({ bottom: 0 }, "slow", "easeInOutCubic");
+			}
+		});
+	});
+	
+	// Restore sidewalk
+	$tab.click(function() {
+		$tab.animate({ bottom: "-40px" },
+				"slow", "easeInOutCubic", function() {
+			$sidewalk.animate({ height: "200px" }, "slow", "easeInOutCubic");
+			$wall.animate({ bottom: "200px" }, {
+				duration: "slow", 
+				easing: "easeInOutCubic", 
+				step: function() {
+					c.width = $c.width();
+					c.height = $c.height();
+					view.resize();
+				}
+			});
+		});
+	});
+	
+	// Prevent drawing on tab
+	$tab.mousedown(function(e) {
+		e.stopPropagation();
+	});
+	
+	$tab.mousemove(function(e) {
+		e.stopPropagation();
 	});
 });

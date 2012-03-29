@@ -6,3 +6,5 @@ spray.svg http://openclipart.org/detail/168591/spray-can-sheep-by-dodger2
 spray2.svg, spray2.png Edited from spray.svg by Gaurav.
 spraycan.svg made by Joseph with inspiration from http://www.freeclipartpics.com/free-cartoon-pictures/
 spraycan.png made by Gaurav from spraycan.svg by Joseph
+kuba_arrow_button_down.svg, kuba_arrow_button_up.svg by Kuba from http://openclipart.org/detail/2205/arrow_button_set-by-kuba
+kuba_arrow_button_down.png, kuba_arrow_button_up.png exported from above using Inkscape
