@@ -130,6 +130,7 @@ $(document).ready(function() {
 	var $sidewalk = $("#sidewalk");
 	var $sidewalkbg = $("#sidewalk-bg");
 	var $tab = $("#sidewalk-tab");
+	var $splitter = $("#splitter");
 	
 	// Disable dragging can image in Firefox
 	$canimg.bind("dragstart", function(e) {
@@ -327,9 +328,13 @@ $(document).ready(function() {
 		}
 	});
 	
+	var splitterPos;
+	
 	// Minimize sidewalk
 	$("#minimize").click(function() {
+		splitterPos = parseInt($splitter.draggable("widget").css("bottom"));
 		$sidewalk.animate({ height: 0 }, "slow", "easeInOutCubic");
+		$splitter.animate({ bottom: "-5px" }, "slow", "easeInOutCubic");
 		$wall.animate({ bottom: 0 }, {
 			duration: "slow", 
 			easing: "easeInOutCubic", 
@@ -348,8 +353,11 @@ $(document).ready(function() {
 	$tab.click(function() {
 		$tab.animate({ bottom: "-40px" },
 				"slow", "easeInOutCubic", function() {
-			$sidewalk.animate({ height: "200px" }, "slow", "easeInOutCubic");
-			$wall.animate({ bottom: "200px" }, {
+			$sidewalk.animate({ height: splitterPos },
+				"slow", "easeInOutCubic");
+			$splitter.animate({ bottom: splitterPos + "px" },
+				"slow", "easeInOutCubic");
+			$wall.animate({ bottom: splitterPos + 5 + "px"  }, {
 				duration: "slow", 
 				easing: "easeInOutCubic", 
 				step: function() {
@@ -368,5 +376,21 @@ $(document).ready(function() {
 	
 	$tab.mousemove(function(e) {
 		e.stopPropagation();
+	});
+	
+	// Splitter
+	$splitter.draggable({
+		helper: "clone",
+		axis: "y",
+		containment: [0, $(window).height() - 250, 0, $(window).height() - 10],
+		snap: 'document',
+		drag: function(event, ui) {
+			$wall.css("bottom", $(window).height() - ui.offset.top + "px");
+			$splitter.css("bottom", $(window).height() - ui.offset.top - 5 + "px");
+			$sidewalk.height($(window).height() - ui.offset.top);
+			c.width = $c.width();
+			c.height = $c.height();
+			view.resize();
+		}
 	});
 });
