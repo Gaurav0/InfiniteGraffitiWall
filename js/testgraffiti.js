@@ -160,4 +160,26 @@ $(document).ready(function() {
 			equal(pixels1[i+2], pixels2[i+2]);
 		}
 	});
+	
+	module("minimize");
+	
+	asyncTest("minimize", function() {
+		$("#minimize").click();
+		window.setTimeout(function() {
+			equal($("#sidewalk").height(), 0);
+			equal($("#wall").css("bottom"), "0px");
+			equal($("#sidewalk-tab").css("bottom"), "0px");
+			start();
+		}, 1280);
+	});
+	
+	asyncTest("restore", function() {
+		$("#sidewalk-tab img").click();
+		window.setTimeout(function() {
+			ok($("#sidewalk").height() > 0);
+			ok(parseInt($("#wall").css("bottom")) > 0);
+			ok(parseInt($("#sidewalk-tab").css("bottom")) < 0);
+			start();
+		}, 1280);
+	});
 });
