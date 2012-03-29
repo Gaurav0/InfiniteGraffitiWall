@@ -398,8 +398,8 @@ $(document).ready(function() {
 	// colorpicker
 	$("#colorpicker").CanvasColorPicker({
 		flat: true,
-		width: 250,
-		height: 100,
+		width: 300,
+		height: 140,
 		color: { r: 255, g: 0, b: 0 },
 		showButtons: false,
 		onColorChange: function(rgb, hsb) {
