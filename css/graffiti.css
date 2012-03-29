@@ -21,6 +21,10 @@ body {
     background-image: url('../images/brickwall.jpg');
     cursor: none;
     overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
 }
 
 #c {
@@ -141,20 +145,32 @@ body {
 	-moz-perspective: 400px;
 	-ms-perspective: 400px;
 	-o-perspective: 400px;
+	-webkit-perspective-origin: center 0;
+	-moz-perspective-origin: center 0;
+	-ms-perspective-origin: center 0;
+	-o-perspective-origin: center 0;
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	-ms-transform-style: preserve-3d;
+	-o-transform-style: preserve-3d;
 	overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
 }
 
 #sidewalk-bg {
 	position: absolute;
-	top: -250px;
-	left: -25%;
-	width: 150%;
-	height: 600px;
+	top: -800px;
+	left: -50%;
+	width: 200%;
+	height: 1600px;
 	background-image: url('../images/Pavement04.jpg');
-	-webkit-transform: rotateX(60deg);
-	-moz-transform: rotateX(60deg);
-	-ms-transform: rotateX(60deg);
-	-o-transform: rotateX(60deg);
+	-webkit-transform: translateZ(-400px) rotateX(60deg);
+	-moz-transform: translateZ(-400px) rotateX(60deg);
+	-o-transform: translateZ(-400px) rotateX(60deg);
+	-ms-transform: translateZ(-400px) rotateX(60deg);
 }
 
 #sidewalk-tab {
@@ -245,8 +261,13 @@ body {
 
 #colorpicker {
 	position: absolute;
-	top:37.5%;
-	left:25%;
-	padding: 20px;
+	top: 15%;
+	left: 25%;
+	width: 250px;
+	height: 100px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
 }
  

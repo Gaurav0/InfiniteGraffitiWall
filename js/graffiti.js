@@ -4,7 +4,7 @@ if (!window.console.log) window.console.log = function () {};
 
 var TILE_SIZE = 256;
 var IDLE_TIME = 5000;
-var SIDEWALK_SCROLL_RATE = 1.37;
+var SIDEWALK_SCROLL_RATE = 2.0;
 
 function InfiniteViewport(canvas) {
 
@@ -12,6 +12,7 @@ function InfiniteViewport(canvas) {
 	this.posY = 0;
 	this.canvas = canvas;
 	this.ctx = canvas.getContext("2d");
+	this.color = "#ff0000";
 	
 	// store and handle canvases
 	this.canvases = {};
@@ -57,7 +58,7 @@ function InfiniteViewport(canvas) {
 					var cornerY = screenY - canvasY;
 					var currentCanvas = this.getCanvas(tileX, tileY);
 					var currentCtx = currentCanvas.getContext("2d");
-					currentCtx.fillStyle="#ff0000";
+					currentCtx.fillStyle = this.color;
 					currentCtx.beginPath();
 					currentCtx.arc(canvasX, canvasY, RADIUS, 0, Math.PI*2, true);
 					currentCtx.closePath();
@@ -391,6 +392,18 @@ $(document).ready(function() {
 			c.width = $c.width();
 			c.height = $c.height();
 			view.resize();
+		}
+	});
+	
+	// colorpicker
+	$("#colorpicker").CanvasColorPicker({
+		flat: true,
+		width: 250,
+		height: 100,
+		color: { r: 255, g: 0, b: 0 },
+		showButtons: false,
+		onColorChange: function(rgb, hsb) {
+			view.color = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
 		}
 	});
 });
