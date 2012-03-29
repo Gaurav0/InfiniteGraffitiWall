@@ -161,6 +161,18 @@ $(document).ready(function() {
 		}
 	});
 	
+	module("splitter");
+	
+test("dragSplitter", function() {
+		$("#splitter").simulate("drag", {
+			dx: 0,
+			dy: 20
+		});
+		equal($("#splitter").css("bottom"), "180px");
+		equal($("#wall").css("bottom"), "185px");
+		equal($("#sidewalk").height(), 180);
+	});
+	
 	module("minimize");
 	
 	asyncTest("minimize", function() {

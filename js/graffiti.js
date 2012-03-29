@@ -387,7 +387,7 @@ $(document).ready(function() {
 		drag: function(event, ui) {
 			$wall.css("bottom", $(window).height() - ui.offset.top + "px");
 			$splitter.css("bottom", $(window).height() - ui.offset.top - 5 + "px");
-			$sidewalk.height($(window).height() - ui.offset.top);
+			$sidewalk.height($(window).height() - ui.offset.top - 5);
 			c.width = $c.width();
 			c.height = $c.height();
 			view.resize();
