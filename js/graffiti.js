@@ -144,6 +144,7 @@ $(document).ready(function() {
 	c.height = $c.height();
 	
 	var view = new InfiniteViewport(c);
+	$c.data("view", view);
 	
 	$(window).resize(function(e) {
 		c.width = $c.width();

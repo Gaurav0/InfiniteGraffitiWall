@@ -163,7 +163,7 @@ $(document).ready(function() {
 	
 	module("splitter");
 	
-test("dragSplitter", function() {
+	test("dragSplitter", function() {
 		$("#splitter").simulate("drag", {
 			dx: 0,
 			dy: 20
@@ -194,4 +194,20 @@ test("dragSplitter", function() {
 			start();
 		}, 1280);
 	});
+	
+	module("colorpicker");
+	
+	test("colorpicker", function() {
+		var cp = $("#colorpicker").data("canvas-color-picker");
+		var color = {r: 0, g: 0, b: 255};
+		cp.setColor(color);
+		cp.colorChanged(color);
+		var view = $("#c").data("view");
+		view.drawSpray(200, 300);
+		var pixel = view.ctx.getImageData(200, 300, 1, 1).data;
+		equal(pixel[0], 0); // red
+		equal(pixel[1], 0); // green
+		equal(pixel[2], 255); // blue
+	});
+	
 });
