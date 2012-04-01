@@ -304,16 +304,28 @@ $(document).ready(function() {
 	var mouseDown = false;
 	var saveTimeout = null;
 	
+	// Audio
+	
+	var spray = document.getElementById("spray");
+	if (typeof spray.loop != "boolean") {
+		spray.addEventListener("ended", function() {
+			this.currentTime = 0;
+			this.play();
+		}, false);
+	}
+	
 	// Draw to canvas on mousedown, drag
 	$wall.mousedown(function(e) {
 		view.drawSpray(e.pageX, e.pageY)
 		mouseDown = true;
+		spray.play();
 		if (saveTimeout != null)
 			window.clearTimeout(saveTimeout);
 	});
 	
 	$wall.mouseup(function(e) {
 		mouseDown = false;
+		spray.pause();
 		if (saveTimeout != null)
 			window.clearTimeout(saveTimeout);
 		saveTimeout = window.setTimeout(function() {

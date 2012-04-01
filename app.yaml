@@ -14,6 +14,16 @@ handlers:
 - url: /js
   static_dir: js
 
+- url: /audio/(.*\.(ogg|oga))
+  mime_type: audio/ogg
+  static_files: audio/\1
+  upload: audio/(.*\.(ogg|oga))
+  
+- url: /audio/(.*\.mp3)
+  mime_type: audio/mpeg
+  static_files: audio/\1
+  upload: audio/(.*\.mp3)
+
 - url: /.*
   script: main.app
   
