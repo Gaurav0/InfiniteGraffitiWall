@@ -14,7 +14,9 @@ from google.appengine.ext import db
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
+
 class MainPage(webapp2.RequestHandler):
+
     def get(self):
         user = users.get_current_user()
         if user:
@@ -29,35 +31,39 @@ class MainPage(webapp2.RequestHandler):
             login_url=login_url,
             login_label=login_label))
 
+
 class TestPage(webapp2.RequestHandler):
+
     def get(self):
         template = jinja_environment.get_template('unittests.html')
         self.response.out.write(template.render(''))
 
+
 class SaveTile(webapp2.RequestHandler):
+
     def post(self):
-	x = int(self.request.get('x'))
-	y = int(self.request.get('y'))
-	data = self.request.get('data')
+        x = int(self.request.get('x'))
+        y = int(self.request.get('y'))
+        data = self.request.get('data')
 
-	data = base64.b64decode(data)
-	
-	file_name = files.blobstore.create(mime_type='image/png')
-	with files.open(file_name, 'a') as f :
-	    f.write(data)
+        data = base64.b64decode(data)
 
-	files.finalize(file_name)
-	blob_key = files.blobstore.get_blob_key(file_name)
+        file_name = files.blobstore.create(mime_type='image/png')
+        with files.open(file_name, 'a') as f:
+            f.write(data)
 
-	myTile = Tile(x=x,y=y,blob_key=blob_key)
-	myTile.put()
+        files.finalize(file_name)
+        blob_key = files.blobstore.get_blob_key(file_name)
+
+        myTile = Tile(x=x, y=y, blob_key=blob_key)
+        myTile.put()
 
 app = webapp2.WSGIApplication([
         ('/', MainPage),
         ('/unittests', TestPage),
-	('/save', SaveTile)],
+        ('/save', SaveTile)],
     debug=True)
-	
+
 #tests  to check if the app loads
 response = app.get_response('/')
 assert response.status_int == 200
