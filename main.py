@@ -6,11 +6,14 @@ import jinja2
 import os
 import base64
 import logging
+import urllib
 
 from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import files
 from google.appengine.api import users
 from google.appengine.ext import db
+
+from google.appengine.ext.webapp import blobstore_handlers
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -38,6 +41,22 @@ class TestPage(webapp2.RequestHandler):
     def get(self):
         template = jinja_environment.get_template('unittests.html')
         self.response.out.write(template.render(''))
+
+
+class GetTile(webapp2.RequestHandler):
+
+    def get(self):
+        x = int(self.request.get('x'))
+        y = int(self.request.get('y'))
+
+        query = Tile.gql("WHERE x = :1 AND y = :2", x, y)
+        myTile = query.get()
+        if myTile is None:
+            self.response.set_status(404)
+        else:
+            self.response.headers["content-type"] = "image/png"
+            blob_reader = blobstore.BlobReader(myTile.blob_key)
+            self.response.write(blob_reader.read())
 
 
 class SaveTile(webapp2.RequestHandler):
@@ -68,10 +87,12 @@ class SaveTile(webapp2.RequestHandler):
             myTile.put()
             old_key.delete()
 
+
 app = webapp2.WSGIApplication([
         ('/', MainPage),
         ('/unittests', TestPage),
-        ('/save', SaveTile)],
+        ('/save', SaveTile),
+        ('/tile', GetTile)],
     debug=True)
 
 

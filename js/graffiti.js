@@ -22,16 +22,19 @@ function InfiniteViewport(canvas) {
 			if (this.canvases[x][y])
 				return this.canvases[x][y];
 			else {
-				var made = this.makeCanvas();
-				this.canvases[x][y] = made;
-				return made;
+				return this.newCanvas(x, y);
 			}
 		else {
 			this.canvases[x] = {};
-			var made = this.makeCanvas();
-			this.canvases[x][y] = made;
-			return made;
+			return this.newCanvas(x, y);
 		}
+	};
+	
+	this.newCanvas = function(x, y) {
+		var made = this.makeCanvas();
+		this.requestCanvas(made, x, y);
+		this.canvases[x][y] = made;
+		return made;
 	};
 
 	this.makeCanvas = function() {
@@ -39,6 +42,16 @@ function InfiniteViewport(canvas) {
 		newCanvas.width = TILE_SIZE;
 		newCanvas.height = TILE_SIZE;
 		return newCanvas;
+	};
+	
+	this.requestCanvas = function(canvas, x, y) {
+		var img = new Image();
+		var view = this;
+		img.onload = function() {
+			canvas.getContext("2d").drawImage(img, 0, 0);
+			view.redraw();
+		}
+		img.src = "/tile?x=" + x + "&y=" + y;
 	};
 	
 	var RADIUS = 12;
@@ -160,6 +173,7 @@ $(document).ready(function() {
 	
 	var view = new InfiniteViewport(c);
 	$c.data("view", view);
+	view.redraw();
 	
 	$(window).resize(function(e) {
 		c.width = $c.width();
