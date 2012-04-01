@@ -4,6 +4,7 @@ from models import Tile, Claim
 import webapp2
 import jinja2
 import os
+import base64
 
 from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import files
@@ -38,6 +39,8 @@ class SaveTile(webapp2.RequestHandler):
 	x = int(self.request.get('x'))
 	y = int(self.request.get('y'))
 	data = self.request.get('data')
+
+	data = base64.b64decode((data))
 	
 	file_name = files.blobstore.create(mime_type='image/png')
 	with files.open(file_name, 'a') as f :
