@@ -5,6 +5,7 @@ import webapp2
 import jinja2
 import os
 import base64
+import logging
 
 from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import files
@@ -55,14 +56,24 @@ class SaveTile(webapp2.RequestHandler):
         files.finalize(file_name)
         blob_key = files.blobstore.get_blob_key(file_name)
 
-        myTile = Tile(x=x, y=y, blob_key=blob_key)
-        myTile.put()
+        # Check if tile is already in database
+        query = Tile.gql("WHERE x = :1 AND y = :2", x, y)
+        myTile = query.get()
+        if myTile is None:
+            myTile = Tile(x=x, y=y, blob_key=blob_key)
+            myTile.put()
+        else:
+            old_key = myTile.blob_key
+            myTile.blob_key = blob_key
+            myTile.put()
+            old_key.delete()
 
 app = webapp2.WSGIApplication([
         ('/', MainPage),
         ('/unittests', TestPage),
         ('/save', SaveTile)],
     debug=True)
+
 
 #tests  to check if the app loads
 response = app.get_response('/')
