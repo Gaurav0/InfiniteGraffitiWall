@@ -1,26 +1,17 @@
 from __future__ import with_statement
+from models import Tile, Claim
+
 import webapp2
 import jinja2
 import os
 
-from google.appengine.api import users
-from google.appengine.ext import db
 from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import files
+from google.appengine.api import users
+from google.appengine.ext import db
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-
-class Tile(db.Model):
-
-    x = db.IntegerProperty(required=True)
-    y = db.IntegerProperty(required=True)
-    blob_key = blobstore.BlobReferenceProperty(required=True)
-
-class Claim(db.Model):
-    user = db.UserProperty(required=True)
-    x = db.IntegerProperty(required=True)
-    y = db.IntegerProperty(required=True)
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -48,7 +39,7 @@ class SaveTile(webapp2.RequestHandler):
 	y = int(self.request.get('y'))
 	data = self.request.get('data')
 	
-	file_name = files.blobstore.create(mime_type='application/octet-stream')
+	file_name = files.blobstore.create(mime_type='image/png')
 	with files.open(file_name, 'a') as f :
 	    f.write(data)
 
