@@ -40,7 +40,7 @@ class SaveTile(webapp2.RequestHandler):
 	y = int(self.request.get('y'))
 	data = self.request.get('data')
 
-	data = base64.b64decode((data))
+	data = base64.b64decode(data)
 	
 	file_name = files.blobstore.create(mime_type='image/png')
 	with files.open(file_name, 'a') as f :
