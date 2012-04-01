@@ -108,12 +108,22 @@ function InfiniteViewport(canvas) {
 					canvasToSave.setAttribute("data-saved", "true");
 					var data = canvasToSave.toDataURL("image/png");
 					data = data.replace("data:image/png;base64,", "");
-//					var post = "{x:" + x + ",y:" + y + ",data:'" + data + "'}";
-//					console.log(post);
+					console.log("saving data (" + x + "," + y + ") ...");
 					$.ajax({
 						url: "/save",
+						async: true,
 						type: "POST",
-						data: {x: x, y: y, data: data}
+						data: {x: x, y: y, data: data},
+						success: (function(x, y) {
+							return function() {
+								console.log("saved (" + x + "," + y + ")");
+							}
+						})(x, y),
+						error: (function(x, y) {
+							return function() {
+								console.log("Error saving (" + x + "," + y + ")");
+							}
+						})(x, y),
 					});
 				}
 			}
