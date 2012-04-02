@@ -347,7 +347,8 @@ $(document).ready(function() {
 	$wall.mousedown(function(e) {
 		view.drawSpray(e.pageX, e.pageY)
 		mouseDown = true;
-		spray.play();
+		if ($("#enableSound").attr("checked"))
+			spray.play();
 		if (saveTimeout != null)
 			window.clearTimeout(saveTimeout);
 	});
