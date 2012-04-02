@@ -141,6 +141,10 @@ body {
 	right: 0;
 	height: 200px;
 	width: 100%;
+	overflow: hidden;
+}
+
+.use3dTransforms#sidewalk {
 	-webkit-perspective: 400px;
 	-moz-perspective: 400px;
 	-ms-perspective: 400px;
@@ -153,7 +157,6 @@ body {
 	-moz-transform-style: preserve-3d;
 	-ms-transform-style: preserve-3d;
 	-o-transform-style: preserve-3d;
-	overflow: hidden;
     -webkit-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
@@ -167,6 +170,9 @@ body {
 	width: 200%;
 	height: 1600px;
 	background-image: url('../images/Pavement04.jpg');
+}
+
+.use3dTransforms #sidewalk-bg {
 	-webkit-transform: translateZ(-400px) rotateX(60deg);
 	-moz-transform: translateZ(-400px) rotateX(60deg);
 	-o-transform: translateZ(-400px) rotateX(60deg);
@@ -217,8 +223,8 @@ body {
 
 .button {
     position: absolute; 
-    left:85%; 
-    top:45%;
+    right: 15%; 
+    top: 10px;
     border-top: 1px solid #96d1f8;
     background: #65a9d7;
     background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
@@ -255,8 +261,7 @@ body {
 #sizepicker {
 	top: 50%;
 	left: 10%;
-	width: 300px;
-		
+	width: 300px;		
 }
 
 #colorpicker {
@@ -270,5 +275,11 @@ body {
     -moz-user-select: none;
     -o-user-select: none;
     -ms-user-select: none;
+}
+
+#options {
+    position: absolute;
+    top: 50%;
+    right: 10px;
 }
  

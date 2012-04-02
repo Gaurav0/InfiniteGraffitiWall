@@ -230,12 +230,17 @@ $(document).ready(function() {
 		} else
 			return;
 		
+		updateBackgroundPosition();
+		timeOut = window.setTimeout(animate, 1000 / 60);
+	}
+	
+	function updateBackgroundPosition() {
 		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
-		var sidewalkX = Modernizr.csstransforms3d ?
+		var sidewalkX = Modernizr.csstransforms3d &&
+			$("#use3dTransforms").attr("checked") ?
 			Math.floor(-view.posX * SIDEWALK_SCROLL_RATE) : -view.posX;
 		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
 		view.redraw();
-		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
 	
 	$left.mouseover(function(e) {
@@ -322,11 +327,7 @@ $(document).ready(function() {
 	$wall.mousewheel(function(event, delta, deltaX, deltaY) {
 		view.posX -= 24 * deltaX;
 		view.posY -= 24 * deltaY;
-		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
-		var sidewalkX = Modernizr.csstransforms3d ?
-			Math.floor(-view.posX * SIDEWALK_SCROLL_RATE) : -view.posX;
-		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
-		view.redraw();
+		updateBackgroundPosition();
 	});
 	
 	var mouseDown = false;
@@ -458,4 +459,10 @@ $(document).ready(function() {
 		}
 	});
 	
+	$("#use3dTransforms").change(function (e) {
+		if ($(this).attr("checked"))
+			$sidewalk.addClass("use3dTransforms");
+		else
+			$sidewalk.removeClass("use3dTransforms");
+	});
 });

@@ -29,12 +29,17 @@
 			<div id="sidewalk-tab"><img src="images/kuba_arrow_button_up.png"></div>
 		</section>
 		<div id="splitter"></div>
-		<section id="sidewalk">
+		<section class="use3dTransforms" id="sidewalk">
 			<div id="sidewalk-bg"></div>
 			<div id="minimize"><img src="images/kuba_arrow_button_down.png"></div>
 			<div id="sizepicker"></div>
 			<div id="colorpicker"></div>
 			<a class="button" href="{{login_url}}">{{login_label}}</a>
+			<fieldset id="options">
+				<legend>Options</legend>
+				<input id="use3dTransforms" type="checkbox" checked>
+				<label for="use3dTransforms">Use 3D Transforms</label>
+			</fieldset>
 		</section>
 		<audio id="spray" preload="auto" loop>
 			<source src="audio/spray.mp3" type="audio/mpeg">
