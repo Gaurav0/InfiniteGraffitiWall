@@ -54,7 +54,8 @@ function InfiniteViewport(canvas) {
 		img.src = "/tile?x=" + x + "&y=" + y;
 	};
 	
-	var RADIUS = 12;
+	//size of the spraypaint
+	var RADIUS = 12;//default size
 	
 	this.drawSpray = function(screenX, screenY) {
 		var worldX = this.posX + screenX;
@@ -447,5 +448,9 @@ $(document).ready(function() {
 		onColorChange: function(rgb, hsb) {
 			view.color = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
 		}
+	});
+	// sizepicker
+	$("#sizepicker").click(function(){
+		alert("click works");
 	});
 });
