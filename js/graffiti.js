@@ -55,7 +55,8 @@ function InfiniteViewport(canvas) {
 	};
 	
 	//size of the spraypaint
-	var RADIUS = 12;//default size
+	var RADIUS = 12//$("#sizepicker").slider();
+//default size 12
 	
 	this.drawSpray = function(screenX, screenY) {
 		var worldX = this.posX + screenX;
@@ -449,6 +450,11 @@ $(document).ready(function() {
 			view.color = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
 		}
 	});
-	// sizepicker
-	$("#sizepicker").slider();
+	$("#sizepicker").slider({
+		value: 12,
+		min: 2,
+		max: 20,
+		step: 1,
+	});
+	
 });
