@@ -13,6 +13,7 @@ function InfiniteViewport(canvas) {
 	this.canvas = canvas;
 	this.ctx = canvas.getContext("2d");
 	this.color = "#ff0000";
+	this.radius = 12;
 	
 	// store and handle canvases
 	this.canvases = {};
@@ -54,10 +55,6 @@ function InfiniteViewport(canvas) {
 		img.src = "/tile?x=" + x + "&y=" + y;
 	};
 	
-	//size of the spraypaint
-	var RADIUS = 12//$("#sizepicker").slider();
-//default size 12
-	
 	this.drawSpray = function(screenX, screenY) {
 		var worldX = this.posX + screenX;
 		var worldY = this.posY + screenY;
@@ -67,15 +64,15 @@ function InfiniteViewport(canvas) {
 			for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
 				var canvasX = worldX - tileX * TILE_SIZE;
 				var canvasY = worldY - tileY * TILE_SIZE;
-				if (canvasX > -RADIUS && canvasX < TILE_SIZE + RADIUS &&
-				    	canvasY > -RADIUS && canvasY < TILE_SIZE + RADIUS) {
+				if (canvasX > -this.radius && canvasX < TILE_SIZE + this.radius &&
+				    	canvasY > -this.radius && canvasY < TILE_SIZE + this.radius) {
 					var cornerX = screenX - canvasX;
 					var cornerY = screenY - canvasY;
 					var currentCanvas = this.getCanvas(tileX, tileY);
 					var currentCtx = currentCanvas.getContext("2d");
 					currentCtx.fillStyle = this.color;
 					currentCtx.beginPath();
-					currentCtx.arc(canvasX, canvasY, RADIUS, 0, Math.PI*2, true);
+					currentCtx.arc(canvasX, canvasY, this.radius, 0, Math.PI*2, true);
 					currentCtx.closePath();
 					currentCtx.fill();
 					this.ctx.drawImage(currentCanvas, cornerX, cornerY);				
@@ -450,11 +447,15 @@ $(document).ready(function() {
 			view.color = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
 		}
 	});
+	
 	$("#sizepicker").slider({
 		value: 12,
 		min: 2,
 		max: 20,
 		step: 1,
+		change: function(event, ui) {
+			view.radius = ui.value;
+		}
 	});
 	
 });
