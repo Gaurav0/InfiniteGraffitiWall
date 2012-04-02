@@ -455,6 +455,7 @@ $(document).ready(function() {
 		min: 2,
 		max: 20,
 		step: 1,
+		orientation: "vertical",
 		change: function(event, ui) {
 			view.radius = ui.value;
 		}

@@ -259,9 +259,9 @@ body {
 }
  
 #sizepicker {
-	top: 50%;
-	left: 10%;
-	width: 300px;		
+	top: 20%;
+	left: 25%;
+	height: 125px;		
 }
 
 #colorpicker {
