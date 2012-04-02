@@ -4,6 +4,9 @@
 		<meta charset="utf8">
 		<title>Infinite Graffiti Wall</title>
 		<link rel="stylesheet" href="css/graffiti.css">
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 		{% block CSsheet %}
 		{% endblock %}
 	</head>
@@ -29,7 +32,8 @@
 		<section id="sidewalk">
 			<div id="sidewalk-bg"></div>
 			<div id="minimize"><img src="images/kuba_arrow_button_down.png"></div>
-			<button type='button' id='sizepicker'>Size Picker</button>
+			<!--<button type='button' id='sizepicker'>Size Picker</button>-->
+			<div id="sizepicker"></div>
 			<div id="colorpicker"></div>
 			<a class="button" href="{{login_url}}">{{login_label}}</a>
 		</section>

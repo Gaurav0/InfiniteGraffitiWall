@@ -450,7 +450,5 @@ $(document).ready(function() {
 		}
 	});
 	// sizepicker
-	$("#sizepicker").click(function(){
-		alert("click works");
-	});
+	$("#sizepicker").slider();
 });
