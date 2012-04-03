@@ -7,6 +7,17 @@ body {
 	left: 23%;
 }
 
+#pos{
+	position: absolute;
+	left: 27%;
+	top: 10%;
+}
+
+#neg{
+	position: absolute;
+	left:27%;
+	top:75%
+}
 #tests {
 	z-index: 2;
 	position: absolute;
@@ -263,8 +274,8 @@ body {
 }
  
 #sizepicker {
-	top: 20%;
-	left: 25%;
+	top: 27%;
+	left: 26.75%;
 	height: 125px;		
 }
 
