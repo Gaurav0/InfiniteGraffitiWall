@@ -261,7 +261,13 @@ body {
 #sizepicker {
 	top: 25%;
 	left: 25%;
-	height: 125px;		
+	height: 125px;
+	background: #333333;
+}
+
+#sizepicker .ui-slider-handle {
+	background: #999999;
+	border-radius: 10px;
 }
 
 #sizetext{
