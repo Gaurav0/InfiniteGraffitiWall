@@ -2,22 +2,7 @@ body {
 	height: 100%;
 	overflow: hidden;
 }
-#sizetext{
-	position: absolute;
-	left: 23%;
-}
 
-#pos{
-	position: absolute;
-	left: 27%;
-	top: 10%;
-}
-
-#neg{
-	position: absolute;
-	left:27%;
-	top:75%
-}
 #tests {
 	z-index: 2;
 	position: absolute;
@@ -274,9 +259,36 @@ body {
 }
  
 #sizepicker {
-	top: 27%;
-	left: 26.75%;
+	top: 25%;
+	left: 25%;
 	height: 125px;		
+}
+
+#sizetext{
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	font-size: 14pt;
+	margin-top: -40px;
+	margin-left: -8px;
+}
+
+#pos{
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	font-size: 12pt;
+	margin-top: -20px;
+	margin-left: 4px;
+}
+
+#neg{
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	font-size: 12pt;
+	margin-top: 125px;
+	margin-left: 4px;
 }
 
 #colorpicker {
