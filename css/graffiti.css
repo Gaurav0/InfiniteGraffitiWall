@@ -2,6 +2,10 @@ body {
 	height: 100%;
 	overflow: hidden;
 }
+#sizetext{
+	position: absolute;
+	left: 23%;
+}
 
 #tests {
 	z-index: 2;
