@@ -4,6 +4,9 @@ if (!window.console.log) window.console.log = function () {};
 
 var TILE_SIZE = 256;
 var IDLE_TIME = 5000;
+var SCROLL_RATE = 8;
+var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
+var WHEEL_SCROLL_RATE = 24;
 var SIDEWALK_SCROLL_RATE = 2.0;
 
 function InfiniteViewport(canvas) {
@@ -208,30 +211,30 @@ $(document).ready(function() {
 	
 	function animate() {
 		if (animateDir == "left")
-			view.posX -= 4;
+			view.posX -= SCROLL_RATE;
 		else if (animateDir == "right")
-			view.posX += 4;
+			view.posX += SCROLL_RATE;
 		else if (animateDir == "up")
-			view.posY -= 4;
+			view.posY -= SCROLL_RATE;
 		else if (animateDir == "down")
-			view.posY += 4;
+			view.posY += SCROLL_RATE;
 		else if (animateDir == "leftup") {
-			view.posX -= 3;
-			view.posY -= 3;
+			view.posX -= DIAG_SCROLL_RATE;
+			view.posY -= DIAG_SCROLL_RATE;
 		} else if (animateDir == "rightup") {
-			view.posX += 3;
-			view.posY -= 3;
+			view.posX += DIAG_SCROLL_RATE;
+			view.posY -= DIAG_SCROLL_RATE;
 		} else if (animateDir == "leftdown") {
-			view.posX -= 3;
-			view.posY += 3;
+			view.posX -= DIAG_SCROLL_RATE;
+			view.posY += DIAG_SCROLL_RATE;
 		} else if (animateDir == "rightdown") {
-			view.posX += 3;
-			view.posY += 3;
+			view.posX += DIAG_SCROLL_RATE;
+			view.posY += DIAG_SCROLL_RATE;
 		} else
 			return;
 		
 		updateBackgroundPosition();
-		timeOut = window.setTimeout(animate, 1000 / 60);
+		timeOut = window.requestAnimationFrame(animate);
 	}
 	
 	function updateBackgroundPosition() {
@@ -250,7 +253,7 @@ $(document).ready(function() {
 	
 	$left.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$right.mouseover(function(e) {
@@ -260,7 +263,7 @@ $(document).ready(function() {
 	
 	$right.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$top.mouseover(function(e) {
@@ -270,7 +273,7 @@ $(document).ready(function() {
 	
 	$top.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$bottom.mouseover(function(e) {
@@ -280,7 +283,7 @@ $(document).ready(function() {
 	
 	$bottom.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$top_left.mouseover(function(e) {
@@ -290,7 +293,7 @@ $(document).ready(function() {
 	
 	$top_left.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$top_right.mouseover(function(e) {
@@ -300,7 +303,7 @@ $(document).ready(function() {
 	
 	$top_right.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$bottom_left.mouseover(function(e) {
@@ -310,7 +313,7 @@ $(document).ready(function() {
 	
 	$bottom_left.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$bottom_right.mouseover(function(e) {
@@ -320,13 +323,13 @@ $(document).ready(function() {
 	
 	$bottom_right.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	// Makes the background scroll with the mouse wheel
 	$wall.mousewheel(function(event, delta, deltaX, deltaY) {
-		view.posX -= 24 * deltaX;
-		view.posY -= 24 * deltaY;
+		view.posX -= WHEEL_SCROLL_RATE * deltaX;
+		view.posY -= WHEEL_SCROLL_RATE * deltaY;
 		updateBackgroundPosition();
 	});
 	
@@ -350,14 +353,14 @@ $(document).ready(function() {
 		if ($("#enableSound").attr("checked"))
 			spray.play();
 		if (saveTimeout != null)
-			window.clearTimeout(saveTimeout);
+			window.cancelAnimationFrame(saveTimeout);
 	});
 	
 	$wall.mouseup(function(e) {
 		mouseDown = false;
 		spray.pause();
 		if (saveTimeout != null)
-			window.clearTimeout(saveTimeout);
+			window.cancelAnimationFrame(saveTimeout);
 		saveTimeout = window.setTimeout(function() {
 			view.saveCanvases();
 		}, IDLE_TIME);
@@ -367,7 +370,7 @@ $(document).ready(function() {
 		if (mouseDown) {
 			view.drawSpray(e.pageX, e.pageY);
 			if (saveTimeout != null)
-				window.clearTimeout(saveTimeout);
+				window.cancelAnimationFrame(saveTimeout);
 			e.preventDefault();
 		}
 	});

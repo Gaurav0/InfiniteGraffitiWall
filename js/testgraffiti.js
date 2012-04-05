@@ -44,7 +44,7 @@ $(document).ready(function() {
 	
 	test("scroll", function() {
 		$("#left").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "4px 0px");
+		equal($("#wall").css("background-position"), SCROLL_RATE + "px 0px");
 		$("#left").simulate("mouseout", {});
 		
 		$("#right").simulate("mouseover", {});
@@ -52,7 +52,7 @@ $(document).ready(function() {
 		$("#right").simulate("mouseout", {});
 
 		$("#top").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "0px 4px");
+		equal($("#wall").css("background-position"), "0px " + SCROLL_RATE + "px");
 		$("#top").simulate("mouseout", {});
 
 		$("#bottom").simulate("mouseover", {});
@@ -60,15 +60,17 @@ $(document).ready(function() {
 		$("#bottom").simulate("mouseout", {});
 
 		$("#top_left").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "3px 3px");
+		equal($("#wall").css("background-position"), 
+			DIAG_SCROLL_RATE + "px " + DIAG_SCROLL_RATE + "px");
 		$("#top_left").simulate("mouseout", {});
 
 		$("#top_right").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "0px 6px");
+		equal($("#wall").css("background-position"), "0px " + 2 * DIAG_SCROLL_RATE + "px");
 		$("#top_right").simulate("mouseout", {});
 
 		$("#bottom_right").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "-3px 3px");
+		equal($("#wall").css("background-position"), 
+			-DIAG_SCROLL_RATE + "px " + DIAG_SCROLL_RATE + "px");
 		$("#bottom_right").simulate("mouseout", {});
 
 		$("#bottom_left").simulate("mouseover", {});
