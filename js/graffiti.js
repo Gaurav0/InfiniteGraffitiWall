@@ -112,6 +112,12 @@ function InfiniteViewport(canvas) {
 			}
 		this.ctx.clearRect(0, 0, buffer.width, buffer.height);
 		this.ctx.drawImage(buffer, 0, 0);
+		
+		// Anticipate future requests
+		for (var tileX = startX - 2; tileX <= endX + 2; ++tileX)
+			for (var tileY = startY - 2; tileY <= endY + 2; ++tileY) {
+				this.getCanvas(tileX, tileY);
+			}
 	};
 	
 	this.saveCanvases = function() {
