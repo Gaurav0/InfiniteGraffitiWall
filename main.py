@@ -1,19 +1,17 @@
 from __future__ import with_statement
-from models import Tile, Claim
+from models import Tile
 
 import webapp2
 import jinja2
 import os
 import base64
-import logging
-import urllib
+
+import google.appengine.ext.blobstore
 
 from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import files
 from google.appengine.api import users
-from google.appengine.ext import db
 
-from google.appengine.ext.webapp import blobstore_handlers
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -85,7 +83,7 @@ class SaveTile(webapp2.RequestHandler):
             old_key = myTile.blob_key
             myTile.blob_key = blob_key
             myTile.put()
-            old_key.delete()
+            google.appengine.ext.blobstore.delete(old_key)
 
 
 app = webapp2.WSGIApplication([
