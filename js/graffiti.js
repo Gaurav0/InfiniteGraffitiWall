@@ -2,7 +2,7 @@
 if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function () {};
 
-var TILE_SIZE = 256;
+var TILE_SIZE = 512;
 var IDLE_TIME = 5000;
 var SCROLL_RATE = 8;
 var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
@@ -114,8 +114,8 @@ function InfiniteViewport(canvas) {
 		this.ctx.drawImage(buffer, 0, 0);
 		
 		// Anticipate future requests
-		for (var tileX = startX - 2; tileX <= endX + 2; ++tileX)
-			for (var tileY = startY - 2; tileY <= endY + 2; ++tileY) {
+		for (var tileX = startX - 1; tileX <= endX + 1; ++tileX)
+			for (var tileY = startY - 1; tileY <= endY + 1; ++tileY) {
 				this.getCanvas(tileX, tileY);
 			}
 	};
