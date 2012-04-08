@@ -443,7 +443,14 @@ ColorPicker.prototype._registerEvent = function(){
       $(this.linkedElement).bind("mousedown",function(event){_this.show();});
    }
    this.element.find(".old-color").click(function(){
-      _this._restoreToInitial();
+   ///////////////////////////////////////////
+   //My code here
+   var tmpclr = _this.currentColor;
+   _this._restoreToInitial();
+   _this.initialColor = tmpclr;
+//      this.setColorText(this.currentColor);
+//      this.colorMap.setColor(this.currentColor);
+ //     this.colorBar.setColor(this.currentColor);
    });
       
    $(this.canvasBar).add(this.canvasMap)
