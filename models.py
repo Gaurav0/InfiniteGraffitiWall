@@ -1,15 +1,14 @@
-from google.appengine.ext import db
-from google.appengine.ext.blobstore import blobstore
+from google.appengine.ext import ndb
 
 
-class Tile(db.Model):
+class Tile(ndb.Model):
 
-    x = db.IntegerProperty(required=True)
-    y = db.IntegerProperty(required=True)
-    blob_key = blobstore.BlobReferenceProperty(required=True)
+    x = ndb.IntegerProperty(required=True)
+    y = ndb.IntegerProperty(required=True)
+    blob_key = ndb.BlobKeyProperty(required=True)
 
 
-class Claim(db.Model):
-    user = db.UserProperty(required=True)
-    x = db.IntegerProperty(required=True)
-    y = db.IntegerProperty(required=True)
+class Claim(ndb.Model):
+    user = ndb.UserProperty(required=True)
+    x = ndb.IntegerProperty(required=True)
+    y = ndb.IntegerProperty(required=True)

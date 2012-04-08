@@ -44,7 +44,7 @@ $(document).ready(function() {
 	
 	test("scroll", function() {
 		$("#left").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "4px 0px");
+		equal($("#wall").css("background-position"), SCROLL_RATE + "px 0px");
 		$("#left").simulate("mouseout", {});
 		
 		$("#right").simulate("mouseover", {});
@@ -52,7 +52,7 @@ $(document).ready(function() {
 		$("#right").simulate("mouseout", {});
 
 		$("#top").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "0px 4px");
+		equal($("#wall").css("background-position"), "0px " + SCROLL_RATE + "px");
 		$("#top").simulate("mouseout", {});
 
 		$("#bottom").simulate("mouseover", {});
@@ -60,15 +60,17 @@ $(document).ready(function() {
 		$("#bottom").simulate("mouseout", {});
 
 		$("#top_left").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "3px 3px");
+		equal($("#wall").css("background-position"), 
+			DIAG_SCROLL_RATE + "px " + DIAG_SCROLL_RATE + "px");
 		$("#top_left").simulate("mouseout", {});
 
 		$("#top_right").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "0px 6px");
+		equal($("#wall").css("background-position"), "0px " + 2 * DIAG_SCROLL_RATE + "px");
 		$("#top_right").simulate("mouseout", {});
 
 		$("#bottom_right").simulate("mouseover", {});
-		equal($("#wall").css("background-position"), "-3px 3px");
+		equal($("#wall").css("background-position"), 
+			-DIAG_SCROLL_RATE + "px " + DIAG_SCROLL_RATE + "px");
 		$("#bottom_right").simulate("mouseout", {});
 
 		$("#bottom_left").simulate("mouseover", {});
@@ -163,7 +165,7 @@ $(document).ready(function() {
 	
 	module("splitter");
 	
-test("dragSplitter", function() {
+	test("dragSplitter", function() {
 		$("#splitter").simulate("drag", {
 			dx: 0,
 			dy: 20
@@ -194,4 +196,20 @@ test("dragSplitter", function() {
 			start();
 		}, 1280);
 	});
+	
+	module("colorpicker");
+	
+	test("colorpicker", function() {
+		var cp = $("#colorpicker").data("canvas-color-picker");
+		var color = {r: 0, g: 0, b: 255};
+		cp.setColor(color);
+		cp.colorChanged(color);
+		var view = $("#c").data("view");
+		view.drawSpray(200, 300);
+		var pixel = view.ctx.getImageData(200, 300, 1, 1).data;
+		equal(pixel[0], 0); // red
+		equal(pixel[1], 0); // green
+		equal(pixel[2], 255); // blue
+	});
+	
 });

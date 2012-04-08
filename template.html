@@ -4,6 +4,9 @@
 		<meta charset="utf8">
 		<title>Infinite Graffiti Wall</title>
 		<link rel="stylesheet" href="css/graffiti.css">
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 		{% block CSsheet %}
 		{% endblock %}
 	</head>
@@ -26,18 +29,33 @@
 			<div id="sidewalk-tab"><img src="images/kuba_arrow_button_up.png"></div>
 		</section>
 		<div id="splitter"></div>
-		<section id="sidewalk">
+		<section class="use3dTransforms" id="sidewalk">
 			<div id="sidewalk-bg"></div>
 			<div id="minimize"><img src="images/kuba_arrow_button_down.png"></div>
-			<button type='button' id='sizepicker'>Size Picker</button>
+			<div id="sizetext">Size</div>
+			<div id="pos">+</div>
+			<div id="sizepicker"></div>
+			<div id="neg">&ndash;</div>
 			<div id="colorpicker"></div>
 			<a class="button" href="{{login_url}}">{{login_label}}</a>
+			<fieldset id="options">
+				<legend>Options</legend>
+				<input id="use3dTransforms" type="checkbox" checked>
+				<label for="use3dTransforms">Use 3D Transforms</label><br>
+				<input id="enableSound" type="checkbox" checked>				
+				<label for="enableSound">Enable Sound</label>
+			</fieldset>
 		</section>
+		<audio id="spray" preload="auto" loop>
+			<source src="audio/spray.mp3" type="audio/mpeg">
+			<source src="audio/spray.ogg" type="audio/ogg">
+		</audio>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 		<script src="js/jquery.mousewheel.min.js"></script>
-		<script src="js/jquery.ps-color-picker.min.js"></script>
+		<script src="js/jquery.ps-color-picker.js"></script>
+		<script src="js/reqAnimFrame.js"></script>
 		<script src="js/graffiti.js"></script>
 		{% block BottomTest %}
 		{% endblock %}

@@ -2,8 +2,11 @@
 if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function () {};
 
-var TILE_SIZE = 256;
+var TILE_SIZE = 512;
 var IDLE_TIME = 5000;
+var SCROLL_RATE = 8;
+var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
+var WHEEL_SCROLL_RATE = 24;
 var SIDEWALK_SCROLL_RATE = 2.0;
 
 function InfiniteViewport(canvas) {
@@ -13,6 +16,7 @@ function InfiniteViewport(canvas) {
 	this.canvas = canvas;
 	this.ctx = canvas.getContext("2d");
 	this.color = "#ff0000";
+	this.radius = 12;
 	
 	// store and handle canvases
 	this.canvases = {};
@@ -22,16 +26,19 @@ function InfiniteViewport(canvas) {
 			if (this.canvases[x][y])
 				return this.canvases[x][y];
 			else {
-				var made = this.makeCanvas();
-				this.canvases[x][y] = made;
-				return made;
+				return this.newCanvas(x, y);
 			}
 		else {
 			this.canvases[x] = {};
-			var made = this.makeCanvas();
-			this.canvases[x][y] = made;
-			return made;
+			return this.newCanvas(x, y);
 		}
+	};
+	
+	this.newCanvas = function(x, y) {
+		var made = this.makeCanvas();
+		this.requestCanvas(made, x, y);
+		this.canvases[x][y] = made;
+		return made;
 	};
 
 	this.makeCanvas = function() {
@@ -41,7 +48,15 @@ function InfiniteViewport(canvas) {
 		return newCanvas;
 	};
 	
-	var RADIUS = 12;
+	this.requestCanvas = function(canvas, x, y) {
+		var img = new Image();
+		var view = this;
+		img.onload = function() {
+			canvas.getContext("2d").drawImage(img, 0, 0);
+			view.redraw();
+		}
+		img.src = "/tile?x=" + x + "&y=" + y;
+	};
 	
 	this.drawSpray = function(screenX, screenY) {
 		var worldX = this.posX + screenX;
@@ -52,15 +67,15 @@ function InfiniteViewport(canvas) {
 			for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
 				var canvasX = worldX - tileX * TILE_SIZE;
 				var canvasY = worldY - tileY * TILE_SIZE;
-				if (canvasX > -RADIUS && canvasX < TILE_SIZE + RADIUS &&
-				    	canvasY > -RADIUS && canvasY < TILE_SIZE + RADIUS) {
+				if (canvasX > -this.radius && canvasX < TILE_SIZE + this.radius &&
+				    	canvasY > -this.radius && canvasY < TILE_SIZE + this.radius) {
 					var cornerX = screenX - canvasX;
 					var cornerY = screenY - canvasY;
 					var currentCanvas = this.getCanvas(tileX, tileY);
 					var currentCtx = currentCanvas.getContext("2d");
 					currentCtx.fillStyle = this.color;
 					currentCtx.beginPath();
-					currentCtx.arc(canvasX, canvasY, RADIUS, 0, Math.PI*2, true);
+					currentCtx.arc(canvasX, canvasY, this.radius, 0, Math.PI*2, true);
 					currentCtx.closePath();
 					currentCtx.fill();
 					this.ctx.drawImage(currentCanvas, cornerX, cornerY);				
@@ -97,6 +112,12 @@ function InfiniteViewport(canvas) {
 			}
 		this.ctx.clearRect(0, 0, buffer.width, buffer.height);
 		this.ctx.drawImage(buffer, 0, 0);
+		
+		// Anticipate future requests
+		for (var tileX = startX - 1; tileX <= endX + 1; ++tileX)
+			for (var tileY = startY - 1; tileY <= endY + 1; ++tileY) {
+				this.getCanvas(tileX, tileY);
+			}
 	};
 	
 	this.saveCanvases = function() {
@@ -108,8 +129,23 @@ function InfiniteViewport(canvas) {
 					canvasToSave.setAttribute("data-saved", "true");
 					var data = canvasToSave.toDataURL("image/png");
 					data = data.replace("data:image/png;base64,", "");
-					var post = "{x:" + x + ",y:" + y + ",data:'" + data + "'}";
-					console.log(post);
+					console.log("saving data (" + x + "," + y + ") ...");
+					$.ajax({
+						url: "/save",
+						async: true,
+						type: "POST",
+						data: {x: x, y: y, data: data},
+						success: (function(x, y) {
+							return function() {
+								console.log("saved (" + x + "," + y + ")");
+							}
+						})(x, y),
+						error: (function(x, y) {
+							return function() {
+								console.log("Error saving (" + x + "," + y + ")");
+							}
+						})(x, y),
+					});
 				}
 			}
 	}
@@ -144,6 +180,8 @@ $(document).ready(function() {
 	c.height = $c.height();
 	
 	var view = new InfiniteViewport(c);
+	$c.data("view", view);
+	view.redraw();
 	
 	$(window).resize(function(e) {
 		c.width = $c.width();
@@ -179,34 +217,39 @@ $(document).ready(function() {
 	
 	function animate() {
 		if (animateDir == "left")
-			view.posX -= 4;
+			view.posX -= SCROLL_RATE;
 		else if (animateDir == "right")
-			view.posX += 4;
+			view.posX += SCROLL_RATE;
 		else if (animateDir == "up")
-			view.posY -= 4;
+			view.posY -= SCROLL_RATE;
 		else if (animateDir == "down")
-			view.posY += 4;
+			view.posY += SCROLL_RATE;
 		else if (animateDir == "leftup") {
-			view.posX -= 3;
-			view.posY -= 3;
+			view.posX -= DIAG_SCROLL_RATE;
+			view.posY -= DIAG_SCROLL_RATE;
 		} else if (animateDir == "rightup") {
-			view.posX += 3;
-			view.posY -= 3;
+			view.posX += DIAG_SCROLL_RATE;
+			view.posY -= DIAG_SCROLL_RATE;
 		} else if (animateDir == "leftdown") {
-			view.posX -= 3;
-			view.posY += 3;
+			view.posX -= DIAG_SCROLL_RATE;
+			view.posY += DIAG_SCROLL_RATE;
 		} else if (animateDir == "rightdown") {
-			view.posX += 3;
-			view.posY += 3;
+			view.posX += DIAG_SCROLL_RATE;
+			view.posY += DIAG_SCROLL_RATE;
 		} else
 			return;
 		
+		updateBackgroundPosition();
+		timeOut = window.requestAnimationFrame(animate);
+	}
+	
+	function updateBackgroundPosition() {
 		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
-		var sidewalkX = Modernizr.csstransforms3d ?
+		var sidewalkX = Modernizr.csstransforms3d &&
+			$("#use3dTransforms").attr("checked") ?
 			Math.floor(-view.posX * SIDEWALK_SCROLL_RATE) : -view.posX;
 		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
 		view.redraw();
-		timeOut = window.setTimeout(animate, 1000 / 60);
 	}
 	
 	$left.mouseover(function(e) {
@@ -216,7 +259,7 @@ $(document).ready(function() {
 	
 	$left.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$right.mouseover(function(e) {
@@ -226,7 +269,7 @@ $(document).ready(function() {
 	
 	$right.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$top.mouseover(function(e) {
@@ -236,7 +279,7 @@ $(document).ready(function() {
 	
 	$top.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$bottom.mouseover(function(e) {
@@ -246,7 +289,7 @@ $(document).ready(function() {
 	
 	$bottom.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$top_left.mouseover(function(e) {
@@ -256,7 +299,7 @@ $(document).ready(function() {
 	
 	$top_left.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$top_right.mouseover(function(e) {
@@ -266,7 +309,7 @@ $(document).ready(function() {
 	
 	$top_right.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$bottom_left.mouseover(function(e) {
@@ -276,7 +319,7 @@ $(document).ready(function() {
 	
 	$bottom_left.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	$bottom_right.mouseover(function(e) {
@@ -286,35 +329,44 @@ $(document).ready(function() {
 	
 	$bottom_right.mouseout(function(e) {
 		animateDir = "";
-		window.clearTimeout(timeOut);
+		window.cancelAnimationFrame(timeOut);
 	});
 	
 	// Makes the background scroll with the mouse wheel
 	$wall.mousewheel(function(event, delta, deltaX, deltaY) {
-		view.posX -= 24 * deltaX;
-		view.posY -= 24 * deltaY;
-		$wall.css("background-position", -view.posX + "px " + -view.posY + "px");
-		var sidewalkX = Modernizr.csstransforms3d ?
-			Math.floor(-view.posX * SIDEWALK_SCROLL_RATE) : -view.posX;
-		$sidewalkbg.css("background-position", sidewalkX + "px 0px");
-		view.redraw();
+		view.posX -= WHEEL_SCROLL_RATE * deltaX;
+		view.posY -= WHEEL_SCROLL_RATE * deltaY;
+		updateBackgroundPosition();
 	});
 	
 	var mouseDown = false;
 	var saveTimeout = null;
 	
+	// Audio
+	
+	var spray = document.getElementById("spray");
+	if (typeof spray.loop != "boolean") {
+		spray.addEventListener("ended", function() {
+			this.currentTime = 0;
+			this.play();
+		}, false);
+	}
+	
 	// Draw to canvas on mousedown, drag
 	$wall.mousedown(function(e) {
 		view.drawSpray(e.pageX, e.pageY)
 		mouseDown = true;
+		if ($("#enableSound").attr("checked"))
+			spray.play();
 		if (saveTimeout != null)
-			window.clearTimeout(saveTimeout);
+			window.cancelAnimationFrame(saveTimeout);
 	});
 	
 	$wall.mouseup(function(e) {
 		mouseDown = false;
+		spray.pause();
 		if (saveTimeout != null)
-			window.clearTimeout(saveTimeout);
+			window.cancelAnimationFrame(saveTimeout);
 		saveTimeout = window.setTimeout(function() {
 			view.saveCanvases();
 		}, IDLE_TIME);
@@ -324,7 +376,7 @@ $(document).ready(function() {
 		if (mouseDown) {
 			view.drawSpray(e.pageX, e.pageY);
 			if (saveTimeout != null)
-				window.clearTimeout(saveTimeout);
+				window.cancelAnimationFrame(saveTimeout);
 			e.preventDefault();
 		}
 	});
@@ -405,5 +457,23 @@ $(document).ready(function() {
 		onColorChange: function(rgb, hsb) {
 			view.color = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
 		}
+	});
+	
+	$("#sizepicker").slider({
+		value: 12,
+		min: 2,
+		max: 20,
+		step: 1,
+		orientation: "vertical",
+		change: function(event, ui) {
+			view.radius = ui.value;
+		}
+	});
+	
+	$("#use3dTransforms").change(function (e) {
+		if ($(this).attr("checked"))
+			$sidewalk.addClass("use3dTransforms");
+		else
+			$sidewalk.removeClass("use3dTransforms");
 	});
 });
