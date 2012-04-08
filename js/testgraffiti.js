@@ -210,6 +210,13 @@ $(document).ready(function() {
 		equal(pixel[0], 0); // red
 		equal(pixel[1], 0); // green
 		equal(pixel[2], 255); // blue
+		cp.SwapColors();
+		var view = $("#c").data("view");
+		view.drawSpray(200, 300);
+		var pixel = view.ctx.getImageData(200, 300, 1, 1).data;
+		equal(pixel[0], 255); // red
+		equal(pixel[1], 0); // green
+		equal(pixel[2], 0); // blue
 	});
 	
 });
