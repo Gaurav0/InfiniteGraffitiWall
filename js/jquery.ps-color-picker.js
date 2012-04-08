@@ -433,6 +433,20 @@ ColorPicker.prototype._restoreToInitial = function(){
    this.colorChanged(color);
 };
 
+ColorPicker.prototype.SwapColors = function() {
+   ///////////////////////////////////////////
+   //My code here
+   //Store the current main color in a temporary variable
+   var tmpclr = this.currentColor;
+   //Reset the main color to the secondary color
+   this._restoreToInitial();
+   //Set the new secondary color to the new main color
+   this.initialColor = tmpclr;
+   //Sets the color for the bottom box
+   this.element.find(".old-color").css("backgroundColor",COLOR_SPACE.RGB2HEX(tmpclr));
+   ///////////////////////////////////////////
+};
+
 ColorPicker.prototype._registerEvent = function(){
    var _this = this;
    this.mouseStarted = false;
@@ -443,17 +457,7 @@ ColorPicker.prototype._registerEvent = function(){
       $(this.linkedElement).bind("mousedown",function(event){_this.show();});
    }
    this.element.find(".old-color").click(function(){
-    ///////////////////////////////////////////
-    //My code here
-   //Store the current main color in a temporary variable
-    var tmpclr = _this.currentColor;
-   //Reset the main color to the secondary color
-    _this._restoreToInitial();
-   //Set the new secondary color to the new main color
-    _this.initialColor = tmpclr;
-   //Sets the color for the bottom box
-   _this.element.find(".old-color").css("backgroundColor",COLOR_SPACE.RGB2HEX(tmpclr));
-   ///////////////////////////////////////////
+   _this.SwapColors();
    });
       
    $(this.canvasBar).add(this.canvasMap)
