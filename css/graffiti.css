@@ -315,4 +315,10 @@ body {
     top: 40%;
     right: 10px;
 }
+
+#preview{
+	position: absolute;
+	top: 40%;
+	right: 40%;
+}
  
