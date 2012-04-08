@@ -443,14 +443,17 @@ ColorPicker.prototype._registerEvent = function(){
       $(this.linkedElement).bind("mousedown",function(event){_this.show();});
    }
    this.element.find(".old-color").click(function(){
+    ///////////////////////////////////////////
+    //My code here
+   //Store the current main color in a temporary variable
+    var tmpclr = _this.currentColor;
+   //Reset the main color to the secondary color
+    _this._restoreToInitial();
+   //Set the new secondary color to the new main color
+    _this.initialColor = tmpclr;
+   //Sets the color for the bottom box
+   _this.element.find(".old-color").css("backgroundColor",COLOR_SPACE.RGB2HEX(tmpclr));
    ///////////////////////////////////////////
-   //My code here
-   var tmpclr = _this.currentColor;
-   _this._restoreToInitial();
-   _this.initialColor = tmpclr;
-//      this.setColorText(this.currentColor);
-//      this.colorMap.setColor(this.currentColor);
- //     this.colorBar.setColor(this.currentColor);
    });
       
    $(this.canvasBar).add(this.canvasMap)
