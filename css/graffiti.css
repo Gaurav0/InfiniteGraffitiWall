@@ -318,7 +318,14 @@ body {
 
 #preview{
 	position: absolute;
-	top: 40%;
+	top: 25%;
 	right: 40%;
+	padding: 40px;
+	background: white;
 }
- 
+
+#previewbutton{
+	position: absolute;
+	top: 70%;
+	right: 25%;
+}

@@ -168,6 +168,7 @@ $(document).ready(function() {
 	var $sidewalkbg = $("#sidewalk-bg");
 	var $tab = $("#sidewalk-tab");
 	var $splitter = $("#splitter");
+	var $sizepicker = $("#sizepicker");
 	
 	// Disable dragging can image in Firefox
 	$canimg.bind("dragstart", function(e) {
@@ -459,6 +460,7 @@ $(document).ready(function() {
 		}
 	});
 	
+	//sizepicker
 	$("#sizepicker").slider({
 		value: 12,
 		min: 2,
@@ -475,5 +477,9 @@ $(document).ready(function() {
 			$sidewalk.addClass("use3dTransforms");
 		else
 			$sidewalk.removeClass("use3dTransforms");
+	});
+	//preview
+	$("#previewbutton").mousedown(function(){
+		//view.drawSpray(0,0);
 	});
 });
