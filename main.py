@@ -155,7 +155,7 @@ class SaveTile(webapp2.RequestHandler):
 
 config = {}
 config['webapp2_extras.sessions'] = {
-    'secret_key': str(uuid.uuid4()),
+    'secret_key': 'cb8dcd50-18be-4042-bc3d-bfff84e5e8ab',
     'max_age': 3600
 }
 
