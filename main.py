@@ -1,5 +1,6 @@
 from __future__ import with_statement
 from models import Tile, UpdateChannel
+from parse_datetime import parse_datetime
 
 import webapp2
 import jinja2
@@ -10,6 +11,7 @@ import random
 import uuid
 
 from datetime import datetime
+from datetime import timedelta
 
 import google.appengine.ext.blobstore
 
@@ -142,7 +144,10 @@ class SaveTile(webapp2.RequestHandler):
         message = json.dumps({"x": x, "y": y})
         for ch in channels:
             ch_id = ch.channel_id
-            if ch_id != self.session.get("channel_id"):
+            d = parse_datetime(ch_id.split(",")[0])
+            if d < datetime.now() + timedelta(hours=-2):
+                ch.key.delete()
+            elif ch_id != self.session.get("channel_id"):
                 channel.send_message(ch.channel_id, message)
 
         self.response.set_status(200)
