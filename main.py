@@ -1,16 +1,24 @@
 from __future__ import with_statement
-from models import Tile
+from models import Tile, UpdateChannel
 
 import webapp2
 import jinja2
 import os
 import base64
+import json
+import random
+import uuid
+
+from datetime import datetime
 
 import google.appengine.ext.blobstore
 
 from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import files
 from google.appengine.api import users
+from google.appengine.api import channel
+
+from webapp2_extras import sessions
 
 
 jinja_environment = jinja2.Environment(
@@ -18,6 +26,22 @@ jinja_environment = jinja2.Environment(
 
 
 class MainPage(webapp2.RequestHandler):
+
+    def dispatch(self):
+        # Get a session store for this request.
+        self.session_store = sessions.get_store(request=self.request)
+
+        try:
+            # Dispatch the request.
+            webapp2.RequestHandler.dispatch(self)
+        finally:
+            # Save all sessions.
+            self.session_store.save_sessions(self.response)
+
+    @webapp2.cached_property
+    def session(self):
+        # Returns a session using the default cookie key.
+        return self.session_store.get_session()
 
     def get(self):
         user = users.get_current_user()
@@ -28,10 +52,22 @@ class MainPage(webapp2.RequestHandler):
             login_url = users.create_login_url(self.request.uri)
             login_label = 'login'
 
+        #For live updates
+        token = self.session.get('token')
+        if token is None:
+            channel_id = (str(datetime.now()) + "," +
+                str(random.randint(1, 10000)))
+            token = channel.create_channel(channel_id)
+            self.session['channel_id'] = channel_id
+            self.session['token'] = token
+            ch = UpdateChannel(channel_id=channel_id)
+            ch.put()
+
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(
             login_url=login_url,
-            login_label=login_label))
+            login_label=login_label,
+            token=token))
 
 
 class TestPage(webapp2.RequestHandler):
@@ -59,6 +95,22 @@ class GetTile(webapp2.RequestHandler):
 
 class SaveTile(webapp2.RequestHandler):
 
+    def dispatch(self):
+        # Get a session store for this request.
+        self.session_store = sessions.get_store(request=self.request)
+
+        try:
+            # Dispatch the request.
+            webapp2.RequestHandler.dispatch(self)
+        finally:
+            # Save all sessions.
+            self.session_store.save_sessions(self.response)
+
+    @webapp2.cached_property
+    def session(self):
+        # Returns a session using the default cookie key.
+        return self.session_store.get_session()
+
     def post(self):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
@@ -85,13 +137,29 @@ class SaveTile(webapp2.RequestHandler):
             myTile.put()
             google.appengine.ext.blobstore.delete(old_key)
 
+        #For live updates
+        channels = UpdateChannel.gql("").fetch(100)
+        message = json.dumps({"x": x, "y": y})
+        for ch in channels:
+            ch_id = ch.channel_id
+            if ch_id != self.session.get("channel_id"):
+                channel.send_message(ch.channel_id, message)
+
+        self.response.set_status(200)
+
+
+config = {}
+config['webapp2_extras.sessions'] = {
+    'secret_key': str(uuid.uuid4()),
+    'max_age': 3600
+}
 
 app = webapp2.WSGIApplication([
         ('/', MainPage),
         ('/unittests', TestPage),
         ('/save', SaveTile),
-        ('/tile', GetTile)],
-    debug=True)
+        ('/tile', GetTile)
+    ], debug=True, config=config)
 
 
 #tests  to check if the app loads

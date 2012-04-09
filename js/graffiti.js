@@ -3,7 +3,7 @@ if (!window.console) window.console = {};
 if (!window.console.log) window.console.log = function () {};
 
 var TILE_SIZE = 512;
-var IDLE_TIME = 5000;
+var IDLE_TIME = 1000;
 var SCROLL_RATE = 8;
 var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
 var WHEEL_SCROLL_RATE = 24;
@@ -25,13 +25,22 @@ function InfiniteViewport(canvas) {
 		if (this.canvases[x])
 			if (this.canvases[x][y])
 				return this.canvases[x][y];
-			else {
+			else
 				return this.newCanvas(x, y);
-			}
 		else {
 			this.canvases[x] = {};
 			return this.newCanvas(x, y);
 		}
+	};
+	
+	this.inCanvases = function(x, y) {
+		if (this.canvases[x])
+			if (this.canvases[x][y])
+				return true;
+			else
+				return false;
+		else
+			return false;
 	};
 	
 	this.newCanvas = function(x, y) {
@@ -148,7 +157,19 @@ function InfiniteViewport(canvas) {
 					});
 				}
 			}
-	}
+	};
+	
+	this.onMessage = function(message) {
+		console.log(message.data);
+		var json = JSON.parse(message.data);
+		var x = json.x;
+		var y = json.y;
+		if (this.inCanvases(x, y)) {
+			var made = this.makeCanvas();
+			this.requestCanvas(made, x, y);
+			this.canvases[x][y] = made;
+		}
+	};
 }
 
 $(document).ready(function() {
@@ -182,6 +203,19 @@ $(document).ready(function() {
 	var view = new InfiniteViewport(c);
 	$c.data("view", view);
 	view.redraw();
+	
+	// Enable real time updates
+	var token = $("#token").val();
+	var channel = new goog.appengine.Channel(token);
+	var socket = channel.open();
+	socket.onopen = function() {}
+	socket.onmessage = function(message) {
+		view.onMessage(message);
+	}
+	socket.onerror = function(err) {
+		console.log(err.description);
+	}
+	socket.onclose = function() {}
 	
 	$(window).resize(function(e) {
 		c.width = $c.width();

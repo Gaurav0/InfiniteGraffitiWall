@@ -13,6 +13,7 @@
 	<body>
 		{% block TopTest %}
 		{% endblock %}
+		<input id="token" type="hidden" value="{{ token }}">
 		<section id="wall">
 			<canvas id="c"><h1>An HTML5 browser is required.</h1></canvas>
 			<div id="can">
@@ -50,6 +51,7 @@
 			<source src="audio/spray.mp3" type="audio/mpeg">
 			<source src="audio/spray.ogg" type="audio/ogg">
 		</audio>
+		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
