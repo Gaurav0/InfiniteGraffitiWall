@@ -32,14 +32,39 @@ class MainPage(webapp2.RequestHandler):
         self.response.out.write(template.render(
             login_url=login_url,
             login_label=login_label))
+			
+class MainPage2(webapp2.RequestHandler):
 
+    def get(self, xaxis, yaxis):
+        user = users.get_current_user()
+        if user:
+            login_url = users.create_logout_url(self.request.uri)
+            login_label = 'logout'
+        else:
+            login_url = users.create_login_url(self.request.uri)
+            login_label = 'login'
+
+        template = jinja_environment.get_template('/index.html')
+        self.response.out.write(template.render(
+            login_url=login_url,
+            login_label=login_label))
+	
 
 class TestPage(webapp2.RequestHandler):
 
     def get(self):
-        template = jinja_environment.get_template('unittests.html')
-        self.response.out.write(template.render(''))
+        user = users.get_current_user()
+        if user:
+            login_url = users.create_logout_url(self.request.uri)
+            login_label = 'logout'
+        else:
+            login_url = users.create_login_url(self.request.uri)
+            login_label = 'login'
 
+        template = jinja_environment.get_template('unittests.html')
+        self.response.out.write(template.render(
+            login_url=login_url,
+            login_label=login_label))
 
 class GetTile(webapp2.RequestHandler):
 
@@ -90,7 +115,8 @@ app = webapp2.WSGIApplication([
         ('/', MainPage),
         ('/unittests', TestPage),
         ('/save', SaveTile),
-        ('/tile', GetTile)],
+        ('/tile', GetTile),
+        ('/(\d+)/(\d+)', MainPage2)],
     debug=True)
 
 
