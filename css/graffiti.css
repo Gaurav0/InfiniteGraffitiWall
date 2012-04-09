@@ -318,7 +318,7 @@ body {
 
 #preview{
 	position: absolute;
-	top: 25%;
+	top: 10%;
 	right: 40%;
 	padding: 40px;
 	background: white;
@@ -327,5 +327,5 @@ body {
 #previewbutton{
 	position: absolute;
 	top: 70%;
-	right: 25%;
+	margin:auto;
 }
