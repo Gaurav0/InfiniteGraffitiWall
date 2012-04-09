@@ -57,11 +57,13 @@ function InfiniteViewport(canvas) {
 		return newCanvas;
 	};
 	
-	this.requestCanvas = function(canvas, x, y) {
+	this.requestCanvas = function(canvas, x, y, callback) {
 		var img = new Image();
 		var view = this;
 		img.onload = function() {
 			canvas.getContext("2d").drawImage(img, 0, 0);
+			if (callback)
+				callback();
 			view.redraw();
 		}
 		img.src = "/tile?x=" + x + "&y=" + y;
@@ -166,8 +168,10 @@ function InfiniteViewport(canvas) {
 		var y = json.y;
 		if (this.inCanvases(x, y)) {
 			var made = this.makeCanvas();
-			this.requestCanvas(made, x, y);
-			this.canvases[x][y] = made;
+			var view = this;
+			this.requestCanvas(made, x, y, function() {
+				view.canvases[x][y] = made;
+			});
 		}
 	};
 }
