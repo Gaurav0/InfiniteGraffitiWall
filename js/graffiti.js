@@ -501,7 +501,7 @@ $(document).ready(function() {
 			ctx.fillStyle=view.color;
 			ctx.beginPath();
 			//x,y,radius,dc,circle,true
-			ctx.arc(100,100,view.radius,0,Math.PI*2,true);
+			ctx.arc(50,50,view.radius,0,Math.PI*2,true);
 			ctx.closePath();
 			ctx.fill();
 		}
@@ -525,7 +525,7 @@ $(document).ready(function() {
 			ctx.fillStyle=view.color;
 			ctx.beginPath();
 			//x,y,radius,dc,circle,true
-			ctx.arc(100,100,ui.value,0,Math.PI*2,true);
+			ctx.arc(50,50,ui.value,0,Math.PI*2,true);
 			ctx.closePath();
 			ctx.fill();
 		}

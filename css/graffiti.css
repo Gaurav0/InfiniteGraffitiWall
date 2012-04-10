@@ -319,7 +319,7 @@ body {
 #preview{
 	position: absolute;
 	border: 1px solid;
-	top: 10%;
-	right: 30%;
+	top: 20%;
+	right: 40%;
 	background: white;
 }
