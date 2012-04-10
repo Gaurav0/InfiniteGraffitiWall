@@ -496,6 +496,7 @@ $(document).ready(function() {
 		onColorChange: function(rgb, hsb) {
 			view.color = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
 		}
+		
 	});
 	
 	//sizepicker
@@ -515,10 +516,5 @@ $(document).ready(function() {
 			$sidewalk.addClass("use3dTransforms");
 		else
 			$sidewalk.removeClass("use3dTransforms");
-	});
-	//preview
-	$("#previewbutton").mousedown(function(){
-		$('p').remove();
-		$("#previewbutton").add('<p>stuff goes here</p>').appendTo("#previewdraw");
 	});
 });
