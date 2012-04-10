@@ -315,4 +315,17 @@ body {
     top: 40%;
     right: 10px;
 }
- 
+
+#preview{
+	position: absolute;
+	top: 10%;
+	right: 40%;
+	padding: 40px;
+	background: white;
+}
+
+#previewbutton{
+	position: absolute;
+	top: 70%;
+	margin:auto;
+}
