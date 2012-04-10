@@ -519,11 +519,13 @@ $(document).ready(function() {
 			view.radius = ui.value;
 			
 			var content=document.getElementById("preview");
-			var circle=content.getContext("2d");
+			var ctx=content.getContext("2d");
+			ctx.fillStyle="white";
+			ctx.fillRect(20,20,150,100);
 			ctx.fillStyle=view.color;
 			ctx.beginPath();
 			//x,y,radius,dc,circle,true
-			ctx.arc(100,100,view.radius,0,Math.PI*2,true);
+			ctx.arc(100,100,ui.value,0,Math.PI*2,true);
 			ctx.closePath();
 			ctx.fill();
 		}
