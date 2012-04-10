@@ -319,7 +319,15 @@ body {
 #preview{
 	position: absolute;
 	border: 1px solid;
-	top: 20%;
+	top: 25%;
 	right: 40%;
 	background: white;
+}
+
+#previewtext{
+	position: absolute;
+	top: 10%;
+	right: 41.75%;
+	font-size: 14pt;
+
 }
