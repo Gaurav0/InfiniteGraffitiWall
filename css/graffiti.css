@@ -319,9 +319,7 @@ body {
 #preview{
 	position: absolute;
 	border: 1px solid;
-	height: 150px;
-	width: 150px;
 	top: 10%;
-	right: 35%;
+	right: 30%;
 	background: white;
 }
