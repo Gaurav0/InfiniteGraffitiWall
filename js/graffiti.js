@@ -11,8 +11,8 @@ var SIDEWALK_SCROLL_RATE = 2.0;
 
 function InfiniteViewport(canvas) {
 
-	this.posX = 0;
-	this.posY = 0;
+	this.posX = locX;
+	this.posY = locY;
 	this.canvas = canvas;
 	this.ctx = canvas.getContext("2d");
 	this.color = "#ff0000";

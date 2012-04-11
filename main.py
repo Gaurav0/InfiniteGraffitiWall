@@ -83,7 +83,9 @@ class MainPage(webapp2.RequestHandler):
             login_url=login_url,
             login_label=login_label,
             token=token,
-            adnum=random.randint(0, 4)))
+            adnum=random.randint(0, 4),
+            locX=locX,
+            locY=locY))
 
 
 class TestPage(webapp2.RequestHandler):
@@ -179,7 +181,7 @@ app = webapp2.WSGIApplication([
         ('/save', SaveTile),
         ('/tile', GetTile),
 		('/@', MainPage),
-        ('/@(.*)', MainPage)# to determine location
+        ('/(.*)', MainPage)# to determine location
     ], debug=True, config=config)
 
 

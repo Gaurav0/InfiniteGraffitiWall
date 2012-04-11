@@ -83,7 +83,11 @@
 		<script src="js/jquery.mousewheel.min.js"></script>
 		<script src="js/jquery.ps-color-picker.js"></script>
 		<script src="js/reqAnimFrame.js"></script>
-		<script src="js/graffiti.js"></script>
+        <script type="text/javascript">
+        var locX = {{ locX }};
+        var locY = {{ locY }};
+        </script>
+		<script src="js/graffiti.js?"></script>
 		{% block BottomTest %}
 		{% endblock %}
 	</body>
