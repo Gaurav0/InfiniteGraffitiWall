@@ -44,7 +44,7 @@ class MainPage(webapp2.RequestHandler):
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
 
-    def get(self):
+    def get(self, location = ''):
         user = users.get_current_user()
         if user:
             login_url = users.create_logout_url(self.request.uri)
@@ -163,7 +163,9 @@ app = webapp2.WSGIApplication([
         ('/', MainPage),
         ('/unittests', TestPage),
         ('/save', SaveTile),
-        ('/tile', GetTile)
+        ('/tile', GetTile),
+		('/@', MainPage),
+        ('/@(.*)', MainPage)# to determine location
     ], debug=True, config=config)
 
 
