@@ -180,8 +180,7 @@ app = webapp2.WSGIApplication([
         ('/unittests', TestPage),
         ('/save', SaveTile),
         ('/tile', GetTile),
-		('/@', MainPage),
-        ('/(.*)', MainPage)# to determine location
+        ('/@(.*)', MainPage)# to determine location
     ], debug=True, config=config)
 
 
