@@ -8,7 +8,6 @@ import os
 import base64
 import json
 import random
-import uuid
 
 from datetime import datetime
 from datetime import timedelta
@@ -69,7 +68,8 @@ class MainPage(webapp2.RequestHandler):
         self.response.out.write(template.render(
             login_url=login_url,
             login_label=login_label,
-            token=token))
+            token=token,
+            adnum=random.randint(0, 1)))
 
 
 class TestPage(webapp2.RequestHandler):
