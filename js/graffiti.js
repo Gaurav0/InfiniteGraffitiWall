@@ -520,7 +520,7 @@ $(document).ready(function() {
 		max: 20,
 		step: 1,
 		orientation: "vertical",
-		change: function(event, ui) {
+		slide: function(event, ui) {
 			view.radius = ui.value;
 			updatePreview();
 		}
