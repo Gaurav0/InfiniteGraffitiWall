@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import with_statement
 from models import Tile, UpdateChannel
 from parse_datetime import parse_datetime
@@ -20,6 +21,8 @@ from google.appengine.api import users
 from google.appengine.api import channel
 
 from webapp2_extras import sessions
+
+import re
 
 
 jinja_environment = jinja2.Environment(
@@ -45,6 +48,17 @@ class MainPage(webapp2.RequestHandler):
         return self.session_store.get_session()
 
     def get(self, location = ''):
+        locLST = re.split(r',',location)
+        if len(locLST) == 2:
+            try:
+                locX = int(locLST[0])
+                locY = int(locLST[1])
+            except ValueError:
+                locX = 0
+                locY = 0
+        else:
+            locX = 0
+            locY = 0
         user = users.get_current_user()
         if user:
             login_url = users.create_logout_url(self.request.uri)
