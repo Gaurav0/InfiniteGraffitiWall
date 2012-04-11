@@ -69,7 +69,7 @@ class MainPage(webapp2.RequestHandler):
             login_url=login_url,
             login_label=login_label,
             token=token,
-            adnum=random.randint(0, 1)))
+            adnum=random.randint(0, 4)))
 
 
 class TestPage(webapp2.RequestHandler):
