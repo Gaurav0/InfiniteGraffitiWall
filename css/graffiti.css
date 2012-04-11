@@ -324,7 +324,7 @@ body {
 	background: white;
 }
 
-#previewtext{
+#previewtext {
 	position: absolute;
 	top: 40%;
 	left: 380px;
@@ -332,5 +332,10 @@ body {
 	width: 60px;
 	text-align: center;
 	font-size: 14pt;
+}
 
+#ad {
+	position: absolute;
+	top: 25%;
+	left: 50%;
 }
