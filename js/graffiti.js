@@ -57,11 +57,13 @@ function InfiniteViewport(canvas) {
 		return newCanvas;
 	};
 	
-	this.requestCanvas = function(canvas, x, y) {
+	this.requestCanvas = function(canvas, x, y, callback) {
 		var img = new Image();
 		var view = this;
 		img.onload = function() {
 			canvas.getContext("2d").drawImage(img, 0, 0);
+			if (callback)
+				callback();
 			view.redraw();
 		}
 		img.src = "/tile?x=" + x + "&y=" + y;
@@ -82,11 +84,7 @@ function InfiniteViewport(canvas) {
 					var cornerY = screenY - canvasY;
 					var currentCanvas = this.getCanvas(tileX, tileY);
 					var currentCtx = currentCanvas.getContext("2d");
-					currentCtx.fillStyle = this.color;
-					currentCtx.beginPath();
-					currentCtx.arc(canvasX, canvasY, this.radius, 0, Math.PI*2, true);
-					currentCtx.closePath();
-					currentCtx.fill();
+					sprayDetail(currentCtx, canvasX, canvasY, this.radius, this.color);
 					this.ctx.drawImage(currentCanvas, cornerX, cornerY);				
 					currentCanvas.setAttribute("data-saved", "false");
 				}
@@ -166,10 +164,20 @@ function InfiniteViewport(canvas) {
 		var y = json.y;
 		if (this.inCanvases(x, y)) {
 			var made = this.makeCanvas();
-			this.requestCanvas(made, x, y);
-			this.canvases[x][y] = made;
+			var view = this;
+			this.requestCanvas(made, x, y, function() {
+				view.canvases[x][y] = made;
+			});
 		}
 	};
+}
+
+function sprayDetail(context, centerX, centerY, radius, color) {
+	context.fillStyle = color;
+	context.beginPath();
+	context.arc(centerX, centerY, radius, 0, Math.PI*2, true);
+	context.closePath();
+	context.fill();
 }
 
 $(document).ready(function() {
@@ -189,6 +197,7 @@ $(document).ready(function() {
 	var $sidewalkbg = $("#sidewalk-bg");
 	var $tab = $("#sidewalk-tab");
 	var $splitter = $("#splitter");
+	var $sizepicker = $("#sizepicker");
 	
 	// Disable dragging can image in Firefox
 	$canimg.bind("dragstart", function(e) {
@@ -203,6 +212,7 @@ $(document).ready(function() {
 	var view = new InfiniteViewport(c);
 	$c.data("view", view);
 	view.redraw();
+	updatePreview();
 	
 	// Enable real time updates
 	var token = $("#token").val();
@@ -480,6 +490,14 @@ $(document).ready(function() {
 			view.resize();
 		}
 	});
+
+	function updatePreview() {
+		var preview = document.getElementById("preview");
+		var previewCtx = preview.getContext("2d");
+		previewCtx.clearRect(0, 0, preview.width, preview.height);
+		sprayDetail(previewCtx, preview.width / 2, preview.height / 2,
+			view.radius, view.color);
+	}
 	
 	// colorpicker
 	$("#colorpicker").CanvasColorPicker({
@@ -490,17 +508,21 @@ $(document).ready(function() {
 		showButtons: false,
 		onColorChange: function(rgb, hsb) {
 			view.color = "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
+			updatePreview();
 		}
+		
 	});
 	
+	//sizepicker
 	$("#sizepicker").slider({
 		value: 12,
 		min: 2,
 		max: 20,
 		step: 1,
 		orientation: "vertical",
-		change: function(event, ui) {
+		slide: function(event, ui) {
 			view.radius = ui.value;
+			updatePreview();
 		}
 	});
 	
@@ -510,4 +532,7 @@ $(document).ready(function() {
 		else
 			$sidewalk.removeClass("use3dTransforms");
 	});
+	
+	
+	
 });

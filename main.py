@@ -1,5 +1,6 @@
 from __future__ import with_statement
 from models import Tile, UpdateChannel
+from parse_datetime import parse_datetime
 
 import webapp2
 import jinja2
@@ -7,9 +8,9 @@ import os
 import base64
 import json
 import random
-import uuid
 
 from datetime import datetime
+from datetime import timedelta
 
 import google.appengine.ext.blobstore
 
@@ -43,7 +44,7 @@ class MainPage(webapp2.RequestHandler):
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
 
-    def get(self, Location = ""):
+    def get(self):
         user = users.get_current_user()
         if user:
             login_url = users.create_logout_url(self.request.uri)
@@ -67,7 +68,8 @@ class MainPage(webapp2.RequestHandler):
         self.response.out.write(template.render(
             login_url=login_url,
             login_label=login_label,
-            token=token))
+            token=token,
+            adnum=random.randint(0, 4)))
 
 
 class TestPage(webapp2.RequestHandler):
@@ -142,7 +144,10 @@ class SaveTile(webapp2.RequestHandler):
         message = json.dumps({"x": x, "y": y})
         for ch in channels:
             ch_id = ch.channel_id
-            if ch_id != self.session.get("channel_id"):
+            d = parse_datetime(ch_id.split(",")[0])
+            if d < datetime.now() + timedelta(hours=-2):
+                ch.key.delete()
+            elif ch_id != self.session.get("channel_id"):
                 channel.send_message(ch.channel_id, message)
 
         self.response.set_status(200)
@@ -150,15 +155,15 @@ class SaveTile(webapp2.RequestHandler):
 
 config = {}
 config['webapp2_extras.sessions'] = {
-    'secret_key': str(uuid.uuid4()),
+    'secret_key': 'cb8dcd50-18be-4042-bc3d-bfff84e5e8ab',
     'max_age': 3600
 }
 
 app = webapp2.WSGIApplication([
+        ('/', MainPage),
         ('/unittests', TestPage),
         ('/save', SaveTile),
-        ('/tile', GetTile),
-        ('/(.*)', MainPage)
+        ('/tile', GetTile)
     ], debug=True, config=config)
 
 
