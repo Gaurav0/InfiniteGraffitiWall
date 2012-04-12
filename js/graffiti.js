@@ -323,6 +323,7 @@ $(document).ready(function() {
 	$left.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	$right.mouseover(function(e) {
@@ -333,6 +334,7 @@ $(document).ready(function() {
 	$right.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	$top.mouseover(function(e) {
@@ -343,6 +345,7 @@ $(document).ready(function() {
 	$top.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	$bottom.mouseover(function(e) {
@@ -353,6 +356,7 @@ $(document).ready(function() {
 	$bottom.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	$top_left.mouseover(function(e) {
@@ -363,6 +367,7 @@ $(document).ready(function() {
 	$top_left.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	$top_right.mouseover(function(e) {
@@ -373,6 +378,7 @@ $(document).ready(function() {
 	$top_right.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	$bottom_left.mouseover(function(e) {
@@ -383,6 +389,7 @@ $(document).ready(function() {
 	$bottom_left.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	$bottom_right.mouseover(function(e) {
@@ -393,6 +400,7 @@ $(document).ready(function() {
 	$bottom_right.mouseout(function(e) {
 		animateDir = "";
 		window.cancelAnimationFrame(timeOut);
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	// Makes the background scroll with the mouse wheel
@@ -400,6 +408,7 @@ $(document).ready(function() {
 		view.posX -= WHEEL_SCROLL_RATE * deltaX;
 		view.posY -= WHEEL_SCROLL_RATE * deltaY;
 		updateBackgroundPosition();
+        window.history.replaceState(null, this.title, "@" + Math.floor(view.posX / TILE_SIZE) + "," + Math.floor(view.posY / TILE_SIZE));
 	});
 	
 	var mouseDown = false;
