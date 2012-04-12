@@ -30,8 +30,8 @@ function InfiniteViewport(canvas) {
         locX = loc[0];
         locY = loc[1];
     }
-	this.posX = locX;
-	this.posY = locY;
+	this.posX = locX*TILE_SIZE;
+	this.posY = locY*TILE_SIZE;
 	this.canvas = canvas;
 	this.ctx = canvas.getContext("2d");
 	this.color = "#ff0000";
