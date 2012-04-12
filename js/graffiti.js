@@ -11,6 +11,25 @@ var SIDEWALK_SCROLL_RATE = 2.0;
 
 function InfiniteViewport(canvas) {
 
+    //Get the current URL
+    var splitURL = window.location.href.split('/');
+    var splitURLLen = splitURL.length;
+    var unparsedLoc = splitURL[splitURLLen-1];
+    if(unparsedLoc.length == 0)
+    {
+        locX = 0;
+        locY = 0;
+    }else{
+        var unparsedLoc2 = unparsedLoc.replace("@","");
+        var loc = unparsedLoc2.split(",");
+        if(loc.length != 2)
+        {
+            locX = 0;
+            locY = 0;
+        }
+        locX = loc[0];
+        locY = loc[1];
+    }
 	this.posX = locX;
 	this.posY = locY;
 	this.canvas = canvas;

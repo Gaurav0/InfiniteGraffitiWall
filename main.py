@@ -48,17 +48,6 @@ class MainPage(webapp2.RequestHandler):
         return self.session_store.get_session()
 
     def get(self, location = ''):
-        locLST = re.split(r',',location)
-        if len(locLST) == 2:
-            try:
-                locX = int(locLST[0])
-                locY = int(locLST[1])
-            except ValueError:
-                locX = 0
-                locY = 0
-        else:
-            locX = 0
-            locY = 0
         user = users.get_current_user()
         if user:
             login_url = users.create_logout_url(self.request.uri)
@@ -83,9 +72,7 @@ class MainPage(webapp2.RequestHandler):
             login_url=login_url,
             login_label=login_label,
             token=token,
-            adnum=random.randint(0, 4),
-            locX=locX,
-            locY=locY))
+            adnum=random.randint(0, 4)))
 
 
 class TestPage(webapp2.RequestHandler):
