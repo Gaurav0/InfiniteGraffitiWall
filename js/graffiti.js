@@ -13,7 +13,6 @@ function InfiniteViewport(canvas) {
 
     //Get the current URL
     var url = window.History.getState().url;
-    console.log(url);
     if(url.indexOf("@") == -1) {
         locX = 0;
         locY = 0;
