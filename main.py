@@ -24,7 +24,6 @@ from webapp2_extras import sessions
 
 import re
 
-
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
@@ -49,11 +48,12 @@ class MainPage(webapp2.RequestHandler):
 
     def get(self, location = ''):
         user = users.get_current_user()
+        log_url = self.request.query_string + "@" + location;
         if user:
-            login_url = users.create_logout_url(self.request.uri)
+            login_url = users.create_logout_url(log_url)
             login_label = 'logout'
         else:
-            login_url = users.create_login_url(self.request.uri)
+            login_url = users.create_login_url(log_url)
             login_label = 'login'
 
         #For live updates
