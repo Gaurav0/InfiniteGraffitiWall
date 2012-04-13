@@ -31,7 +31,7 @@ function InfiniteViewport(canvas) {
     this.posY = locY*TILE_SIZE;
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
-    this.color = "#ff0000";
+    this.color = "rgb(255, 0, 0)";
     this.radius = 12;
     
     // store and handle canvases
@@ -101,6 +101,7 @@ function InfiniteViewport(canvas) {
                     var currentCanvas = this.getCanvas(tileX, tileY);
                     var currentCtx = currentCanvas.getContext("2d");
                     sprayDetail(currentCtx, canvasX, canvasY, this.radius, this.color);
+                    this.ctx.clearRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
                     this.ctx.drawImage(currentCanvas, cornerX, cornerY);                
                     currentCanvas.setAttribute("data-saved", "false");
                 }
@@ -189,11 +190,33 @@ function InfiniteViewport(canvas) {
 }
 
 function sprayDetail(context, centerX, centerY, radius, color) {
-    context.fillStyle = color;
-    context.beginPath();
-    context.arc(centerX, centerY, radius, 0, Math.PI*2, true);
-    context.closePath();
-    context.fill();
+
+    var newCanvas = document.createElement("canvas");
+    var ctx = newCanvas.getContext("2d");
+    ctx.width = 2 * radius;
+    ctx.height = 2 * radius;
+	var dots = 6;
+	var alpha = 1;
+	var pi2 = 2 * Math.PI;
+	var re = /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/
+	var m = re.exec(color);
+	for (var radi = 0; radi < radius; radi++) {
+		var acolor = "rgba(" + m[1] + ", " + m[2] + ", " + m[3] +
+		    ", " + alpha + ")";
+		ctx.fillStyle = acolor;
+		var num = pi2 / dots;
+		for (var i = 0; i < pi2; i += num) {
+    		var x = Math.cos(i + (Math.random() / 2)) * radi;
+    		var y = Math.sin(i + (Math.random() / 2)) * radi;
+			ctx.beginPath();
+			ctx.arc(radius + x, radius + y, 1, 0, pi2, true);
+			ctx.closePath();
+			ctx.fill();
+    	}
+    	dots++;
+    	alpha -= 0.5 / radius;
+    }
+    context.drawImage(newCanvas, centerX - radius, centerY - radius);	
 }
 
 $(document).ready(function() {
@@ -539,7 +562,7 @@ $(document).ready(function() {
     //sizepicker
     $("#sizepicker").slider({
         value: 12,
-        min: 2,
+        min: 4,
         max: 20,
         step: 1,
         orientation: "vertical",
