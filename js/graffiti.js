@@ -8,6 +8,7 @@ var SCROLL_RATE = 8;
 var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
 var WHEEL_SCROLL_RATE = 24;
 var SIDEWALK_SCROLL_RATE = 2.0;
+var Mode = "paint";
 
 function InfiniteViewport(canvas) {
 
@@ -237,6 +238,7 @@ $(document).ready(function() {
     var $tab = $("#sidewalk-tab");
     var $splitter = $("#splitter");
     var $sizepicker = $("#sizepicker");
+    var $claimtile = $("#claimtile");
     
     // Disable dragging can image in Firefox
     $canimg.bind("dragstart", function(e) {
@@ -472,6 +474,21 @@ $(document).ready(function() {
     });
     
     var splitterPos;
+
+    //Initiate claim
+    $("#claimtile").click(function() {
+        if(Mode == "paint")
+        {
+            document.getElementById('cursor').src = "images/Claim_Flag.png";
+            document.getElementById('mode').src = "images/spraycan.png";
+            Mode = "claim";
+        }else if(Mode == "claim")
+        {
+            document.getElementById('cursor').src = "images/spraycan.png";
+            document.getElementById('mode').src = "images/Claim_Flag.png";
+            Mode = "paint";
+        }
+    });
     
     // Minimize sidewalk
     $("#minimize").click(function() {
@@ -491,6 +508,7 @@ $(document).ready(function() {
             }
         });
     });
+    
     
     // Restore sidewalk
     $tab.click(function() {
