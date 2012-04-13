@@ -18,3 +18,4 @@ class Claim(ndb.Model):
     user = ndb.UserProperty(required=True)
     x = ndb.IntegerProperty(required=True)
     y = ndb.IntegerProperty(required=True)
+    lastemail = ndb.DateTimeProperty(required=True)
