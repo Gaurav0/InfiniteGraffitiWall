@@ -12,12 +12,12 @@ var SIDEWALK_SCROLL_RATE = 2.0;
 function InfiniteViewport(canvas) {
 
     //Get the current URL
-    var url = window.History.getState().url;
+    var url = window.location.href;
     if(url.indexOf("@") == -1) {
         locX = 0;
         locY = 0;
     } else {
-        var url2 = url.split("@")[1];
+        var url2 = url.substr(url.lastIndexOf("@") + 1);
         var loc = url2.split(",");
         if(loc.length != 2) {
             locX = 0;
@@ -310,9 +310,13 @@ $(document).ready(function() {
             Math.floor(-view.posX * SIDEWALK_SCROLL_RATE) : -view.posX;
         $sidewalkbg.css("background-position", sidewalkX + "px 0px");
         view.redraw();
-        window.History.replaceState(null, this.title, 
-        	"@" + Math.round(view.posX / TILE_SIZE) + "," +
-        	Math.round(view.posY / TILE_SIZE));
+        var hash = "@" + Math.round(view.posX / TILE_SIZE) + "," +
+        	Math.round(view.posY / TILE_SIZE);
+        if (window.history.replaceState)
+        	window.history.replaceState(null, window.title, hash);
+        else
+        	window.location.hash = hash;
+        	
     }
     
     $left.mouseover(function(e) {
