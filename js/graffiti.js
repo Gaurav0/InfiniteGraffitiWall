@@ -134,6 +134,9 @@ function InfiniteViewport(canvas) {
                 var cornerX = tileX * TILE_SIZE - this.posX;
                 var cornerY = tileY * TILE_SIZE - this.posY;
                 bufferCtx.drawImage(currentCanvas, cornerX, cornerY);
+                //Create an outline around the tiles in claim mode
+                if(Mode == "claim")
+                    bufferCtx.strokeRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
             }
         this.ctx.clearRect(0, 0, buffer.width, buffer.height);
         this.ctx.drawImage(buffer, 0, 0);
@@ -491,11 +494,13 @@ $(document).ready(function() {
             document.getElementById('cursor').src = "images/Claim_Flag.png";
             document.getElementById('mode').src = "images/spraycan.png";
             Mode = "claim";
+            view.redraw();
         }else if(Mode == "claim")
         {
             document.getElementById('cursor').src = "images/spraycan.png";
             document.getElementById('mode').src = "images/Claim_Flag.png";
             Mode = "paint";
+            view.redraw();
         }
     });
     
