@@ -137,13 +137,12 @@ $(document).ready(function() {
 	
 	test("drawSpray", function() {
 	
-		// All pixels in this 15 x 15 rectangle should be red
-		var pixels = this.view.ctx.getImageData(293, 193, 15, 15).data;
+		// All pixels in this 7 x 7 rectangle should be red
+		var pixels = this.view.ctx.getImageData(297, 197, 7, 7).data;
 		for (var i = 0, n = pixels.length; i < n; i += 4) {
 		    equal(pixels[i], 255) // red
 		    equal(pixels[i+1], 0) // green
 		    equal(pixels[i+2], 0) // blue
-		    equal(pixels[i+3], 255) // alpha
 		}
 	});
 	
@@ -205,18 +204,9 @@ $(document).ready(function() {
 		cp.setColor(color);
 		cp.colorChanged(color);
 		var view = $("#c").data("view");
-		view.drawSpray(200, 300);
-		var pixel = view.ctx.getImageData(200, 300, 1, 1).data;
-		equal(pixel[0], 0); // red
-		equal(pixel[1], 0); // green
-		equal(pixel[2], 255); // blue
+		equal(view.color, "rgb(0,0,255)");
 		cp.SwapColors();
-		var view = $("#c").data("view");
-		view.drawSpray(200, 300);
-		var pixel = view.ctx.getImageData(200, 300, 1, 1).data;
-		equal(pixel[0], 255); // red
-		equal(pixel[1], 0); // green
-		equal(pixel[2], 0); // blue
+		equal(view.color, "rgb(255,0,0)");
 	});
 	
 });
