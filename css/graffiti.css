@@ -221,6 +221,12 @@ body {
     right: 10px;
 }
 
+#claimtile {
+    position: absolute;
+    top: 50%;
+    right: 200px;
+}
+
 .button {
     position: absolute; 
     right: 140px; 
