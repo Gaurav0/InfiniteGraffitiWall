@@ -446,30 +446,39 @@ $(document).ready(function() {
     
     // Draw to canvas on mousedown, drag
     $wall.mousedown(function(e) {
-        view.drawSpray(e.pageX, e.pageY)
-        mouseDown = true;
-        if ($("#enableSound").attr("checked"))
-            spray.play();
-        if (saveTimeout != null)
-            window.cancelAnimationFrame(saveTimeout);
+        if(Mode == "paint")
+        {
+            view.drawSpray(e.pageX, e.pageY)
+            mouseDown = true;
+            if ($("#enableSound").attr("checked"))
+                spray.play();
+            if (saveTimeout != null)
+                window.cancelAnimationFrame(saveTimeout);
+        }
     });
     
     $wall.mouseup(function(e) {
-        mouseDown = false;
-        spray.pause();
-        if (saveTimeout != null)
-            window.cancelAnimationFrame(saveTimeout);
-        saveTimeout = window.setTimeout(function() {
-            view.saveCanvases();
-        }, IDLE_TIME);
+        if(Mode == "paint")
+        {
+            mouseDown = false;
+            spray.pause();
+            if (saveTimeout != null)
+                window.cancelAnimationFrame(saveTimeout);
+            saveTimeout = window.setTimeout(function() {
+                view.saveCanvases();
+            }, IDLE_TIME);
+        }
     });
     
     $wall.mousemove(function(e) {
-        if (mouseDown) {
-            view.drawSpray(e.pageX, e.pageY);
-            if (saveTimeout != null)
-                window.cancelAnimationFrame(saveTimeout);
-            e.preventDefault();
+        if(Mode == "paint")
+        {
+            if (mouseDown) {
+                view.drawSpray(e.pageX, e.pageY);
+                if (saveTimeout != null)
+                    window.cancelAnimationFrame(saveTimeout);
+                e.preventDefault();
+            }
         }
     });
     
