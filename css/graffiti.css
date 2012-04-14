@@ -221,21 +221,9 @@ body {
     right: 10px;
 }
 
-#spraycan_mode{
+#claimtile {
     position: absolute;
-    top: 10px;
-    right: 200px;
-}
-
-#claim_mode{
-    position: absolute;
-    top: 60px;
-    right: 200px;
-}
-
-#unclaim_mode{
-    position: absolute;
-    top: 110px;
+    top: 50%;
     right: 200px;
 }
 
