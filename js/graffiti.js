@@ -448,9 +448,6 @@ $(document).ready(function() {
         updateBackgroundPosition();
     });
     
-    var mouseDown = false;
-    var saveTimeout = null;
-    
     // Audio
     
     var spray = document.getElementById("spray");
@@ -460,6 +457,9 @@ $(document).ready(function() {
             this.play();
         }, false);
     }
+    
+    var mouseDown = false;
+    var saveTimeout = null;
     
     // Draw to canvas on mousedown, drag
     $wall.mousedown(function(e) {
@@ -498,6 +498,38 @@ $(document).ready(function() {
             }
         }
     });
+    
+    // Prevent scroll on touch move
+    $("body").get(0).addEventListener("touchmove", function(e) {
+    	e.preventDefault();
+    }, false);
+    
+    var lastX0 = -1;
+    var lastY0 = -1;
+    var lastX1 = -1;
+    var lastY1 = -1;
+    
+    // Scroll with two fingers on touch move
+    $wall.get(0).addEventListener("touchmove", function(e) {
+    	var touches = e.targetTouches;
+    	if (touches.length == 2) {
+    		if (lastX0 == -1) {
+    			lastX0 = touches[0].pageX;
+    			lastX1 = touches[1].pageX;
+    			lastY0 = touches[0].pageY;
+    			lastY1 = touches[1].pageY;
+    		} else {
+    			deltaX0 = touches[0].pageX - lastX0;
+    			deltaX1 = touches[1].pageX - lastX1;
+    			deltaY0 = touches[0].pageY - lastY0;
+    			deltaY1 = touches[1].pageY - lastY1;
+    			deltaX = Math.abs(deltaX0) < Math.abs(deltaX1) ? deltaX0 : deltaX1;
+    			deltaY = Math.abs(deltaY0) < Math.abs(deltaY1) ? deltaY0 : deltaY1;
+    			view.posX -= deltaX;
+    			view.posY -= deltaY;
+    		}
+    	}
+    }, false);
     
     var splitterPos;
 
