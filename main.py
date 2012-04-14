@@ -22,8 +22,6 @@ from google.appengine.api import channel
 
 from webapp2_extras import sessions
 
-import re
-
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -47,7 +45,7 @@ class MainPage(webapp2.RequestHandler):
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
 
-    def get(self, location = ''):
+    def get(self, location=''):
         user = users.get_current_user()
         if user:
             login_url = users.create_logout_url(self.request.uri)
@@ -69,11 +67,24 @@ class MainPage(webapp2.RequestHandler):
             ch = UpdateChannel(channel_id=channel_id)
             ch.put()
 
+        #For random init
+        rand_num = random.random()
+        tile = Tile.gql("WHERE rand_num >= :1 ORDER BY rand_num",
+            rand_num).get()
+        if tile is None:
+            locX = 0
+            locY = 0
+        else:
+            locX = tile.x
+            locY = tile.y
+
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(
             login_url=login_url,
             login_label=login_label,
             token=token,
+            locX=locX,
+            locY=locY,
             adnum=random.randint(0, 4),
             user_login=user_login))
 
@@ -92,6 +103,9 @@ class TestPage(webapp2.RequestHandler):
             user_login = 0
         template = jinja_environment.get_template('unittests.html')
         self.response.out.write(template.render(
+            login_url=login_url,
+            login_label=login_label,
+            adnum=random.randint(0, 4),
             user_login=user_login))
 
 
@@ -147,7 +161,8 @@ class SaveTile(webapp2.RequestHandler):
         query = Tile.gql("WHERE x = :1 AND y = :2", x, y)
         myTile = query.get()
         if myTile is None:
-            myTile = Tile(x=x, y=y, blob_key=blob_key)
+            myTile = Tile(x=x, y=y, blob_key=blob_key,
+                rand_num=random.random())
             myTile.put()
         else:
             old_key = myTile.blob_key
@@ -176,13 +191,14 @@ class CreateClaim(webapp2.RequestHandler):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
         lastemail = datetime.today()
-        
+
         if user is not None:
             #Check if tile is already claimed by this user
-            query = Claim.gql("WHERE user = :1 AND x = :2 AND y = :3", user, x, y)
+            query = Claim.gql("WHERE user = :1 AND x = :2 AND y = :3",
+                user, x, y)
             thisClaim = query.get()
             if thisClaim is None:
-                thisClaim = Claim(user=user, x=x, y=y, lastemail = lastemail)
+                thisClaim = Claim(user=user, x=x, y=y, lastemail=lastemail)
                 thisClaim.put()
 
 
@@ -192,7 +208,7 @@ class InformClaimOwner(webapp2.RequestHandler):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
         currentday = datetime.today()
-        
+
 
 config = {}
 config['webapp2_extras.sessions'] = {
@@ -206,7 +222,7 @@ app = webapp2.WSGIApplication([
         ('/save', SaveTile),
         ('/tile', GetTile),
         ('/claim', CreateClaim),
-        ('/@(.*)', MainPage)# to determine location
+        ('/@(.*)', MainPage)  # to determine location
     ], debug=True, config=config)
 
 
