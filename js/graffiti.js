@@ -8,6 +8,7 @@ var SCROLL_RATE = 8;
 var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
 var WHEEL_SCROLL_RATE = 24;
 var SIDEWALK_SCROLL_RATE = 2.0;
+var BORDER_SIZE = 30;
 
 var Mode = "paint";
 
@@ -38,6 +39,7 @@ function InfiniteViewport(canvas) {
 	        locY = loc[1];
         }
     }
+    
     this.posX = locX * TILE_SIZE;
     this.posY = locY * TILE_SIZE;
     this.canvas = canvas;
@@ -206,7 +208,7 @@ function InfiniteViewport(canvas) {
             url: "/claim",
             async: true,
             type: "POST",
-            data: {x: tx, y:ty},
+            data: {x: tx, y: ty},
             success: (function(x, y) {
                 return function() {
                     console.log("claim made (" + tx + "," + ty + ")");
@@ -497,25 +499,31 @@ $(document).ready(function() {
     var mouseDown = false;
     var saveTimeout = null;
     
+    function checkInBounds(x, y) {
+    	var minX = BORDER_SIZE;
+    	var minY = BORDER_SIZE;
+    	var maxX = $wall.width() - BORDER_SIZE;
+    	var maxY = $wall.height() - BORDER_SIZE;
+    	return x > minX && x < maxX && y > minY && y < maxY;
+    }
+    
     // Draw to canvas on mousedown, drag
     $wall.mousedown(function(e) {
-        if(Mode == "paint")
-        {
-            view.drawSpray(e.pageX, e.pageY)
+        if (Mode == "paint") {
+        	if (checkInBounds(e.pageX, e.pageY))
+            	view.drawSpray(e.pageX, e.pageY);
             mouseDown = true;
             if ($("#enableSound").attr("checked"))
                 spray.play();
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
-        }else// if(Mode == "claim")
-        {
+        } else {
             view.claimTile(e.pageX, e.pageY)
         }
     });
     
     $wall.mouseup(function(e) {
-        if(Mode == "paint")
-        {
+        if (Mode == "paint") {
             mouseDown = false;
             spray.pause();
             if (saveTimeout != null)
@@ -527,10 +535,10 @@ $(document).ready(function() {
     });
     
     $wall.mousemove(function(e) {
-        if(Mode == "paint")
-        {
+        if(Mode == "paint") {
             if (mouseDown) {
-                view.drawSpray(e.pageX, e.pageY);
+        		if (checkInBounds(e.pageX, e.pageY))
+            		view.drawSpray(e.pageX, e.pageY);
                 if (saveTimeout != null)
                     window.cancelAnimationFrame(saveTimeout);
                 e.preventDefault();
