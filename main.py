@@ -24,7 +24,6 @@ from google.appengine.api import mail
 from webapp2_extras import sessions
 
 import re
-import datetime
 
 
 jinja_environment = jinja2.Environment(
