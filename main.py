@@ -177,7 +177,7 @@ class CreateClaim(webapp2.RequestHandler):
         user = users.get_current_user()
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        lastemail = datetime.datetime.today() - datetime.timedelta(1)
+        lastemail = datetime.datetime.today()
         
         if user is not None:
             #Check if tile is already claimed by this user
