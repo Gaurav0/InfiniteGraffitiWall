@@ -19,6 +19,7 @@ from google.appengine.ext.blobstore import blobstore
 from google.appengine.api import files
 from google.appengine.api import users
 from google.appengine.api import channel
+from google.appengine.api import mail
 
 from webapp2_extras import sessions
 
@@ -176,7 +177,7 @@ class CreateClaim(webapp2.RequestHandler):
         user = users.get_current_user()
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        lastemail = datetime.datetime.today()
+        lastemail = datetime.datetime.today() - datetime.timedelta(1)
         
         if user is not None:
             #Check if tile is already claimed by this user
@@ -192,7 +193,24 @@ class InformClaimOwner(webapp2.RequestHandler):
     def post(self):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        currentday = datetime.datetime.today()
+        currentdaytime = datetime.datetime.today()
+        
+        query = Claim.gql("WHERE x = :1 AND y = :2", x, y)
+        Claim_itterator = query.iter(produce_cursors=True)
+        
+        for claim in Claim_itterator:
+            if claim.lastemail < currentdaytime - datetime.timedelta(1):
+                message = mail.EmailMessage()
+                message.sender = "http://infinitegraffitiwall.appspot.com/ Tile Claim Service <gaurav9576@gmail.com>"
+                message.to = claim.user.email()
+                message.subject = "A Tile that you have claimed has been changed today."
+                message.body="""
+A Tile that you have claimed has been changed today.
+Tile coordinates """ + str(x) + "," + str(y) + """.
+Link to location: http://infinitegraffitiwall.appspot.com/@""" + str(x) + "," + str(y)
+                message.send()
+                claim.lastemail = currentdaytime;
+                claim.put()
         
 
 config = {}
@@ -207,6 +225,7 @@ app = webapp2.WSGIApplication([
         ('/save', SaveTile),
         ('/tile', GetTile),
         ('/claim', CreateClaim),
+        ('/informclaim', InformClaimOwner),
         ('/@(.*)', MainPage)# to determine location
     ], debug=True, config=config)
 
