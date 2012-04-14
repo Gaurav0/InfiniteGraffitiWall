@@ -206,14 +206,7 @@ function InfiniteViewport(canvas) {
                 }
             })(tx, ty),
         });
-        
-        if(user_login == 1)
-        {
-            alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 per day per tile)");
-        }else{
-            alert("You must be logged in to claim a tile.");
-        }
-//        var post = "{:" + tx + ",y:" + ty + "'}";
+        alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 per day per tile)");
     };
     
     this.onMessage = function(message) {
@@ -295,6 +288,9 @@ $(document).ready(function() {
     $c.data("view", view);
     view.redraw();
     updatePreview();
+    
+    if(user_login == 1)
+        document.getElementById('mode').src = "images/Claim_Flag.png";
     
     // Enable real time updates
     var token = $("#token").val();
