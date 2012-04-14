@@ -112,17 +112,6 @@ function InfiniteViewport(canvas) {
             }
     };
     
-    //Registers the caim into the database
-    this.claimTile = function (screenX, screenY) {
-        //Locates overall position on the wall
-        var worldX = this.posX + screenX;
-        var worldY = this.posY + screenY;
-        //Selects the tile
-        var tx = Math.floor(worldX / TILE_SIZE);
-        var ty = Math.floor(worldY / TILE_SIZE);
-        
-    };
-    
     var buffer = document.createElement('canvas');
     buffer.width = this.canvas.width;
     buffer.height = this.canvas.height;
@@ -190,6 +179,36 @@ function InfiniteViewport(canvas) {
                     });
                 }
             }
+    };
+    
+    //Registers the caim into the database
+    this.claimTile = function (screenX, screenY) {
+        //Locates overall position on the wall
+        var worldX = this.posX + screenX;
+        var worldY = this.posY + screenY;
+        //Selects the tile
+        var tx = Math.floor(worldX / TILE_SIZE);
+        var ty = Math.floor(worldY / TILE_SIZE);
+        
+        $.ajax({
+            url: "/claim",
+            async: false,
+            type: "POST",
+            data: {x: tx, y:ty},
+            success: (function(x, y) {
+                return function() {
+                    console.log("claim made (" + tx + "," + ty + ")");
+                }
+            })(tx, ty),
+            error: (function(x, y) {
+                return function() {
+                    console.log("claim error (" + tx + "," + ty + ")");
+                }
+            })(tx, ty),
+        });
+        
+        alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 per day per tile)");
+//        var post = "{:" + tx + ",y:" + ty + "'}";
     };
     
     this.onMessage = function(message) {
@@ -471,6 +490,9 @@ $(document).ready(function() {
                 spray.play();
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
+        }else// if(Mode == "claim")
+        {
+            view.claimTile(e.pageX, e.pageY)
         }
     });
     
