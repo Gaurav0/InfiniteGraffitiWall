@@ -180,11 +180,20 @@ class CreateClaim(webapp2.RequestHandler):
         
         if user is not None:
             #Check if tile is already claimed by this user
-            query = Claim.gql("WHERE x = :1 AND y = :2", x, y)
+            query = Claim.gql("WHERE user = :1 AND x = :2 AND y = :3", user, x, y)
             thisClaim = query.get()
             if thisClaim is None:
                 thisClaim = Claim(user=user, x=x, y=y, lastemail = lastemail)
                 thisClaim.put()
+
+
+class InformClaimOwner(webapp2.RequestHandler):
+
+    def post(self):
+        x = int(self.request.get('x'))
+        y = int(self.request.get('y'))
+        currentday = datetime.datetime.today()
+        
 
 config = {}
 config['webapp2_extras.sessions'] = {
