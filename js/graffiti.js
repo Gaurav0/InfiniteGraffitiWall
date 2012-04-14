@@ -21,8 +21,8 @@ function InfiniteViewport(canvas) {
     	locX = parseInt(window.localStorage.getItem("x"));
     	locY = parseInt(window.localStorage.getItem("y"));
     	if (isNaN(locX) || isNaN(locY)) {
-    		locX = parseInt($("#locX").value);
-    		locY = parseInt($("#locY").value);
+    		locX = parseInt($("#locX").val());
+    		locY = parseInt($("#locY").val());
     	}
     } else {
         var url2 = url.substr(url.lastIndexOf("@") + 1);
@@ -31,8 +31,8 @@ function InfiniteViewport(canvas) {
 	    	locX = parseInt(window.localStorage.getItem("x"));
 	    	locY = parseInt(window.localStorage.getItem("y"));
     		if (isNaN(locX) || isNaN(locY)) {
-	    		locX = parseInt($("#locX").value);
-	    		locY = parseInt($("#locY").value);
+	    		locX = parseInt($("#locX").val());
+	    		locY = parseInt($("#locY").val());
 	    	}
         } else {
 	        locX = loc[0];
