@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="https://bitbucket.org/" />
+<link rel="selenium.base" href="https://infinitegraffitiwall.appspot.com/" />
 <title>size_color_pickers</title>
 </head>
 <body>
@@ -80,16 +80,6 @@
 	<td>mouseUpAt</td>
 	<td>css=canvas[name=&quot;huebar&quot;]</td>
 	<td>0,30</td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAt</td>
-	<td>left</td>
-	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
@@ -192,16 +182,6 @@
 	<td>0,30</td>
 </tr>
 <tr>
-	<td>clickAt</td>
-	<td>left</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
 	<td>mouseOver</td>
 	<td>left</td>
 	<td></td>
@@ -302,16 +282,6 @@
 	<td>0,30</td>
 </tr>
 <tr>
-	<td>clickAt</td>
-	<td>left</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
 	<td>mouseOver</td>
 	<td>left</td>
 	<td></td>
@@ -351,12 +321,6 @@
 	<td>500</td>
 	<td></td>
 </tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-
 </tbody></table>
 </body>
 </html>
