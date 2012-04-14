@@ -23,7 +23,6 @@ from google.appengine.api import channel
 from webapp2_extras import sessions
 
 import re
-import datetime
 
 
 jinja_environment = jinja2.Environment(
@@ -176,7 +175,7 @@ class CreateClaim(webapp2.RequestHandler):
         user = users.get_current_user()
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        lastemail = datetime.datetime.today()
+        lastemail = datetime.today()
         
         if user is not None:
             #Check if tile is already claimed by this user
@@ -192,7 +191,7 @@ class InformClaimOwner(webapp2.RequestHandler):
     def post(self):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        currentday = datetime.datetime.today()
+        currentday = datetime.today()
         
 
 config = {}
