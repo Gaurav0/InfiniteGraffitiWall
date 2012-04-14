@@ -98,7 +98,67 @@ class GetTile(webapp2.RequestHandler):
             self.response.write(blob_reader.read())
 
 
-class SaveTile(webapp2.RequestHandler):
+class SaveClaim(webapp2.RequestHandler):
+
+    def dispatch(self):
+        # Get a session store for this request.
+        self.session_store = sessions.get_store(request=self.request)
+
+        try:
+            # Dispatch the request.
+            webapp2.RequestHandler.dispatch(self)
+        finally:
+            # Save all sessions.
+            self.session_store.save_sessions(self.response)
+
+    @webapp2.cached_property
+    def session(self):
+        # Returns a session using the default cookie key.
+        return self.session_store.get_session()
+
+    def post(self):
+        user = self.request.get('name')
+        x = int(self.request.get('x'))
+        y = int(self.request.get('y'))
+        lastemail = 
+        data = self.request.get('data')
+
+        data = base64.b64decode(data)
+
+        file_name = files.blobstore.create(mime_type='image/png')
+        with files.open(file_name, 'a') as f:
+            f.write(data)
+
+        files.finalize(file_name)
+        blob_key = files.blobstore.get_blob_key(file_name)
+
+        # Check if tile is already in database
+        query = Tile.gql("WHERE x = :1 AND y = :2", x, y)
+        myTile = query.get()
+        if myTile is None:
+            myTile = Tile(x=x, y=y, blob_key=blob_key)
+            myTile.put()
+        else:
+            old_key = myTile.blob_key
+            myTile.blob_key = blob_key
+            myTile.put()
+            google.appengine.ext.blobstore.delete(old_key)
+
+        #For live updates
+        channels = UpdateChannel.gql("").fetch(100)
+        message = json.dumps({"x": x, "y": y})
+        for ch in channels:
+            ch_id = ch.channel_id
+            d = parse_datetime(ch_id.split(",")[0])
+            if d < datetime.now() + timedelta(hours=-2):
+                ch.key.delete()
+            elif ch_id != self.session.get("channel_id"):
+                channel.send_message(ch.channel_id, message)
+
+        self.response.set_status(200)
+
+
+        class SaveTile(webapp2.RequestHandler):
 
     def dispatch(self):
         # Get a session store for this request.

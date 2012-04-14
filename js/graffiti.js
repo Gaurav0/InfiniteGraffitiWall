@@ -86,6 +86,7 @@ function InfiniteViewport(canvas) {
         img.src = "/tile?x=" + x + "&y=" + y;
     };
     
+    //Draws the spray onto the wall
     this.drawSpray = function(screenX, screenY) {
         var worldX = this.posX + screenX;
         var worldY = this.posY + screenY;
@@ -93,8 +94,10 @@ function InfiniteViewport(canvas) {
         var ty = Math.floor(worldY / TILE_SIZE);
         for (var tileX = tx - 1; tileX <= tx + 1; ++tileX)
             for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
+                //Determine the actual borders of the tile 
                 var canvasX = worldX - tileX * TILE_SIZE;
                 var canvasY = worldY - tileY * TILE_SIZE;
+                //if falls within bounds of tie
                 if (canvasX > -this.radius && canvasX < TILE_SIZE + this.radius &&
                         canvasY > -this.radius && canvasY < TILE_SIZE + this.radius) {
                     var cornerX = screenX - canvasX;
@@ -107,6 +110,17 @@ function InfiniteViewport(canvas) {
                     currentCanvas.setAttribute("data-saved", "false");
                 }
             }
+    };
+    
+    //Registers the caim into the database
+    this.claimTile = function (screenX, screenY) {
+        //Locates overall position on the wall
+        var worldX = this.posX + screenX;
+        var worldY = this.posY + screenY;
+        //Selects the tile
+        var tx = Math.floor(worldX / TILE_SIZE);
+        var ty = Math.floor(worldY / TILE_SIZE);
+        
     };
     
     var buffer = document.createElement('canvas');
