@@ -204,12 +204,17 @@ function InfiniteViewport(canvas) {
         
         $.ajax({
             url: "/claim",
-            async: false,
+            async: true,
             type: "POST",
             data: {x: tx, y:ty},
             success: (function(x, y) {
                 return function() {
                     console.log("claim made (" + tx + "," + ty + ")");
+                    alert("You have claimed tile " + 
+                    	tx + "," + ty + "\n" +
+                    	"If someone else draws on this tile you will be " + 
+                    	"notified by email" + "\n" + 
+                    	"(max 1 per day per tile)");
                 }
             })(tx, ty),
             error: (function(x, y) {
@@ -218,7 +223,6 @@ function InfiniteViewport(canvas) {
                 }
             })(tx, ty),
         });
-        alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 per day per tile)");
     };
     
     this.onMessage = function(message) {
