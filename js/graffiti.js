@@ -177,6 +177,13 @@ function InfiniteViewport(canvas) {
                             }
                         })(x, y),
                     });
+                    console.log("informing claimed users (" + x + "," + y + ") ...");
+                    $.ajax({
+                        url: "/informclaim",
+                        async: false,
+                        type: "POST",
+                        data: {x: x, y: y},
+                    });
                 }
             }
     };
