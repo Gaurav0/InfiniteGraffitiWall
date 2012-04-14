@@ -279,7 +279,9 @@ $(document).ready(function() {
     var $tab = $("#sidewalk-tab");
     var $splitter = $("#splitter");
     var $sizepicker = $("#sizepicker");
-    var $claimtile = $("#claimtile");
+    var $spraycan_mode = $("#spraycan_mode");
+    var $claim_mode = $("#claim_mode");
+    var $unclaim_mode = $("#unclaim_mode");
     
     // Disable dragging can image in Firefox
     $canimg.bind("dragstart", function(e) {
@@ -297,7 +299,9 @@ $(document).ready(function() {
     updatePreview();
     
     if(user_login == 1)
-        document.getElementById('mode').src = "images/Claim_Flag.png";
+        document.getElementById('mode_paint').src = "images/spraycan.png";
+        document.getElementById('mode_claim').src = "images/Claim_Flag.png";
+        document.getElementById('mode_unclaim').src = "images/Un_Claim_Flag.png";
     
     // Enable real time updates
     var token = $("#token").val();
@@ -563,19 +567,28 @@ $(document).ready(function() {
     
     var splitterPos;
 
-    //Initiate claim
-    $("#claimtile").click(function() {
-        if(Mode == "paint")
-        {
-            document.getElementById('cursor').src = "images/Claim_Flag.png";
-            document.getElementById('mode').src = "images/spraycan.png";
-            Mode = "claim";
-            view.redraw();
-        }else if(Mode == "claim")
+    //Mode buttons
+    $("#spraycan_mode").click(function() {
+        if(Mode != "paint")
         {
             document.getElementById('cursor').src = "images/spraycan.png";
-            document.getElementById('mode').src = "images/Claim_Flag.png";
             Mode = "paint";
+            view.redraw();
+        }
+    });
+    $("#claim_mode").click(function() {
+        if(Mode != "claim")
+        {
+            document.getElementById('cursor').src = "images/Claim_Flag.png";
+            Mode = "claim";
+            view.redraw();
+        }
+    });
+    $("#unclaim_mode").click(function() {
+        if(Mode != "unclaim")
+        {
+            document.getElementById('cursor').src = "images/Un_Claim_Flag.png";
+            Mode = "unclaim";
             view.redraw();
         }
     });
