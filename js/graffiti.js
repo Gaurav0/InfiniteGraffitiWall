@@ -8,28 +8,38 @@ var SCROLL_RATE = 8;
 var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
 var WHEEL_SCROLL_RATE = 24;
 var SIDEWALK_SCROLL_RATE = 2.0;
+
 var Mode = "paint";
 
 function InfiniteViewport(canvas) {
 
     //Get the current URL
     var url = window.location.href;
+    var locX, locY;
     if(url.indexOf("@") == -1) {
-        locX = 0;
-        locY = 0;
+    	locX = parseInt(window.localStorage.getItem("x"));
+    	locY = parseInt(window.localStorage.getItem("y"));
+    	if (isNaN(locX) || isNaN(locY)) {
+    		locX = 0;
+    		locY = 0;
+    	}
     } else {
         var url2 = url.substr(url.lastIndexOf("@") + 1);
         var loc = url2.split(",");
         if(loc.length != 2) {
-            locX = 0;
-            locY = 0;
+	    	locX = parseInt(window.localStorage.getItem("x"));
+	    	locY = parseInt(window.localStorage.getItem("y"));
+    		if (isNaN(locX) || isNaN(locY)) {
+	    		locX = 0;
+	    		locY = 0;
+	    	}
         } else {
 	        locX = loc[0];
 	        locY = loc[1];
         }
     }
-    this.posX = locX*TILE_SIZE;
-    this.posY = locY*TILE_SIZE;
+    this.posX = locX * TILE_SIZE;
+    this.posY = locY * TILE_SIZE;
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.color = "rgb(255, 0, 0)";
@@ -92,6 +102,8 @@ function InfiniteViewport(canvas) {
         var worldY = this.posY + screenY;
         var tx = Math.floor(worldX / TILE_SIZE);
         var ty = Math.floor(worldY / TILE_SIZE);
+        window.localStorage.setItem("x", tx);
+        window.localStorage.setItem("y", ty);
         for (var tileX = tx - 1; tileX <= tx + 1; ++tileX)
             for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
                 //Determine the actual borders of the tile 
@@ -286,7 +298,7 @@ $(document).ready(function() {
     
     var view = new InfiniteViewport(c);
     $c.data("view", view);
-    view.redraw();
+    updateBackgroundPosition();
     updatePreview();
     
     if(user_login == 1)
