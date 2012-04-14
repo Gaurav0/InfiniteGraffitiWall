@@ -9,3 +9,4 @@ spraycan.png made by Gaurav from spraycan.svg by Joseph
 kuba_arrow_button_down.svg, kuba_arrow_button_up.svg by Kuba from http://openclipart.org/detail/2205/arrow_button_set-by-kuba
 kuba_arrow_button_down.png, kuba_arrow_button_up.png exported from above using Inkscape
 Claim_Flag.png made by Yuriy Stejko in paint and gimp2
+favicon.ico http://www.favicon.cc/?action=icon&file_id=198538
