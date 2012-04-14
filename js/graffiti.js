@@ -207,7 +207,12 @@ function InfiniteViewport(canvas) {
             })(tx, ty),
         });
         
-        alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 per day per tile)");
+        if(user_login == 1)
+        {
+            alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 per day per tile)");
+        }else{
+            alert("You must be logged in to claim a tile.");
+        }
 //        var post = "{:" + tx + ",y:" + ty + "'}";
     };
     

@@ -53,9 +53,11 @@ class MainPage(webapp2.RequestHandler):
         if user:
             login_url = users.create_logout_url(self.request.uri)
             login_label = 'logout'
+            user_login = 1
         else:
             login_url = users.create_login_url(self.request.uri)
             login_label = 'login'
+            user_login = 0
 
         #For live updates
         token = self.session.get('token')
@@ -73,14 +75,25 @@ class MainPage(webapp2.RequestHandler):
             login_url=login_url,
             login_label=login_label,
             token=token,
-            adnum=random.randint(0, 4)))
+            adnum=random.randint(0, 4),
+            user_login=user_login))
 
 
 class TestPage(webapp2.RequestHandler):
 
     def get(self):
+        user = users.get_current_user()
+        if user:
+            login_url = users.create_logout_url(self.request.uri)
+            login_label = 'logout'
+            user_login = 1
+        else:
+            login_url = users.create_login_url(self.request.uri)
+            login_label = 'login'
+            user_login = 0
         template = jinja_environment.get_template('unittests.html')
-        self.response.out.write(template.render(''))
+        self.response.out.write(template.render(
+            user_login=user_login))
 
 
 class GetTile(webapp2.RequestHandler):
@@ -165,12 +178,13 @@ class CreateClaim(webapp2.RequestHandler):
         y = int(self.request.get('y'))
         lastemail = datetime.datetime.today()
         
-        #Check if tile is already claimed by this user
-        query = Claim.gql("WHERE x = :1 AND y = :2", x, y)
-        thisClaim = query.get()
-        if thisClaim is None:
-            thisClaim = Claim(user=user, x=x, y=y, lastemail = lastemail)
-            thisClaim.put()
+        if user is not None:
+            #Check if tile is already claimed by this user
+            query = Claim.gql("WHERE x = :1 AND y = :2", x, y)
+            thisClaim = query.get()
+            if thisClaim is None:
+                thisClaim = Claim(user=user, x=x, y=y, lastemail = lastemail)
+                thisClaim.put()
 
 config = {}
 config['webapp2_extras.sessions'] = {
