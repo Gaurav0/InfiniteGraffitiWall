@@ -8,6 +8,7 @@ var SCROLL_RATE = 8;
 var DIAG_SCROLL_RATE = Math.ceil(SCROLL_RATE /  Math.sqrt(2));
 var WHEEL_SCROLL_RATE = 24;
 var SIDEWALK_SCROLL_RATE = 2.0;
+var MAX_TILECLAIMS_PER_USER = 10;
 var Mode = "paint";
 
 function InfiniteViewport(canvas) {
@@ -198,22 +199,37 @@ function InfiniteViewport(canvas) {
         var ty = Math.floor(worldY / TILE_SIZE);
         
         $.ajax({
-            url: "/claim",
+            url: "/howmenytiles",
             async: false,
-            type: "POST",
-            data: {x: tx, y:ty},
-            success: (function(x, y) {
-                return function() {
-                    console.log("claim made (" + tx + "," + ty + ")");
-                }
-            })(tx, ty),
-            error: (function(x, y) {
-                return function() {
-                    console.log("claim error (" + tx + "," + ty + ")");
-                }
-            })(tx, ty),
-        });
-        alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 per day per tile)");
+            type: "GET",
+            data: {},
+            success: (function(result){
+                user_tile_claims = parseInt(result);
+            })
+        })
+        
+        if(user_tile_claims < MAX_TILECLAIMS_PER_USER)
+        {
+            $.ajax({
+                url: "/claim",
+                async: false,
+                type: "POST",
+                data: {x: tx, y:ty},
+                success: (function(x, y) {
+                    return function() {
+                        console.log("claim made (" + tx + "," + ty + ")");
+                    }
+                })(tx, ty),
+                error: (function(x, y) {
+                    return function() {
+                        console.log("claim error (" + tx + "," + ty + ")");
+                    }
+                })(tx, ty),
+            });
+            alert("You have claimed tile " + tx + "," + ty + "\n" + "If someone else draws on this tile you will be notified by email" + "\n" + "(max 1 email per day even if multiple tiles are changed)");
+        }else{
+            alert("Any user may only claim upto 10 tiles \n If you want to claim this tile please unclaim some other tile.");
+       }
     };
     
     this.onMessage = function(message) {
@@ -299,9 +315,11 @@ $(document).ready(function() {
     updatePreview();
     
     if(user_login == 1)
+    {
         document.getElementById('mode_paint').src = "images/spraycan.png";
         document.getElementById('mode_claim').src = "images/Claim_Flag.png";
         document.getElementById('mode_unclaim').src = "images/Un_Claim_Flag.png";
+    }
     
     // Enable real time updates
     var token = $("#token").val();
