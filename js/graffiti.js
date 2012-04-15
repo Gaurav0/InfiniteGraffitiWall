@@ -225,9 +225,9 @@ function InfiniteViewport(canvas) {
         if(user_tile_claims < MAX_TILECLAIMS_PER_USER)
         {
             $.ajax({
-                url: "/claim",
+            url: "/claim",
             async: true,
-                type: "POST",
+            type: "POST",
             data: {x: tx, y: ty},
                 success: (function(x, y) {
                     return function() {
