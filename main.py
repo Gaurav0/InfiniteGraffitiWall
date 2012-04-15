@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
-from models import Tile, UpdateChannel, Claim
+from models import Tile, UpdateChannel, Claim, UserData
 from parse_datetime import parse_datetime
 
 import webapp2
@@ -170,20 +170,40 @@ class SaveTile(webapp2.RequestHandler):
         self.response.set_status(200)
 
 
+class UserTileClaimNumber(webapp2.RequestHandler):
+
+    def get(self):
+        user = users.get_current_user()
+        day_time = datetime.today() - timedelta(1)
+        
+        query = UserData.gql("WHERE user = :1", user)
+        thisUser = query.get()
+        if thisUser is None:
+            thisUser = UserData(user=user, lastemail=day_time, Number_Tiles=0)
+            thisUser.put()
+            N_tiles = 0
+        else:
+            N_tiles = thisUser.Number_Tiles
+        self.response.write(N_tiles)
+
+
 class CreateClaim(webapp2.RequestHandler):
 
     def post(self):
         user = users.get_current_user()
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        lastemail = datetime.datetime.today()
         
         if user is not None:
             #Check if tile is already claimed by this user
             query = Claim.gql("WHERE user = :1 AND x = :2 AND y = :3", user, x, y)
             thisClaim = query.get()
             if thisClaim is None:
-                thisClaim = Claim(user=user, x=x, y=y, lastemail = lastemail)
+                thisClaim = Claim(user=user, x=x, y=y)
+                query2 = UserData.gql("WHERE user = :1", user)
+                thisUser = query2.get()
+                thisUser.Number_Tiles = thisUser.Number_Tiles + 1
+                thisUser.put()
                 thisClaim.put()
 
 
@@ -192,13 +212,15 @@ class InformClaimOwner(webapp2.RequestHandler):
     def post(self):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        currentdaytime = datetime.datetime.today()
+        currentdaytime = datetime.today()
         
         query = Claim.gql("WHERE x = :1 AND y = :2", x, y)
         Claim_itterator = query.iter(produce_cursors=True)
         
         for claim in Claim_itterator:
-            if claim.lastemail < currentdaytime - datetime.timedelta(1):
+            query2 = UserData.gql("WHERE user = :1", claim.user)
+            thisUser = query2.get()
+            if thisUser.lastemail < currentdaytime - timedelta(1):
                 message = mail.EmailMessage()
                 message.sender = "http://infinitegraffitiwall.appspot.com/ Tile Claim Service <gaurav9576@gmail.com>"
                 message.to = claim.user.email()
@@ -208,8 +230,8 @@ A Tile that you have claimed has been changed today.
 Tile coordinates """ + str(x) + "," + str(y) + """.
 Link to location: http://infinitegraffitiwall.appspot.com/@""" + str(x) + "," + str(y)
                 message.send()
-                claim.lastemail = currentdaytime;
-                claim.put()
+                thisUser.lastemail = currentdaytime;
+                thisUser.put()
         
 
 config = {}
@@ -223,6 +245,7 @@ app = webapp2.WSGIApplication([
         ('/unittests', TestPage),
         ('/save', SaveTile),
         ('/tile', GetTile),
+        ('/howmenytiles', UserTileClaimNumber),
         ('/claim', CreateClaim),
         ('/informclaim', InformClaimOwner),
         ('/@(.*)', MainPage)# to determine location
@@ -230,8 +253,8 @@ app = webapp2.WSGIApplication([
 
 
 #tests  to check if the app loads
-#response = app.get_response('/')
-#assert response.status_int == 200
+response = app.get_response('/')
+assert response.status_int == 200
 
 #response = app.get_response('/unittests')
-#assert response.status_int == 200
+assert response.status_int == 200
