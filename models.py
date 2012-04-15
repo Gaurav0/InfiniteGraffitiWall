@@ -6,6 +6,7 @@ class Tile(ndb.Model):
     x = ndb.IntegerProperty(required=True)
     y = ndb.IntegerProperty(required=True)
     blob_key = ndb.BlobKeyProperty(required=True)
+    rand_num = ndb.FloatProperty(required=True)
 
 
 class UpdateChannel(ndb.Model):
@@ -23,3 +24,4 @@ class UserData(ndb.Model):
     user = ndb.UserProperty(required=True)
     lastemail = ndb.DateTimeProperty(required=True)
     Number_Tiles = ndb.IntegerProperty(required=True)
+
