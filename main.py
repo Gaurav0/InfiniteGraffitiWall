@@ -190,7 +190,7 @@ class UserTileClaimNumber(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         day_time = datetime.today() - timedelta(1)
-        
+
         query = UserData.gql("WHERE user = :1", user)
         thisUser = query.get()
         if thisUser is None:
@@ -229,24 +229,27 @@ class InformClaimOwner(webapp2.RequestHandler):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
         currentdaytime = datetime.today()
-        
+
         query = Claim.gql("WHERE x = :1 AND y = :2", x, y)
         Claim_itterator = query.iter(produce_cursors=True)
-        
+
         for claim in Claim_itterator:
             query2 = UserData.gql("WHERE user = :1", claim.user)
             thisUser = query2.get()
             if thisUser.lastemail < currentdaytime - timedelta(1):
                 message = mail.EmailMessage()
-                message.sender = "http://infinitegraffitiwall.appspot.com/ Tile Claim Service <gaurav9576@gmail.com>"
+                message.sender = ("http://infinitegraffitiwall.appspot.com/ " +
+                    "Tile Claim Service <gaurav9576@gmail.com>")
                 message.to = claim.user.email()
-                message.subject = "A Tile that you have claimed has been changed today."
-                message.body="""
+                message.subject = ("A Tile that you have claimed " +
+                    "has been changed today.")
+                message.body = ("""
 A Tile that you have claimed has been changed today.
 Tile coordinates """ + str(x) + "," + str(y) + """.
-Link to location: http://infinitegraffitiwall.appspot.com/@""" + str(x) + "," + str(y)
+Link to location: http://infinitegraffitiwall.appspot.com/@""" +
+                    str(x) + "," + str(y))
                 message.send()
-                thisUser.lastemail = currentdaytime;
+                thisUser.lastemail = currentdaytime
                 thisUser.put()
 
 
