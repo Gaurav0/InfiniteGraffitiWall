@@ -215,4 +215,9 @@ $(document).ready(function() {
 		equal(view.color, "rgb(255,0,0)");
 	});
 	
+	module("sizepicker");
+	
+	test("sizepicker", function(){
+		
+	});
 });
