@@ -220,7 +220,12 @@ $(document).ready(function() {
 	test("sizepicker", function(){
 		var sp = $("#sizepicker").data("slider");
 		equal(sp.value(), 12);//start up: default size = 12
-		
+		var maxval=20;
+		var minval=4;
+		sp.value(maxval);
+		equal(sp.value(), 20);//moving value to 20
+		sp.value(minval);
+		equal(sp.value(),4);//moving value to 4
 		
 	});
 });
