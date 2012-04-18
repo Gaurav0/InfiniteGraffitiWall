@@ -230,6 +230,10 @@ $(document).ready(function() {
 		equal(sp.value(), 20);
 		sp.value(1);//make value 1 but min value is 1 so value is 4
 		equal(sp.value(),4);
+		for(var i=5; i<20; i++)//values from 5 to 19	
+		{
+			sp.value(i);
+			equal(sp.value(), i);}
 		
 	});
 });
