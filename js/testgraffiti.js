@@ -218,6 +218,9 @@ $(document).ready(function() {
 	module("sizepicker");
 	
 	test("sizepicker", function(){
+		var sp = $("#sizepicker").data("slider");
+		equal(sp.value(), 12);//start up: default size = 12
+		
 		
 	});
 });
