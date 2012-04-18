@@ -40,7 +40,13 @@ $(document).ready(function() {
 		ok($("#can").is(":hidden"));
 	});
 	
-	module("scroll");
+	module("scroll", {
+		setup: function() {
+			var view = $("#c").data("view");
+			view.posX = 0;
+			view.posY = 0;
+		}
+	});
 	
 	test("scroll", function() {
 		$("#left").simulate("mouseover", {});
@@ -137,10 +143,10 @@ $(document).ready(function() {
 	
 	test("drawSpray", function() {
 	
-		// All pixels in this 7 x 7 rectangle should be red
+		// All pixels in this 7 x 7 rectangle should be red or transparent
 		var pixels = this.view.ctx.getImageData(297, 197, 7, 7).data;
 		for (var i = 0, n = pixels.length; i < n; i += 4) {
-		    equal(pixels[i], 255) // red
+		    ok(pixels[i] == 255 || pixels[i] == 0) // red
 		    equal(pixels[i+1], 0) // green
 		    equal(pixels[i+2], 0) // blue
 		}
