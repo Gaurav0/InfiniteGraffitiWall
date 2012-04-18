@@ -226,6 +226,10 @@ $(document).ready(function() {
 		equal(sp.value(), 20);//moving value to 20
 		sp.value(minval);
 		equal(sp.value(),4);//moving value to 4
+		sp.value(21);//make value 21 but max value is 20 so value is 20
+		equal(sp.value(), 20);
+		sp.value(1);//make value 1 but min value is 1 so value is 4
+		equal(sp.value(),4);
 		
 	});
 });
