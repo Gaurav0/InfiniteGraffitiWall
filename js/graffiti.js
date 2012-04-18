@@ -271,7 +271,7 @@ function sprayDetail(context, centerX, centerY, radius, color) {
     var ctx = newCanvas.getContext("2d");
     ctx.width = 2 * radius;
     ctx.height = 2 * radius;
-	var dots = 6;
+	var dots = 1;
 	var alpha = 1;
 	var pi2 = 2 * Math.PI;
 	var re = /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/
@@ -282,15 +282,12 @@ function sprayDetail(context, centerX, centerY, radius, color) {
 		ctx.fillStyle = acolor;
 		var num = pi2 / dots;
 		for (var i = 0; i < pi2; i += num) {
-    		var x = Math.cos(i + (Math.random() / 2)) * radi;
-    		var y = Math.sin(i + (Math.random() / 2)) * radi;
-			ctx.beginPath();
-			ctx.arc(radius + x, radius + y, 1, 0, pi2, true);
-			ctx.closePath();
-			ctx.fill();
+    		var x = Math.floor(Math.cos(i + (Math.random() / 2)) * radi);
+    		var y = Math.floor(Math.sin(i + (Math.random() / 2)) * radi);
+			ctx.fillRect(radius + x, radius + y, 1, 1);
     	}
-    	dots++;
-    	alpha -= 0.5 / radius;
+    	dots += 5;
+    	alpha -= 0.9 / radius;
     }
     context.drawImage(newCanvas, centerX - radius, centerY - radius);	
 }
