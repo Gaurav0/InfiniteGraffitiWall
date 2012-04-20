@@ -154,7 +154,12 @@ function InfiniteViewport(canvas) {
                 bufferCtx.drawImage(currentCanvas, cornerX, cornerY);
                 //Create an outline around the tiles in claim mode
                 if(Mode == "claim")
+                {
                     bufferCtx.strokeRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
+                }else if(Mode == "unclaim")
+                {
+                    bufferCtx.strokeRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
+                }
             }
         this.ctx.clearRect(0, 0, buffer.width, buffer.height);
         this.ctx.drawImage(buffer, 0, 0);
