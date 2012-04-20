@@ -16,7 +16,6 @@ var Mode = "paint";
 //An array that holds 0 for evevery tile viewed in unclaim mode that has not been claimed.
 //And 1 for every tile viewed in unclaimmode that has been claimed.
 //Used to avoid making a database call for every tile every tile the screen moves.
-
 var viewClaimedTiles = new Array ();
 
 function InfiniteViewport(canvas) {
@@ -170,18 +169,18 @@ function InfiniteViewport(canvas) {
                     {
                         if(viewClaimedTiles[i] === tileX && viewClaimedTiles[i+1] === tileY)
                         {
-                            hastileclaim = viewClaimedTiles[i+2]
+                            hastileclaim = viewClaimedTiles[i+2];
                             tileincach = 1;
                         }
                         i = i + 3;
                     }
+                    
                     if(tileincach == 0)
                     {
                         $.ajax({
-                            url: "/hasclaimontile",
+                            url: "/hasclaimontile?x=" + tileX + "&y=" + tileY,
                             async: false,
                             type: "GET",
-                          data: {x: tileX, y: tileY},
                             success: (function(result){
                             hastileclaim = parseInt(result);
                             })
@@ -210,6 +209,7 @@ function InfiniteViewport(canvas) {
             for (var tileY = startY - 1; tileY <= endY + 1; ++tileY) {
                 this.getCanvas(tileX, tileY);
             }
+        console.log(viewClaimedTiles);
     };
     
     this.saveCanvases = function() {
@@ -283,6 +283,29 @@ function InfiniteViewport(canvas) {
                     	"If someone else draws on this tile you will be " + 
                     	"notified by email" + "\n" + 
                     	"(max 1 per day per tile)");
+                        //add to cach
+                        var i = 0;
+                        var tileincach = 0;
+                        while(i < viewClaimedTiles.length && tileincach == 0)
+                        {
+                            if(viewClaimedTiles[i] === tx && viewClaimedTiles[i+1] === ty)
+                            {
+                                hastileclaim = viewClaimedTiles[i+2]
+                                tileincach = 1;
+                            }
+                            i = i + 3;
+                        }
+                        
+                        i = i - 3;
+                        
+                        if(tileincach === 1)
+                        {
+                            viewClaimedTiles[i+2] = 1;
+                        }else{
+                            viewClaimedTiles.push(tx);
+                            viewClaimedTiles.push(ty);
+                            viewClaimedTiles.push(1);
+                        }
                     }
                 })(tx, ty),
                 error: (function(x, y) {
@@ -294,6 +317,59 @@ function InfiniteViewport(canvas) {
         }else{
             alert("Any user may only claim upto 10 tiles \n If you want to claim this tile please unclaim some other tile.");
        }
+    };
+    
+    //Checks if a claim exists on a tile and remove it if it does
+    this.unclaimTile = function (screenX, screenY) {
+        //Locates overall position on the wall
+        var worldX = this.posX + screenX;
+        var worldY = this.posY + screenY;
+        //Selects the tile
+        var tx = Math.floor(worldX / TILE_SIZE);
+        var ty = Math.floor(worldY / TILE_SIZE);
+        
+        var i = 0;
+        var tileincach = 0;
+        while(i < viewClaimedTiles.length && tileincach == 0)
+        {
+            if(viewClaimedTiles[i] === tx && viewClaimedTiles[i+1] === ty)
+            {
+                hastileclaim = viewClaimedTiles[i+2]
+                tileincach = 1;
+            }
+            i = i + 3;
+        }
+        
+        i = i-3;
+        
+        if(hastileclaim === 1)
+        {
+            $.ajax({
+            url: "/unclaim",
+            async: true,
+            type: "POST",
+            data: {x: tx, y: ty},
+                success: (function(x, y) {
+                    return function() {
+                        console.log("claim removed (" + tx + "," + ty + ")");
+                    alert("You have unclaimed tile " + 
+                    	tx + "," + ty + "\n" +
+                    	"You will nolonger be notified if someone  draws on this tile" + "\n");
+                    }
+                })(tx, ty),
+                error: (function(x, y) {
+                    return function() {
+                        console.log("unclaim error (" + tx + "," + ty + ")");
+                    }
+                })(tx, ty),
+            });
+            
+            viewClaimedTiles[i+2] = 0;
+            this.redraw();
+            //Change it to unclaimed in the array.
+        }else{
+            alert("You do not have a claim on this tile. \n The tiles you have claimed should be outlined in green.");
+        }
     };
     
     this.onMessage = function(message) {
@@ -589,9 +665,12 @@ $(document).ready(function() {
                 spray.play();
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
-        }else// if(Mode == "claim")
+        }else if(Mode == "claim")
         {
             view.claimTile(e.pageX, e.pageY)
+        }else if(Mode == "unclaim")
+        {
+            view.unclaimTile(e.pageX, e.pageY);
         }
     });
     

@@ -260,13 +260,33 @@ class TileClaimedByUser(webapp2.RequestHandler):
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
         
-        query = Claim.gql("WHERE user = :1 AND x = :2 AND x = :3", user, x, y)
+        query = Claim.gql("WHERE user = :1 AND x = :2 AND y = :3", user, x, y)
         HasClaimOnTile = query.get()
         if HasClaimOnTile is None:
             HasClaim = 0
         else:
             HasClaim = 1
         self.response.write(HasClaim)
+
+
+class RemoveClaim(webapp2.RequestHandler):
+
+    def post(self):
+        user = users.get_current_user()
+        x = int(self.request.get('x'))
+        y = int(self.request.get('y'))
+
+        if user is not None:
+            #Get the tile claim for this user
+            query = Claim.gql("WHERE user = :1 AND x = :2 AND y = :3",
+                user, x, y)
+            thisClaim = query.get()
+            if thisClaim is not None:
+                thisClaim.key.delete()
+                query2 = UserData.gql("WHERE user = :1", user)
+                thisUser = query2.get()
+                thisUser.Number_Tiles = thisUser.Number_Tiles - 1
+                thisUser.put()
 
 
 config = {}
@@ -282,6 +302,7 @@ app = webapp2.WSGIApplication([
         ('/tile', GetTile),
         ('/howmenytiles', UserTileClaimNumber),
         ('/claim', CreateClaim),
+        ('/unclaim', RemoveClaim),
         ('/informclaim', InformClaimOwner),
         ('/hasclaimontile', TileClaimedByUser),
         ('/@(.*)', MainPage)  # to determine location
