@@ -13,6 +13,12 @@ var BORDER_SIZE = 30;
 
 var Mode = "paint";
 
+//An array that holds 0 for evevery tile viewed in unclaim mode that has not been claimed.
+//And 1 for every tile viewed in unclaimmode that has been claimed.
+//Used to avoid making a database call for every tile every tile the screen moves.
+
+var viewClaimedTiles = new Array ();
+
 function InfiniteViewport(canvas) {
 
     //Get the current URL
@@ -158,6 +164,41 @@ function InfiniteViewport(canvas) {
                     bufferCtx.strokeRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
                 }else if(Mode == "unclaim")
                 {
+                    var i = 0;
+                    var tileincach = 0;
+                    while(i < viewClaimedTiles.length && tileincach == 0)
+                    {
+                        if(viewClaimedTiles[i] === tileX && viewClaimedTiles[i+1] === tileY)
+                        {
+                            hastileclaim = viewClaimedTiles[i+2]
+                            tileincach = 1;
+                        }
+                        i = i + 3;
+                    }
+                    if(tileincach == 0)
+                    {
+                        $.ajax({
+                            url: "/hasclaimontile",
+                            async: false,
+                            type: "GET",
+                          data: {x: tileX, y: tileY},
+                            success: (function(result){
+                            hastileclaim = parseInt(result);
+                            })
+                        })
+                        viewClaimedTiles.push(tileX);
+                        viewClaimedTiles.push(tileY);
+                        viewClaimedTiles.push(hastileclaim);
+                    }
+                    
+                    if(hastileclaim == 1)
+                    {
+                        bufferCtx.strokeStyle = '#0f0';
+                        bufferCtx.lineWidth = 2;
+                        bufferCtx.strokeRect(cornerX+2, cornerY+2, TILE_SIZE-4, TILE_SIZE-4);
+                        bufferCtx.strokeStyle = '#000';
+                        bufferCtx.lineWidth = 1;
+                    }
                     bufferCtx.strokeRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
                 }
             }

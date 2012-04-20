@@ -253,6 +253,22 @@ Link to location: http://infinitegraffitiwall.appspot.com/@""" +
                 thisUser.put()
 
 
+class TileClaimedByUser(webapp2.RequestHandler):
+
+    def get(self):
+        user = users.get_current_user()
+        x = int(self.request.get('x'))
+        y = int(self.request.get('y'))
+        
+        query = Claim.gql("WHERE user = :1 AND x = :2 AND x = :3", user, x, y)
+        HasClaimOnTile = query.get()
+        if HasClaimOnTile is None:
+            HasClaim = 0
+        else:
+            HasClaim = 1
+        self.response.write(HasClaim)
+
+
 config = {}
 config['webapp2_extras.sessions'] = {
     'secret_key': 'cb8dcd50-18be-4042-bc3d-bfff84e5e8ab',
@@ -267,6 +283,7 @@ app = webapp2.WSGIApplication([
         ('/howmenytiles', UserTileClaimNumber),
         ('/claim', CreateClaim),
         ('/informclaim', InformClaimOwner),
+        ('/hasclaimontile', TileClaimedByUser),
         ('/@(.*)', MainPage)  # to determine location
     ], debug=True, config=config)
 
