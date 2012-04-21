@@ -311,7 +311,8 @@ function InfiniteViewport(canvas) {
                 })(tx, ty),
             });
         } else {
-            alert("Any user may only claim upto 10 tiles \n If you want to claim this tile please unclaim some other tile.");
+            /* alert("Any user may only claim upto 10 tiles \n If you want to claim this tile please unclaim some other tile."); */
+        	$("tooManyClaims").dialog("open");
         }
     };
     
@@ -345,15 +346,20 @@ function InfiniteViewport(canvas) {
             async: true,
             type: "POST",
             data: {x: tx, y: ty},
-                success: (function(x, y) {
+                success: (function(tx, ty) {
                     return function() {
                         console.log("claim removed (" + tx + "," + ty + ")");
-                    alert("You have unclaimed tile " + 
-                    	tx + "," + ty + "\n" +
-                    	"You will nolonger be notified if someone  draws on this tile" + "\n");
+                        /*
+	                    alert("You have unclaimed tile " + 
+	                    	tx + "," + ty + "\n" +
+	                    	"You will nolonger be notified if someone  draws on this tile" + "\n");
+	                    */
+                        $("#onUnClaimX").text(tx);
+                        $("#onUnClaimY").text(ty);
+                        $("#onUnClaim").dialog("open");
                     }
                 })(tx, ty),
-                error: (function(x, y) {
+                error: (function(tx, ty) {
                     return function() {
                         console.log("unclaim error (" + tx + "," + ty + ")");
                     }
@@ -363,8 +369,9 @@ function InfiniteViewport(canvas) {
             viewClaimedTiles[i+2] = 0;
             this.redraw();
             //Change it to unclaimed in the array.
-        }else{
-            alert("You do not have a claim on this tile. \n The tiles you have claimed should be outlined in green.");
+        } else {
+            /*alert("You do not have a claim on this tile. \n The tiles you have claimed should be outlined in green.");*/
+        	$("#notClaimed").dialog("open");
         }
     };
     
