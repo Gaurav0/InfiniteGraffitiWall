@@ -272,11 +272,16 @@ function InfiniteViewport(canvas) {
                 success: (function(tx, ty) {
                     return function() {
                         console.log("claim made (" + tx + "," + ty + ")");
+                        /*
                         alert("You have claimed tile " + 
                         	tx + "," + ty + "\n" +
                         	"If someone else draws on this tile you will be " + 
                         	"notified by email" + "\n" + 
                     		"(max 1 per day per tile)");
+                    	*/
+                        $("#onClaimX").text(tx);
+                        $("#onClaimY").text(ty);
+                        $("#onClaim").dialog("open");
                         //add to cach
                         var i = 0;
                         var tileincach = 0;
@@ -656,11 +661,9 @@ $(document).ready(function() {
                 spray.play();
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
-        }else if(Mode == "claim")
-        {
+        } else if (Mode == "claim") {
             view.claimTile(e.pageX, e.pageY)
-        }else if(Mode == "unclaim")
-        {
+        } else if (Mode == "unclaim") {
             view.unclaimTile(e.pageX, e.pageY);
         }
     });
@@ -721,33 +724,42 @@ $(document).ready(function() {
     	}
     }, false);
     
-    var splitterPos;
+    // Dialogs
+    $(".dialog").dialog({
+    	show: "fadeIn",
+    	hide: "fadeOut",
+    	autoOpen: false,
+    	buttons: {
+    		"OK": function() {
+    			$(this).dialog("close");
+    		}
+    	}
+    });
 
     //Mode buttons
     $("#spraycan_mode").click(function() {
-        if(Mode != "paint")
-        {
+        if(Mode != "paint") {
             document.getElementById('cursor').src = "images/spraycan.png";
             Mode = "paint";
             view.redraw();
         }
     });
     $("#claim_mode").click(function() {
-        if(Mode != "claim")
-        {
+        if(Mode != "claim") {
             document.getElementById('cursor').src = "images/Claim_Flag.png";
             Mode = "claim";
             view.redraw();
         }
     });
     $("#unclaim_mode").click(function() {
-        if(Mode != "unclaim")
-        {
+        if(Mode != "unclaim") {
             document.getElementById('cursor').src = "images/Un_Claim_Flag.png";
             Mode = "unclaim";
             view.redraw();
         }
     });
+    
+    var splitterPos;
     
     // Minimize sidewalk
     $("#minimize").click(function() {
