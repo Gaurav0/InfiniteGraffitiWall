@@ -157,21 +157,24 @@ function InfiniteViewport(canvas) {
                 var cornerX = tileX * TILE_SIZE - this.posX;
                 var cornerY = tileY * TILE_SIZE - this.posY;
                 bufferCtx.drawImage(currentCanvas, cornerX, cornerY);
+                
                 //Create an outline around the tiles in claim mode
                 if (Mode == "claim") {
                     bufferCtx.strokeRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
                 } else if (Mode == "unclaim") {
                     var i = 0;
                     var tileincach = 0;
+                    var hastileclaim = 0;
                     while (i < viewClaimedTiles.length && tileincach == 0) {
                         if (viewClaimedTiles[i] === tileX && viewClaimedTiles[i+1] === tileY) {
                             hastileclaim = viewClaimedTiles[i+2];
                             tileincach = 1;
                         }
-                        i = i + 3;
+                        i += 3;
                     }
                     
-                    if (tileincach == 0) {
+                    if (tileincach === 0) {
+                    	var view = this;
                         $.ajax({
                             url: "/hasclaimontile?x=" + tileX + "&y=" + tileY,
                             async: true,
@@ -181,12 +184,13 @@ function InfiniteViewport(canvas) {
                                     viewClaimedTiles.push(tileX);
                                     viewClaimedTiles.push(tileY);
                                     viewClaimedTiles.push(parseInt(result));
+                                    view.redraw();
                             	}
                             })(tileX, tileY)
-                        })
+                        });
                     }
                     
-                    if (hastileclaim == 1) {
+                    if (hastileclaim === 1) {
                         bufferCtx.strokeStyle = '#0f0';
                         bufferCtx.lineWidth = 2;
                         bufferCtx.strokeRect(cornerX+2, cornerY+2, TILE_SIZE-4, TILE_SIZE-4);
@@ -262,8 +266,7 @@ function InfiniteViewport(canvas) {
             })
         })
         
-        if(user_tile_claims < MAX_TILECLAIMS_PER_USER)
-        {
+        if(user_tile_claims < MAX_TILECLAIMS_PER_USER) {
             $.ajax({
             url: "/claim",
             async: true,
@@ -327,20 +330,17 @@ function InfiniteViewport(canvas) {
         
         var i = 0;
         var tileincach = 0;
-        while(i < viewClaimedTiles.length && tileincach == 0)
-        {
-            if(viewClaimedTiles[i] === tx && viewClaimedTiles[i+1] === ty)
-            {
+        var hastileclaim = 0;
+        while (i < viewClaimedTiles.length && tileincach == 0) {
+            if(viewClaimedTiles[i] === tx && viewClaimedTiles[i+1] === ty) {
                 hastileclaim = viewClaimedTiles[i+2]
                 tileincach = 1;
             }
-            i = i + 3;
+            i += 3;
         }
+        i -= 3;
         
-        i = i-3;
-        
-        if(hastileclaim === 1)
-        {
+        if (hastileclaim === 1) {
             $.ajax({
             url: "/unclaim",
             async: true,
