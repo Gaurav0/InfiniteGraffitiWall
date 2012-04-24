@@ -875,6 +875,12 @@ $(document).ready(function() {
             $sidewalk.removeClass("use3dTransforms");
     });
     
+	// Undo
+	$("undo_button").click(function() {
+	});    
     
-    
+	// Reodo
+	$("redo").click(function() {
+	});    
+
 });
