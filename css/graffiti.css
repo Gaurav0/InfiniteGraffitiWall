@@ -279,7 +279,7 @@ body {
 
 #undo_button {
     position: absolute; 
-    right: 200px; 
+    right: 265px; 
     top: 10px;
     border-top: 1px solid #96d1f8;
     background: #65a9d7;
@@ -317,7 +317,7 @@ body {
 
 #redo_button {
     position: absolute;
-    right: 265px;
+    right: 200px;
     top: 10px;
     border-top: 1px solid #96d1f8;
     background: #65a9d7;
