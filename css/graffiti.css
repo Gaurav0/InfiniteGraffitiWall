@@ -239,7 +239,7 @@ body {
     right: 200px;
 }
 
-#login {
+.button {
     position: absolute; 
     right: 140px; 
     top: 10px;
@@ -265,13 +265,13 @@ body {
 	vertical-align: middle;
 }
 
-#login:hover {
+.button:hover {
     border-top-color: #28597a;
     background: #28597a;
     color: #ccc;
 }
 
-#login:active {
+.button:active {
     border-top-color: #1b435e;
     background: #1b435e;
 }
