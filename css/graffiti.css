@@ -139,7 +139,7 @@ body {
 	position: absolute;
 	bottom: 0;
 	right: 0;
-	height: 200px;
+	height: 210px;
 	width: 100%;
 	overflow: hidden;
 }
@@ -334,7 +334,7 @@ body {
 
 #options {
     position: absolute;
-    top: 40%;
+    top: 40px;
     right: 10px;
 }
 
@@ -366,5 +366,16 @@ body {
 	position: absolute;
 	top: 140px;
     height: 10px;
+    width: 100%;
+}
+
+#SubmitButton{
+	position: absolute;
+    height: 12px;
+}
+
+#ChatInput{
+	position: absolute;
+    left: 80px;
     width: 100%;
 }
