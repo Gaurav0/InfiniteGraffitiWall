@@ -102,7 +102,7 @@ body {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-#top_right{
+#top_right {
 	position: absolute;
 	top: 30px;
 	top: 0;
@@ -113,7 +113,7 @@ body {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-#bottom_left{
+#bottom_left {
 	position: absolute;
 	bottom: 30px;
 	left: 0;
@@ -124,7 +124,7 @@ body {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-#bottom_right{
+#bottom_right {
 	position: absolute;
 	bottom: 30px;
 	right: 0;
@@ -224,19 +224,19 @@ body {
 #spraycan_mode{
     position: absolute;
     top: 10px;
-    right: 200px;
+    right: 210px;
 }
 
 #claim_mode{
     position: absolute;
     top: 60px;
-    right: 200px;
+    right: 210px;
 }
 
 #unclaim_mode{
     position: absolute;
     top: 110px;
-    right: 200px;
+    right: 210px;
 }
 
 .button {
@@ -291,41 +291,36 @@ body {
 	border-radius: 10px;
 }
 
-#sizetext{
+#sizetext {
 	position: absolute;
-	top: 40px;
+	top: 0;
 	left: 30px;
 	font-size: 14pt;
-	margin-top: -40px;
 	margin-left: -8px;
 }
 
-#pos{
+#pos {
 	position: absolute;
-	top: 40px;
+	top: 20px;
 	left: 30px;
 	font-size: 12pt;
-	margin-top: -20px;
 	margin-left: 4px;
 }
 
-#neg{
+#neg {
 	position: absolute;
-	top: 15px;
+	top: 140px;
 	left: 30px;
 	font-size: 12pt;
-	margin-top: 125px;
 	margin-left: 4px;
 }
 
 #colorpicker {
 	position: absolute;
-	top: 90px;
-	top: 90px;
+	top: 10px;
 	left: 80px;
 	width: 300px;
 	height: 140px;
-	margin-top: -70px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
@@ -334,23 +329,22 @@ body {
 
 #options {
     position: absolute;
-    top: 40px;
+    top: 50px;
     right: 10px;
 }
 
-#preview{
+#preview {
 	position: absolute;
 	border: 1px solid;
-	top: 50px;
+	top: 30px;
 	left: 380px;
 	background: white;
 }
 
 #previewtext {
 	position: absolute;
-	top: 50px;
+	top: 10px;
 	left: 380px;
-	margin-top: -24px;
 	width: 60px;
 	text-align: center;
 	font-size: 14pt;
@@ -358,18 +352,18 @@ body {
 
 #ad {
 	position: absolute;
-	top: 30px;
+	top: 10px;
 	left: 475px;
 }
 
-#chatbox{
-    margin:2px;
-    height:35px;
-    text-align:left;
+#chatbox {
+    margin: 2px;
+    height: 35px;
+    text-align: left;
     resize: none;
-    padding:5px;
-    background:#fff;
-    border:1px solid #000000;
+    padding: 5px;
+    background: white;
+    border: 1px solid black;
     
     overflow:auto;
 }
@@ -378,16 +372,18 @@ body {
 	position: absolute;
 	top: 155px;
     height: 10px;
-    width: 100%;
+    width: 800px;
+    left: 50%;
+    margin-left: -400px;
 }
 
-#SubmitButton{
+#SubmitButton {
 	position: absolute;
+	right: 0;
     height: 12px;
 }
 
 #ChatInput{
 	position: absolute;
-    left: 80px;
-    width: 100%;
+    width: 720px;
 }
