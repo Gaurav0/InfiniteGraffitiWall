@@ -300,7 +300,7 @@ class SendMessage(webapp2.RequestHandler):
         if user is not None:
             sender = user.nickname()
         else:
-            sender = "Guest_User"
+            sender = "Guest User"
         
         #Distribute the message to all users
         channels = UpdateChannel.gql("").fetch(100)
