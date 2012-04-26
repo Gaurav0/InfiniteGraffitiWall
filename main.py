@@ -304,14 +304,13 @@ class SendMessage(webapp2.RequestHandler):
         
         #Distribute the message to all users
         channels = UpdateChannel.gql("").fetch(100)
-        jpost = json.dumps({"Sender": sender,"Message": message, "Type": "Message"})
+        jpost = json.dumps({"Sender": sender,"Message": message, "Type": "Chat"})
         for ch in channels:
             ch_id = ch.channel_id
             d = parse_datetime(ch_id.split(",")[0])
             if d < datetime.now() + timedelta(hours=-2):
                 ch.key.delete()
-            elif ch_id != self.session.get("channel_id"):
-                channel.send_message(ch.channel_id, jpost)
+            channel.send_message(ch.channel_id, jpost)
 
 config = {}
 config['webapp2_extras.sessions'] = {
