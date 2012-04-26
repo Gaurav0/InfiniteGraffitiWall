@@ -5,6 +5,12 @@
 
 Welcome to Infinite Graffiti Wall's documentation!
 ==================================================
+Creators:
+---------
+| Gaurav Munjal (Project Manager / Scrum Master)
+| Hery Ratsimihah (Product Owner)  
+| Joseph Ettikkalayil (Front End Developer Lead)  
+| Yuriy Stejko (Back End Developer Lead)   
 
 Contents:
 

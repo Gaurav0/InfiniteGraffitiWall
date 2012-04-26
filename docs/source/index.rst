@@ -6,12 +6,18 @@
 Welcome to Infinite Graffiti Wall's documentation!
 ==================================================
 
-Contents:
+Creators:
+---------
+| Gaurav Munjal (Project Manager / Scrum Master)
+| Hery Ratsimihah (Product Owner)  
+| Joseph Ettikkalayil (Front End Developer Lead)  
+| Yuriy Stejko (Back End Developer Lead)   
 
+Contents:
+---------
 .. toctree::
    :maxdepth: 2
-
-
+   
 
 Indices and tables
 ==================
