@@ -396,7 +396,7 @@ function InfiniteViewport(canvas) {
         var User = json.Sender;
         var currentTime = new Date();
         
-        document.getElementById("chatbox").innerHTML += "<br/>" + Message + " <font size='1' color=brown>(" + currentTime.getHours() + ":" + currentTime.getMinutes() + ")</font>";
+        document.getElementById("chatbox").innerHTML += "<br/> "User": " + Message + " <font size='1' color=gray>(" + currentTime.getHours() + ":" + currentTime.getMinutes() + ")</font>";
         document.getElementById("chatbox").scrollTop = 9999999;
     };
 }

@@ -298,9 +298,9 @@ class SendMessage(webapp2.RequestHandler):
         
         #if there is a user, set him as sender, else use guest user
         if user is not None:
-            sender = user.getNickname()
+            sender = user.nickname()
         else:
-            sender = "Guest User"
+            sender = "Guest_User"
         
         #Distribute the message to all users
         channels = UpdateChannel.gql("").fetch(100)
