@@ -396,7 +396,14 @@ function InfiniteViewport(canvas) {
         var User = json.Sender;
         var currentTime = new Date();
         
-        document.getElementById("chatbox").innerHTML += "<br/> " + User + ": " + Message + " <font size='1' color=gray>(" + currentTime.getHours() + ":" + currentTime.getMinutes() + ")</font>";
+        if(str(currentTime.getMinutes()).length <2)
+        {
+            minutes = "0" + str(currentTime.getMinutes());
+        }else{
+            minutes = str(currentTime.getMinutes());
+        }
+        
+        document.getElementById("chatbox").innerHTML += "<br/> " + User + ": " + Message + " <font size='1' color=gray>(" + currentTime.getHours() + ":" + minutes + ")</font>";
         document.getElementById("chatbox").scrollTop = 9999999;
     };
 }
