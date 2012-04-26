@@ -5,6 +5,7 @@
 
 Welcome to Infinite Graffiti Wall's documentation!
 ==================================================
+
 Creators:
 ---------
 | Gaurav Munjal (Project Manager / Scrum Master)
@@ -13,11 +14,14 @@ Creators:
 | Yuriy Stejko (Back End Developer Lead)   
 
 Contents:
-
+---------
 .. toctree::
    :maxdepth: 2
-
-
+   
+   main
+   jquery
+   acceptance_tests
+   unittests
 
 Indices and tables
 ==================

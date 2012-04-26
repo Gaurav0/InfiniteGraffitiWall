@@ -18,6 +18,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
+   main
+   jquery
+   acceptance_tests
+   unittests
 
 Indices and tables
 ==================
