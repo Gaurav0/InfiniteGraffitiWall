@@ -277,9 +277,9 @@ body {
 }
  
 #sizepicker {
-	top: 25%;
+	top: 40px;
 	left: 30px;
-	height: 125px;
+	height: 100px;
 	background: #333333;
 }
 
@@ -290,7 +290,7 @@ body {
 
 #sizetext{
 	position: absolute;
-	top: 25%;
+	top: 40px;
 	left: 30px;
 	font-size: 14pt;
 	margin-top: -40px;
@@ -299,7 +299,7 @@ body {
 
 #pos{
 	position: absolute;
-	top: 25%;
+	top: 40px;
 	left: 30px;
 	font-size: 12pt;
 	margin-top: -20px;
@@ -308,7 +308,7 @@ body {
 
 #neg{
 	position: absolute;
-	top: 25%;
+	top: 15px;
 	left: 30px;
 	font-size: 12pt;
 	margin-top: 125px;
@@ -317,7 +317,8 @@ body {
 
 #colorpicker {
 	position: absolute;
-	top: 50%;
+	top: 90px;
+	top: 90px;
 	left: 80px;
 	width: 300px;
 	height: 140px;
@@ -337,14 +338,14 @@ body {
 #preview{
 	position: absolute;
 	border: 1px solid;
-	top: 40%;
+	top: 50px;
 	left: 380px;
 	background: white;
 }
 
 #previewtext {
 	position: absolute;
-	top: 40%;
+	top: 50px;
 	left: 380px;
 	margin-top: -24px;
 	width: 60px;
@@ -354,6 +355,6 @@ body {
 
 #ad {
 	position: absolute;
-	top: 25%;
+	top: 30px;
 	left: 475px;
 }
