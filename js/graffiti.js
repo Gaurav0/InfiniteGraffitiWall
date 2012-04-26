@@ -876,6 +876,23 @@ $(document).ready(function() {
     });
     
     //Chat functionality: Send message, enter or press buttn
+    $("#ChatInput").keypress(function(e){
+        if(e.which == 13){
+            console.log("Sending message (" + document.getElementById('ChatInput').value + ") ...");
+            $.ajax({
+                url: "/sendmessage",
+                async: true,
+                type: "POST",
+                data: {message: document.getElementById('ChatInput').value},
+                success: (function() {
+                    return function() {
+                        document.getElementById('ChatInput').value = "";
+                    }
+                })(),
+            });
+        }
+    });
+      
     $("#Submit").click(function() {
         console.log("Sending message (" + document.getElementById('ChatInput').value + ") ...");
         $.ajax({
@@ -883,6 +900,11 @@ $(document).ready(function() {
             async: true,
             type: "POST",
                 data: {message: document.getElementById('ChatInput').value},
+            success: (function() {
+                return function() {
+                    document.getElementById('ChatInput').value = "";
+                }
+            })(),
         });
     });
     
