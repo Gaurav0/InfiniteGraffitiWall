@@ -173,7 +173,7 @@ class SaveTile(webapp2.RequestHandler):
 
         #For live updates
         channels = UpdateChannel.gql("").fetch(100)
-        message = json.dumps({"x": x, "y": y})
+        message = json.dumps({"x": x, "y": y, "Type": "Tile"})
         for ch in channels:
             ch_id = ch.channel_id
             d = parse_datetime(ch_id.split(",")[0])
@@ -304,7 +304,7 @@ class SendMessage(webapp2.RequestHandler):
         
         #Distribute the message to all users
         channels = UpdateChannel.gql("").fetch(100)
-        jpost = json.dumps({"Sender": sender,"Message": message})
+        jpost = json.dumps({"Sender": sender,"Message": message, "Type": "Message"})
         for ch in channels:
             ch_id = ch.channel_id
             d = parse_datetime(ch_id.split(",")[0])
