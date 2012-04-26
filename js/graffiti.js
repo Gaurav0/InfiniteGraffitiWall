@@ -875,6 +875,15 @@ $(document).ready(function() {
             $sidewalk.removeClass("use3dTransforms");
     });
     
-    
+    //Chat functionality: Send message, enter or press buttn
+    $("#Submit").click(function() {
+        console.log("Sending message (" + document.getElementById('ChatInput').value + ") ...");
+        $.ajax({
+            url: "/sendmessage",
+            async: true,
+            type: "POST",
+                data: {message: document.getElementById('ChatInput').value},
+        });
+    });
     
 });
