@@ -396,11 +396,11 @@ function InfiniteViewport(canvas) {
         var User = json.Sender;
         var currentTime = new Date();
         
-        if(str(currentTime.getMinutes()).length <2)
+        if(String(currentTime.getMinutes()).length <2)
         {
-            minutes = "0" + str(currentTime.getMinutes());
+            minutes = "0" + String(currentTime.getMinutes());
         }else{
-            minutes = str(currentTime.getMinutes());
+            minutes = String(currentTime.getMinutes());
         }
         
         document.getElementById("chatbox").innerHTML += "<br/> " + User + ": " + Message + " <font size='1' color=gray>(" + currentTime.getHours() + ":" + minutes + ")</font>";
