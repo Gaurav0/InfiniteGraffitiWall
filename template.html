@@ -59,9 +59,13 @@
 			<div id="colorpicker"></div>
 			<div id="previewtext">Preview</div>
 			<canvas id="preview" width="60" height="60" ></canvas>
+<<<<<<< local
 			<a class="button" href="{{login_url}}">{{login_label}}</a>
 			<div id="undo_button">Undo</div>
 			<div id="redo_button">Redo</div>
+=======
+			<a id="Loginbutton" class="button" href="{{login_url}}">{{login_label}}</a>
+>>>>>>> other
             <div id="spraycan_mode"><img id="mode_paint" src=""></div>
             <div id="claim_mode"><img id="mode_claim" src=""></div>
             <div id="unclaim_mode"><img id="mode_unclaim" src=""></div>
@@ -95,6 +99,13 @@
 				<!-- End AffiliateBOT.com Affiliate Code v1.0 -->
 				{% endif %}
 			</div>
+            <div id="Chat">
+                <div id="chatbox"> Starting Chat:</div>
+                <div id="ChatLine">
+                    <input id="ChatInput" class="FormChatInput" type="text" name="chat_box"/>
+                    <div id="SubmitButton" class="button"><label id="FormSubmit"> Submit </label></div>
+                </div>
+            </div>
 		</section>
 		<audio id="spray" preload="auto" loop>
 			<source src="audio/spray.mp3" type="audio/mpeg">

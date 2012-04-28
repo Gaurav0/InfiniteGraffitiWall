@@ -388,7 +388,26 @@ function InfiniteViewport(canvas) {
             });
         }
     };
+    
+    this.onMessageChat = function(message) {
+        console.log(message.data);
+        var json = JSON.parse(message.data);
+        var Message = json.Message;
+        var User = json.Sender;
+        var currentTime = new Date();
+        
+        if(String(currentTime.getMinutes()).length <2)
+        {
+            minutes = "0" + String(currentTime.getMinutes());
+        }else{
+            minutes = String(currentTime.getMinutes());
+        }
+        
+        document.getElementById("chatbox").innerHTML += "<br/> " + User + ": " + Message + " <font size='1' color=gray>(" + currentTime.getHours() + ":" + minutes + ")</font>";
+        document.getElementById("chatbox").scrollTop = 9999999;
+    };
 }
+
 
 function sprayDetail(context, centerX, centerY, radius, color) {
 
@@ -467,7 +486,14 @@ $(document).ready(function() {
     var socket = channel.open();
     socket.onopen = function() {}
     socket.onmessage = function(message) {
-        view.onMessage(message);
+        var json = JSON.parse(message.data);
+        if(json.Type == "Tile")
+        {
+            view.onMessage(message);
+        }else if(json.Type == "Chat")
+        {
+            view.onMessageChat(message);
+        }
     }
     socket.onerror = function(err) {
         console.log(err.description);
@@ -479,6 +505,12 @@ $(document).ready(function() {
         c.height = $c.height();
         view.resize();
     });
+    
+    socket.onerror = function(err) {
+        console.log(err.description);
+    }
+    
+    socket.onclose = function() {}
     
     // Makes the can move around like the cursor
     $wall.mousemove(function(e) {
@@ -875,6 +907,7 @@ $(document).ready(function() {
             $sidewalk.removeClass("use3dTransforms");
     });
     
+<<<<<<< local
 	// Undo
 	$("undo_button").click(function() {
 	});    
@@ -883,4 +916,38 @@ $(document).ready(function() {
 	$("redo").click(function() {
 	});    
 
+=======
+    //Chat functionality: Send message, enter or press buttn
+    $("#ChatInput").keypress(function(e){
+        if(e.which == 13){
+            console.log("Sending message (" + document.getElementById('ChatInput').value + ") ...");
+            $.ajax({
+                url: "/sendmessage",
+                async: true,
+                type: "POST",
+                data: {message: document.getElementById('ChatInput').value},
+                success: (function() {
+                    return function() {
+                        document.getElementById('ChatInput').value = "";
+                    }
+                })(),
+            });
+        }
+    });
+      
+    $("#Submit").click(function() {
+        console.log("Sending message (" + document.getElementById('ChatInput').value + ") ...");
+        $.ajax({
+            url: "/sendmessage",
+            async: true,
+            type: "POST",
+                data: {message: document.getElementById('ChatInput').value},
+            success: (function() {
+                return function() {
+                    document.getElementById('ChatInput').value = "";
+                }
+            })(),
+        });
+    });
+>>>>>>> other
 });

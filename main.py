@@ -173,7 +173,7 @@ class SaveTile(webapp2.RequestHandler):
 
         #For live updates
         channels = UpdateChannel.gql("").fetch(100)
-        message = json.dumps({"x": x, "y": y})
+        message = json.dumps({"x": x, "y": y, "Type": "Tile"})
         for ch in channels:
             ch_id = ch.channel_id
             d = parse_datetime(ch_id.split(",")[0])
@@ -259,7 +259,7 @@ class TileClaimedByUser(webapp2.RequestHandler):
         user = users.get_current_user()
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
-        
+
         query = Claim.gql("WHERE user = :1 AND x = :2 AND y = :3", user, x, y)
         HasClaimOnTile = query.get()
         if HasClaimOnTile is None:
@@ -289,6 +289,32 @@ class RemoveClaim(webapp2.RequestHandler):
                 thisUser.put()
 
 
+class SendMessage(webapp2.RequestHandler):
+
+    def post(self):
+        user = users.get_current_user()
+        #Get the contetnts of the message
+        message = self.request.get('message')
+
+        #if there is a user, set him as sender, else use guest user
+        if user is not None:
+            sender = user.nickname()
+        else:
+            sender = "Guest User"
+
+        #Distribute the message to all users
+        channels = UpdateChannel.gql("").fetch(100)
+        jpost = json.dumps({
+            "Sender": sender,
+            "Message": message,
+            "Type": "Chat"})
+        for ch in channels:
+            ch_id = ch.channel_id
+            d = parse_datetime(ch_id.split(",")[0])
+            if d < datetime.now() + timedelta(hours=-2):
+                ch.key.delete()
+            channel.send_message(ch.channel_id, jpost)
+
 config = {}
 config['webapp2_extras.sessions'] = {
     'secret_key': 'cb8dcd50-18be-4042-bc3d-bfff84e5e8ab',
@@ -305,6 +331,7 @@ app = webapp2.WSGIApplication([
         ('/unclaim', RemoveClaim),
         ('/informclaim', InformClaimOwner),
         ('/hasclaimontile', TileClaimedByUser),
+        ('/sendmessage', SendMessage),
         ('/@(.*)', MainPage)  # to determine location
     ], debug=True, config=config)
 
@@ -313,5 +340,5 @@ app = webapp2.WSGIApplication([
 response = app.get_response('/')
 assert response.status_int == 200
 
-#response = app.get_response('/unittests')
+response = app.get_response('/unittests')
 assert response.status_int == 200
