@@ -907,7 +907,6 @@ $(document).ready(function() {
             $sidewalk.removeClass("use3dTransforms");
     });
     
-<<<<<<< local
 	// Undo
 	$("undo_button").click(function() {
 	});    
@@ -916,7 +915,6 @@ $(document).ready(function() {
 	$("redo").click(function() {
 	});    
 
-=======
     //Chat functionality: Send message, enter or press buttn
     $("#ChatInput").keypress(function(e){
         if(e.which == 13){
@@ -949,5 +947,4 @@ $(document).ready(function() {
             })(),
         });
     });
->>>>>>> other
 });
