@@ -55,6 +55,7 @@ function InfiniteViewport(canvas) {
     
     // store and handle canvases
     this.canvases = {};
+    this.oldcanvases = {};
     
     this.getCanvas = function(x, y) {
         if (this.canvases[x])
@@ -89,6 +90,7 @@ function InfiniteViewport(canvas) {
         var newCanvas = document.createElement("canvas");
         newCanvas.width = TILE_SIZE;
         newCanvas.height = TILE_SIZE;
+        newCanvas.setAttribute("data-cloned", "false");
         return newCanvas;
     };
     
@@ -103,7 +105,24 @@ function InfiniteViewport(canvas) {
         }
         img.src = "/tile?x=" + x + "&y=" + y;
     };
-    
+   
+	this.cloneCanvas = function(oldCanvas, x, y) {
+		var newCanvas = document.createElement('canvas');
+    	var context = newCanvas.getContext('2d');
+    	context.drawImage(oldCanvas, 0, 0);
+		if (this.oldcanvases[x])
+			if (this.oldcanvases[x][y])
+				this.oldcanvases[x][y] = newCanvas;
+	};
+
+	this.swapCanvases = function() {
+		for (var x = 0; x <= this.canvases.length; x++)
+			for (var y = 0; y <= this.canvases.length; y++) {
+				this.canvases[x][y] = this.oldcanvases[x][y];
+			}
+	};    
+
+ 
     //Draws the spray onto the wall
     this.drawSpray = function(screenX, screenY) {
         var worldX = this.posX + screenX;
@@ -117,12 +136,15 @@ function InfiniteViewport(canvas) {
                 //Determine the actual borders of the tile 
                 var canvasX = worldX - tileX * TILE_SIZE;
                 var canvasY = worldY - tileY * TILE_SIZE;
-                //if falls within bounds of tie
+                //if falls within bounds of tile
                 if (canvasX > -this.radius && canvasX < TILE_SIZE + this.radius &&
                         canvasY > -this.radius && canvasY < TILE_SIZE + this.radius) {
                     var cornerX = screenX - canvasX;
                     var cornerY = screenY - canvasY;
                     var currentCanvas = this.getCanvas(tileX, tileY);
+					// clone canvas
+                    if (currentCanvas.getAttribute("data-cloned") == "false")
+                        this.cloneCanvas(currentCanvas, tileX, tileY);
                     var currentCtx = currentCanvas.getContext("2d");
                     sprayDetail(currentCtx, canvasX, canvasY, this.radius, this.color);
                     this.ctx.clearRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
@@ -248,7 +270,7 @@ function InfiniteViewport(canvas) {
             }
     };
     
-    //Registers the caim into the database
+    //Registers the claim into the database
     this.claimTile = function (screenX, screenY) {
         //Locates overall position on the wall
         var worldX = this.posX + screenX;
@@ -731,6 +753,12 @@ $(document).ready(function() {
         }
     });
     
+	// Undo
+	$("#undo_button").click(function() {
+		view.swapCanvases();
+		alert("Undid!");
+	});
+    
     // Prevent scroll on touch move
     $("body").get(0).addEventListener("touchmove", function(e) {
     	e.preventDefault();
@@ -907,13 +935,6 @@ $(document).ready(function() {
             $sidewalk.removeClass("use3dTransforms");
     });
     
-	// Undo
-	$("undo_button").click(function() {
-	});    
-    
-	// Reodo
-	$("redo").click(function() {
-	});    
 
     //Chat functionality: Send message, enter or press buttn
     $("#ChatInput").keypress(function(e){
