@@ -116,12 +116,12 @@ function InfiniteViewport(canvas) {
 	};
 
 	this.swapCanvases = function() {
-		for (var x = 0; x <= this.canvases.length; x++)
-			for (var y = 0; y <= this.canvases.length; y++) {
-				this.canvases[x][y] = this.oldcanvases[x][y];
-			}
+		for (var x in this.canvases)
+			for (var y in this.canvases[x])
+				if (this.oldcanvases[x])
+					if (this.oldcanvases[x][y]) 
+						this.oldcanvases[x][y] = this.canvases[x][y];
 	};    
-
  
     //Draws the spray onto the wall
     this.drawSpray = function(screenX, screenY) {
@@ -756,7 +756,9 @@ $(document).ready(function() {
 	// Undo
 	$("#undo_button").click(function() {
 		view.swapCanvases();
-		alert("Undid!");
+		view.redraw();
+		console.log("Undid");
+
 	});
     
     // Prevent scroll on touch move
