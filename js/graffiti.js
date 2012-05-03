@@ -132,6 +132,34 @@ function InfiniteViewport(canvas) {
             }
     };
     
+    //Erases stuff on the wall
+    this.erase = function(screenX, screenY) {
+        var worldX = this.posX + screenX;
+        var worldY = this.posY + screenY;
+        var tx = Math.floor(worldX / TILE_SIZE);
+        var ty = Math.floor(worldY / TILE_SIZE);
+        window.localStorage.setItem("x", tx);
+        window.localStorage.setItem("y", ty);
+        for (var tileX = tx - 1; tileX <= tx + 1; ++tileX)
+            for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
+                //Determine the actual borders of the tile 
+                var canvasX = worldX - tileX * TILE_SIZE;
+                var canvasY = worldY - tileY * TILE_SIZE;
+                //if falls within bounds of tie
+                if (canvasX > -this.radius && canvasX < TILE_SIZE + this.radius &&
+                        canvasY > -this.radius && canvasY < TILE_SIZE + this.radius) {
+                    var cornerX = screenX - canvasX;
+                    var cornerY = screenY - canvasY;
+                    var currentCanvas = this.getCanvas(tileX, tileY);
+                    var currentCtx = currentCanvas.getContext("2d");
+                    erase(currentCtx, canvasX, canvasY, this.radius);
+                    this.ctx.clearRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
+                    this.ctx.drawImage(currentCanvas, cornerX, cornerY);                
+                    currentCanvas.setAttribute("data-saved", "false");
+                }
+            }
+    };
+    
     var buffer = document.createElement('canvas');
     buffer.width = this.canvas.width;
     buffer.height = this.canvas.height;
@@ -408,6 +436,9 @@ function InfiniteViewport(canvas) {
     };
 }
 
+function erase(context, centerX, centerY, radius) {
+	context.clearRect(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
+}
 
 function sprayDetail(context, centerX, centerY, radius, color) {
 
@@ -455,6 +486,7 @@ $(document).ready(function() {
     var $splitter = $("#splitter");
     var $sizepicker = $("#sizepicker");
     var $spraycan_mode = $("#spraycan_mode");
+    var $eraser_mode = $("#eraser_mode");
     var $claim_mode = $("#claim_mode");
     var $unclaim_mode = $("#unclaim_mode");
     
@@ -473,9 +505,10 @@ $(document).ready(function() {
     updateBackgroundPosition();
     updatePreview();
     
-    if(user_login == 1)
-    {
-        document.getElementById('mode_paint').src = "images/spraycan.png";
+
+    document.getElementById('mode_paint').src = "images/spraycan.png";
+    document.getElementById('mode_erase').src = "images/eraser.png";
+    if(user_login == 1) {
         document.getElementById('mode_claim').src = "images/Claim_Flag.png";
         document.getElementById('mode_unclaim').src = "images/Un_Claim_Flag.png";
     }
@@ -700,6 +733,12 @@ $(document).ready(function() {
                 spray.play();
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
+        } else if (Mode == "erase") {
+        	if (checkInBounds(e.pageX, e.pageY))
+        		view.erase(e.pageX, e.pageY)
+        	mouseDown = true;
+            if (saveTimeout != null)
+                window.cancelAnimationFrame(saveTimeout);
         } else if (Mode == "claim") {
             view.claimTile(e.pageX, e.pageY)
         } else if (Mode == "unclaim") {
@@ -708,7 +747,7 @@ $(document).ready(function() {
     });
     
     $wall.mouseup(function(e) {
-        if (Mode == "paint") {
+        if (Mode == "paint" || Mode == "erase") {
             mouseDown = false;
             spray.pause();
             if (saveTimeout != null)
@@ -720,10 +759,14 @@ $(document).ready(function() {
     });
     
     $wall.mousemove(function(e) {
-        if(Mode == "paint") {
+        if(Mode == "paint" || Mode == "erase") {
             if (mouseDown) {
-        		if (checkInBounds(e.pageX, e.pageY))
-            		view.drawSpray(e.pageX, e.pageY);
+        		if (checkInBounds(e.pageX, e.pageY)) {
+        			if (Mode == "erase")
+        				view.erase(e.pageX, e.pageY)
+        			else
+        				view.drawSpray(e.pageX, e.pageY);
+        		}
                 if (saveTimeout != null)
                     window.cancelAnimationFrame(saveTimeout);
                 e.preventDefault();
@@ -780,6 +823,13 @@ $(document).ready(function() {
         if(Mode != "paint") {
             document.getElementById('cursor').src = "images/spraycan.png";
             Mode = "paint";
+            view.redraw();
+        }
+    });
+    $("#eraser_mode").click(function() {
+        if(Mode != "erase") {
+            document.getElementById('cursor').src = "images/eraser.png";
+            Mode = "erase";
             view.redraw();
         }
     });
