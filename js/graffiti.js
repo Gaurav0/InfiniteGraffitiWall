@@ -446,6 +446,14 @@ function erase(context, centerX, centerY, radius) {
 	context.restore();
 }
 
+function drawCircularOutline(context, centerX, centerY, radius, color) {
+	context.beginPath();
+	context.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+	context.closePath();
+	context.strokeStyle = "#000000";
+	context.stroke();
+}
+
 function sprayDetail(context, centerX, centerY, radius, color) {
 
     var newCanvas = document.createElement("canvas");
@@ -830,6 +838,7 @@ $(document).ready(function() {
             document.getElementById('cursor').src = "images/spraycan.png";
             Mode = "paint";
             view.redraw();
+            updatePreview();
         }
     });
     $("#eraser_mode").click(function() {
@@ -837,6 +846,7 @@ $(document).ready(function() {
             document.getElementById('cursor').src = "images/eraser.png";
             Mode = "erase";
             view.redraw();
+            updatePreview();
         }
     });
     $("#claim_mode").click(function() {
@@ -925,8 +935,12 @@ $(document).ready(function() {
         var preview = document.getElementById("preview");
         var previewCtx = preview.getContext("2d");
         previewCtx.clearRect(0, 0, preview.width, preview.height);
-        sprayDetail(previewCtx, preview.width / 2, preview.height / 2,
-            view.radius, view.color);
+        if (Mode == "paint")
+	        sprayDetail(previewCtx, preview.width / 2, preview.height / 2,
+	            view.radius, view.color);
+        else if (Mode == "erase")
+        	drawCircularOutline(previewCtx, preview.width / 2, preview.height / 2,
+    	        view.radius);
     }
     
     // colorpicker
