@@ -437,7 +437,13 @@ function InfiniteViewport(canvas) {
 }
 
 function erase(context, centerX, centerY, radius) {
+	context.save();
+	context.beginPath();
+	context.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+	context.closePath();
+	context.clip();
 	context.clearRect(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
+	context.restore();
 }
 
 function sprayDetail(context, centerX, centerY, radius, color) {
