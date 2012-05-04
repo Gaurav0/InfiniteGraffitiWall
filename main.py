@@ -20,6 +20,10 @@ from google.appengine.api import files
 from google.appengine.api import users
 from google.appengine.api import channel
 from google.appengine.api import mail
+#testing imports
+import unittest
+from google.appengine.ext import db
+from google.appengine.ext import testbed
 
 from webapp2_extras import sessions
 
@@ -316,14 +320,35 @@ class SendMessage(webapp2.RequestHandler):
             channel.send_message(ch.channel_id, jpost)
 
 
+
+class TestModel(db.Model):
+    """A model class used for testing."""
+    number = db.IntegerProperty(default=42)
+    text = db.StringProperty()
+
+
 class PYTest(webapp2.RequestHandler):
 
     def get(self):
+#        TB = testbed.Testbed()
+#        TB.activate()
+#        TB.init_blobstore_stub()
+#        TB.init_datastore_v3_stub()
+#        
+#        TestModel().put()
+#        self.assertEqual(1, len(TestModel.all().fetch(2)))
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.activate()
         
-
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
+        
+        TestModel().put()
+        
         template = jinja_environment.get_template('PYUnitTest.html')
         self.response.out.write(template.render(
-            testtoken = "test"
+            GetTile_test = "(Success or fail placeholder)"
             ))
 
 config = {}
