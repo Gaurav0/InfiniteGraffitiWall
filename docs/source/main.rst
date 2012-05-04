@@ -17,6 +17,15 @@ Main files
 		Checks for live updates.
 		Checks for random inits.
 		
+.. py:class:: TestPage(webapp2.RequestHandler)
+	
+	.. py:method:: TestPage.get(self)
+		Checks if user is logged in.
+		Tests the page
+		
+
+		
+
 	
 
    
@@ -25,5 +34,3 @@ Main files
 Files
 -----
 | main.py
-| css files
-| python files
