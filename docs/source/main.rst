@@ -23,7 +23,25 @@ Main files
 		Checks if user is logged in.
 		Tests the page
 		
+.. py:class:: GetTile(webapp2.RequestHandler)
 
+	.. py:method:: GetTile.get(self)
+		Gets tiles from blobstore
+		
+.. py:class:: SaveTile(webapp2.RequestHandler)
+
+	.. py:method:: SaveTile.dispatchs(self)
+		Get a session store for this request.
+		Dispatch the request.
+		Save all sessions.
+	.. py:method:: SaveTile.session(self)
+		Returns a session using the default cookie key.
+	.. py:method:: SaveTile.post(self)
+		Check if tile is already in database.
+		Checks for live updates
+		
+
+		
 		
 
 	
