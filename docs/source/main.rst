@@ -40,6 +40,37 @@ Main files
 		Check if tile is already in database.
 		Checks for live updates
 		
+.. py:class:: UserTileClaimNumber(webapp2.RequestHandler)
+		
+	.. py:method:: UserTileClaimNumber.get(self)
+		Gets the User's Claimed tiles
+		
+.. py:class:: CreateClaim(webapp2.RequestHandler)
+	
+	.. py:method:: CreateClaim.post(self)
+		Check if tile is already claimed by this user.
+		
+.. py:class:: InformClaimOwner(webapp2.RequestHandler)
+
+	.. py:method:: InformClaimOwner.post(self)
+		If users claimed tile get changed the user gets informed.
+		
+.. py:class:: TileClaimedByUser(webapp2.RequestHandler)
+	
+	.. py:method:: TileClaimedByUser.get(self)
+		Gets the tiles that user claimed.
+		
+.. py:class:: RemoveClaim(webapp2.RequestHandler)
+
+	.. py:method:: RemoveClaim.post(self)
+		Gets the tiles that user claimed and then deletes the claim.
+		
+.. py:class:: SendMessage(webapp2.RequestHandler)
+
+	.. py:method:: SendMessage.post(self)
+		Get the contetnts of the message
+		if there is a user, set him as sender, else use guest user
+		Distribute the message to all users
 
 		
 		
