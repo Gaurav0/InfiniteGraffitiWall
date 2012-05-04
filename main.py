@@ -315,6 +315,17 @@ class SendMessage(webapp2.RequestHandler):
                 ch.key.delete()
             channel.send_message(ch.channel_id, jpost)
 
+
+class PYTest(webapp2.RequestHandler):
+
+    def get(self):
+        
+
+        template = jinja_environment.get_template('PYUnitTest.html')
+        self.response.out.write(template.render(
+            testtoken = "test"
+            ))
+
 config = {}
 config['webapp2_extras.sessions'] = {
     'secret_key': 'cb8dcd50-18be-4042-bc3d-bfff84e5e8ab',
@@ -332,7 +343,8 @@ app = webapp2.WSGIApplication([
         ('/informclaim', InformClaimOwner),
         ('/hasclaimontile', TileClaimedByUser),
         ('/sendmessage', SendMessage),
-        ('/@(.*)', MainPage)  # to determine location
+        ('/@(.*)', MainPage),  # to determine location
+        ('/PyUnitTest', PYTest)
     ], debug=True, config=config)
 
 
