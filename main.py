@@ -24,6 +24,8 @@ from google.appengine.api import mail
 import unittest
 from google.appengine.ext import db
 from google.appengine.ext import testbed
+import urllib2
+import webtest
 
 from webapp2_extras import sessions
 
@@ -324,6 +326,7 @@ class PYTest(webapp2.RequestHandler):
 
     def get(self):
         self.testbed = testbed.Testbed()
+        self.testapp = webtest.TestApp(app)
         #activates the testbed (Used for creating face DB and blobstore)
         #Swaps the fake systems in for the real systems
         #Should make this only work offline
@@ -335,16 +338,25 @@ class PYTest(webapp2.RequestHandler):
         
         #Createing fake tile to test tile reading
         with open("UnitTestTile.png", "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read())
-            image_file.close()
-        file_name = files.blobstore.create(mime_type='image/png')
-        with files.open(file_name, 'a') as f:
-            f.write(encoded_string)
-        files.finalize(file_name)
-        blob_key = files.blobstore.get_blob_key(file_name)
-        Tile(x=0, y=0, blob_key=blob_key, rand_num=random.random()).put()
+            imageFile = image_file.read()
         
-        GetTile_test = "Succeeded"
+        image_file.close()
+        
+        blob_key = 'TestBlobkey'
+        
+        self.testbed.get_stub('blobstore').CreateBlob(blob_key, imageFile)
+        
+        Tile(x=0, y=0, blob_key=blobstore.BlobKey(blob_key), rand_num=random.random()).put()
+        
+        params={'x': 0, 'y': 0}
+        
+        response = self.testapp.get('/tile', params)
+        #Unit test for get tile 1
+        try:
+            response.mustcontain(imageFile)
+            GetTile_test = "<font color=green>Passed</font>"
+        except:
+            GetTile_test = "<font color=red>Failed, the responce did not contain the test image file</font>"
         
         #Swaps the real systems back in, and deactivates the fake testing system.
         self.testbed.deactivate()
@@ -352,6 +364,7 @@ class PYTest(webapp2.RequestHandler):
         template = jinja_environment.get_template('PYUnitTest.html')
         self.response.out.write(template.render(
             GetTile_test = GetTile_test
+#            IMG = result
             ))
 
 config = {}
