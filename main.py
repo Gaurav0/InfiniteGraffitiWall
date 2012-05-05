@@ -334,9 +334,15 @@ class PYTest(webapp2.RequestHandler):
         self.testbed.init_datastore_v3_stub()
         
         #Createing fake tile to test tile reading
-        Tile(x=0, y=0, blob_key=blob_key, rand_num=random.random()).put()
+        with open("UnitTestTile.png", "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read())
+        
+        
         
         GetTile_test = "Succeeded"
+#        Tile(x=0, y=0, blob_key=blob_key, rand_num=random.random()).put()
+        
+        
         
         #Swaps the real systems back in, and deactivates the fake testing system.
         self.testbed.deactivate()
