@@ -357,14 +357,25 @@ class PYTest(webapp2.RequestHandler):
             GetTile_test = "<font color=green>Passed</font>"
         except:
             GetTile_test = "<font color=red>Failed, the responce did not contain the test image file</font>"
+            
+        #Unit test for get tile 2
+        with open("UnitTestTile2.png", "rb") as image_file2:
+            imageFile2 = image_file2.read()
+        image_file2.close()
+        
+        try:
+            response.mustcontain(imageFile2)
+            GetTile_test2 = "<font color=red>Failed, the tile retreaved does not correspond to the tile put in.</font>"
+        except:
+            GetTile_test2 = "<font color=green>Passed</font>"
         
         #Swaps the real systems back in, and deactivates the fake testing system.
         self.testbed.deactivate()
 
         template = jinja_environment.get_template('PYUnitTest.html')
         self.response.out.write(template.render(
-            GetTile_test = GetTile_test
-#            IMG = result
+            GetTile_test = GetTile_test,
+            GetTile_test2 = GetTile_test2
             ))
 
 config = {}
