@@ -20,7 +20,7 @@ from google.appengine.api import files
 from google.appengine.api import users
 from google.appengine.api import channel
 from google.appengine.api import mail
-#testing imports
+#testing imports. They should have nothing to do with the online system.
 import unittest
 from google.appengine.ext import db
 from google.appengine.ext import testbed
@@ -320,35 +320,30 @@ class SendMessage(webapp2.RequestHandler):
             channel.send_message(ch.channel_id, jpost)
 
 
-
-class TestModel(db.Model):
-    """A model class used for testing."""
-    number = db.IntegerProperty(default=42)
-    text = db.StringProperty()
-
-
 class PYTest(webapp2.RequestHandler):
 
     def get(self):
-#        TB = testbed.Testbed()
-#        TB.activate()
-#        TB.init_blobstore_stub()
-#        TB.init_datastore_v3_stub()
-#        
-#        TestModel().put()
-#        self.assertEqual(1, len(TestModel.all().fetch(2)))
         self.testbed = testbed.Testbed()
-        self.testbed.activate()
+        #activates the testbed (Used for creating face DB and blobstore)
+        #Swaps the fake systems in for the real systems
+        #Should make this only work offline
         self.testbed.activate()
         
+        #Initializes the fake blobstore and datastore
+        self.testbed.init_blobstore_stub()
         self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
         
-        TestModel().put()
+        #Createing fake tile to test tile reading
+        Tile(x=0, y=0, blob_key=blob_key, rand_num=random.random()).put()
         
+        GetTile_test = "Succeeded"
+        
+        #Swaps the real systems back in, and deactivates the fake testing system.
+        self.testbed.deactivate()
+
         template = jinja_environment.get_template('PYUnitTest.html')
         self.response.out.write(template.render(
-            GetTile_test = "(Success or fail placeholder)"
+            GetTile_test = GetTile_test
             ))
 
 config = {}
