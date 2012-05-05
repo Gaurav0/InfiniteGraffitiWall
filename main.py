@@ -340,6 +340,10 @@ class PYTest(webapp2.RequestHandler):
         with open("UnitTestTile.png", "rb") as image_file:
             imageFile = image_file.read()
         
+        with open("UnitTestTile2.png", "rb") as image_file2:
+            imageFile2 = image_file2.read()
+        image_file2.close()
+            
         image_file.close()
         
         blob_key = 'TestBlobkey'
@@ -350,32 +354,36 @@ class PYTest(webapp2.RequestHandler):
         
         params={'x': 0, 'y': 0}
         
-        response = self.testapp.get('/tile', params)
-        #Unit test for get tile 1
+        #Unit test for get tile (GetTile_test1) Checks to assure that the file can load at all
         try:
-            response.mustcontain(imageFile)
-            GetTile_test = "<font color=green>Passed</font>"
-        except:
-            GetTile_test = "<font color=red>Failed, the responce did not contain the test image file</font>"
+            response = self.testapp.get('/tile', params)
+            GetTile_test1 = "<font color=green>Passed</font>"
+            #Unit test for get tile (GetTile_test2) Checks to assure that the file can load correctly
+            try:
+                response.mustcontain(imageFile)
+                GetTile_test2 = "<font color=green>Passed</font>"
+            except:
+                GetTile_test2 = "<font color=red>Failed, the responce did not contain the test image file</font>"
             
-        #Unit test for get tile 2
-        with open("UnitTestTile2.png", "rb") as image_file2:
-            imageFile2 = image_file2.read()
-        image_file2.close()
-        
-        try:
-            response.mustcontain(imageFile2)
-            GetTile_test2 = "<font color=red>Failed, the tile retreaved does not correspond to the tile put in.</font>"
+            #Unit test for get tile (GetTile_test3) Checks to assure that the mach in test 1 is not erroneous
+            try:
+                response.mustcontain(imageFile2)
+                GetTile_test3 = "<font color=red>Failed, the tile retreaved does not correspond to the tile put in.</font>"
+            except:
+                GetTile_test3 = "<font color=green>Passed</font>"
         except:
-            GetTile_test2 = "<font color=green>Passed</font>"
+            GetTile_test1 = "<font color=red>Failed, there was no responce from the mock database.</font>"
+            GetTile_test2 = "<font color=red>Can't be run if test 1 fails.</font>"
+            GetTile_test3 = GetTile_test2
         
         #Swaps the real systems back in, and deactivates the fake testing system.
         self.testbed.deactivate()
 
         template = jinja_environment.get_template('PYUnitTest.html')
         self.response.out.write(template.render(
-            GetTile_test = GetTile_test,
-            GetTile_test2 = GetTile_test2
+            GetTile_test1 = GetTile_test1,
+            GetTile_test2 = GetTile_test2,
+            GetTile_test3 = GetTile_test3
             ))
 
 config = {}
