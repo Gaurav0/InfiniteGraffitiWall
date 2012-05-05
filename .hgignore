@@ -5,3 +5,10 @@ syntax: glob
 .pydevproject
 .settings
 docs/build/
+webtest/__init__.py
+webtest/app.py
+webtest/compat.py
+webtest/debugapp.py
+webtest/lint.py
+webtest/lint3.py
+webtest/sel.py
