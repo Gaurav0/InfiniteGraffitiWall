@@ -335,7 +335,64 @@ class PYTest(webapp2.RequestHandler):
         #Initializes the fake blobstore and datastore
         self.testbed.init_blobstore_stub()
         self.testbed.init_datastore_v3_stub()
+
+        ##########################
+        # MainPage Unit Testing
+        ##########################
         
+        AllParts = 0
+        #Unit test for MainPage (MainPage_test1) Checks to assure that the main page can load
+        try:
+            response = self.testapp.get('/')
+            MainPage_test1 = "<font color=green>Passed</font>"
+            #Unit test for MainPage (MainPage_test3) Checks to assure that the page has a section "wall"
+            try:
+                response.mustcontain('<section id="wall">')
+                MainPage_test3 = "<font color=green>Passed</font>"
+                AllParts = AllParts + 1
+            except:
+                MainPage_test3 = "<font color=red>Failed, the main page did not contain a section with ID wall.</font>"
+                
+            #Unit test for MainPage (MainPage_test4) Checks to assure that the page has a the directional scrolling divs
+            try:
+                response.mustcontain('<div id="left">')
+                response.mustcontain('<div id="right">')
+                response.mustcontain('<div id="top">')
+                response.mustcontain('<div id="bottom">')
+                response.mustcontain('<div id="top_left">')
+                response.mustcontain('<div id="top_right">')
+                response.mustcontain('<div id="bottom_left">')
+                response.mustcontain('<div id="bottom_right">')
+                MainPage_test4 = "<font color=green>Passed</font>"
+                AllParts = AllParts + 1
+            except:
+                MainPage_test4 = "<font color=red>Failed, the main page did not contain a section with ID wall.</font>"
+            
+            #Unit test for MainPage (MainPage_test2) Checks to assure that the page has the specified sections
+            if AllParts == 2:
+                MainPage_test2 = "<font color=green>Passed</font>"
+            else:
+                MainPage_test2 = "<font color=red>Failed, this is not the page as it was intended..</font>"
+                
+        except:
+            MainPage_test1 = "<font color=red>Failed, the main page did not respond at all.</font>"
+            MainPage_test3 = "<font color=red>Can't be run if test 1 fails.</font>"
+        
+        try:
+            response = self.testapp.get('/@-12,-1')
+            try:
+                response.mustcontain('<input id="locX" type="hidden" value="-12">')
+                response.mustcontain('<input id="locY" type="hidden" value="-1">')
+                MainPage_test5 = "<font color=green>Passed</font>"
+            except:
+                MainPage_test5 = "<font color=red> The start location was not correct. </font>"
+        except:
+            MainPage_test5 = "<font color=red> The location based page failed to load. </font>"
+        
+        ##########################
+        # GetTile Unit Testing
+        ##########################
+
         #Createing fake tile to test tile reading
         with open("UnitTestTile.png", "rb") as image_file:
             imageFile = image_file.read()
@@ -376,14 +433,29 @@ class PYTest(webapp2.RequestHandler):
             GetTile_test2 = "<font color=red>Can't be run if test 1 fails.</font>"
             GetTile_test3 = GetTile_test2
         
+        #Unit test for get tile (GetTile_test4) Checks to assure that a tile that does not exist in the database does not load
+        params={'x': 0, 'y': 1}
+        
+        try:
+            self.testapp.get('/tile', params)
+            GetTile_test4 = "<font color=red>The load did not fail as it was intended to</font>"
+        except:
+            GetTile_test4 = "<font color=green>Passed</font>"
+        
         #Swaps the real systems back in, and deactivates the fake testing system.
         self.testbed.deactivate()
 
         template = jinja_environment.get_template('PYUnitTest.html')
         self.response.out.write(template.render(
+            MainPage_test1 = MainPage_test1,
+            MainPage_test2 = MainPage_test2,
+            MainPage_test3 = MainPage_test3,
+            MainPage_test4 = MainPage_test4,
+            MainPage_test5 = MainPage_test5,
             GetTile_test1 = GetTile_test1,
             GetTile_test2 = GetTile_test2,
-            GetTile_test3 = GetTile_test3
+            GetTile_test3 = GetTile_test3,
+            GetTile_test4 = GetTile_test4
             ))
 
 config = {}
