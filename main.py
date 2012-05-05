@@ -336,13 +336,15 @@ class PYTest(webapp2.RequestHandler):
         #Createing fake tile to test tile reading
         with open("UnitTestTile.png", "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
-        
-        
+            image_file.close()
+        file_name = files.blobstore.create(mime_type='image/png')
+        with files.open(file_name, 'a') as f:
+            f.write(encoded_string)
+        files.finalize(file_name)
+        blob_key = files.blobstore.get_blob_key(file_name)
+        Tile(x=0, y=0, blob_key=blob_key, rand_num=random.random()).put()
         
         GetTile_test = "Succeeded"
-#        Tile(x=0, y=0, blob_key=blob_key, rand_num=random.random()).put()
-        
-        
         
         #Swaps the real systems back in, and deactivates the fake testing system.
         self.testbed.deactivate()
