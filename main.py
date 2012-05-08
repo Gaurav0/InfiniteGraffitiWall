@@ -35,8 +35,17 @@ jinja_environment = jinja2.Environment(
 
 
 class MainPage(webapp2.RequestHandler):
+    """
+    Call to either / or /@x,y.
+    The first is opens the graffiti wall at a random tile.
+    The second is opens the graffiti wall at tile x, y
+    """
 
     def dispatch(self):
+        """
+        Enable session handling for this request
+        """
+
         # Get a session store for this request.
         self.session_store = sessions.get_store(request=self.request)
 
@@ -49,16 +58,28 @@ class MainPage(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def session(self):
-        # Returns a session using the default cookie key.
+        """ Returns a session using the default cookie key. """
         return self.session_store.get_session()
 
     def get(self, location=''):
+        """
+        Shows login button if not logged in, otherwise shows logout.
+        Creates a new channel for use with live updates and chat.
+        If location is unspecified, use a random initial tile.
+        Output created using template index.html
+
+        :param location: x, y of tile to display when opening the graffiti wall
+        """
+
+        #Check if user is logged in.
         user = users.get_current_user()
         if user:
+            #If so, show logout button
             login_url = users.create_logout_url(self.request.uri)
             login_label = 'logout'
             user_login = 1
         else:
+            #If not, show login button
             login_url = users.create_login_url(self.request.uri)
             login_label = 'login'
             user_login = 0
@@ -74,7 +95,7 @@ class MainPage(webapp2.RequestHandler):
             ch = UpdateChannel(channel_id=channel_id)
             ch.put()
 
-        #For random init
+        #Get random initial tile
         rand_num = random.random()
         tile = Tile.gql("WHERE rand_num >= :1 ORDER BY rand_num",
             rand_num).get()
@@ -85,6 +106,7 @@ class MainPage(webapp2.RequestHandler):
             locX = tile.x
             locY = tile.y
 
+        #Output from template
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(
             login_url=login_url,
@@ -97,8 +119,18 @@ class MainPage(webapp2.RequestHandler):
 
 
 class TestPage(webapp2.RequestHandler):
+    """
+    Call to /unittests
+    Returns a page which will run client side QUnit tests
+    """
 
     def get(self):
+        """
+        Shows login button if not logged in, otherwise shows logout.
+        Output created using template unittests.html
+        """
+
+        #Check if user is logged in.
         user = users.get_current_user()
         if user:
             login_url = users.create_logout_url(self.request.uri)
@@ -108,6 +140,8 @@ class TestPage(webapp2.RequestHandler):
             login_url = users.create_login_url(self.request.uri)
             login_label = 'login'
             user_login = 0
+
+        #Output from template
         template = jinja_environment.get_template('unittests.html')
         self.response.out.write(template.render(
             login_url=login_url,
@@ -117,24 +151,56 @@ class TestPage(webapp2.RequestHandler):
 
 
 class GetTile(webapp2.RequestHandler):
+    """
+    Call to /tile
+    Returns a png
+    """
 
     def get(self):
+        """
+        Generate a response to /tile?x=<tileX>&y=<tileY>
+        If a record exists in the datastore for tileX, tileY,
+        returns a png image from the blobstore corresponding to that tile.
+        Otherwise, returns a 404 error status.
+        """
+
+        #Get Parameters
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
 
+        #Get record for tile from the datastore
         query = Tile.gql("WHERE x = :1 AND y = :2", x, y)
         myTile = query.get()
         if myTile is None:
+            #No corresponding tile data, return 404 status
             self.response.set_status(404)
         else:
+            #Set headers indicating response is a png image
             self.response.headers["content-type"] = "image/png"
+
+            #Get png image from blobstore
             blob_reader = blobstore.BlobReader(myTile.blob_key)
+
+            #Return the image as the response.
             self.response.write(blob_reader.read())
 
 
 class SaveTile(webapp2.RequestHandler):
+    """
+    Call to /save
+    Expects a post containing JSON data in the following format:
+    {
+        x: <tileX>,
+        y: <tileY>,
+        data: <base64 encoded png>
+    }
+    """
 
     def dispatch(self):
+        """
+        Enable session handling for this request
+        """
+
         # Get a session store for this request.
         self.session_store = sessions.get_store(request=self.request)
 
@@ -147,47 +213,73 @@ class SaveTile(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def session(self):
-        # Returns a session using the default cookie key.
+        """ Returns a session using the default cookie key. """
         return self.session_store.get_session()
 
     def post(self):
+        """
+        Saves the image sent via JSON in the blobstore.
+        If an entry for (x, y) is not in the Tile table of the datastore,
+        create it with the blob key for the image.
+        Otherwise update the entry with the new blob key and
+        delete the existing associated blob.
+        Send messages to any open channel that a change has been made to the
+        tile.
+        Delete any channels that may have been open for more than two hours.
+        """
+
+        #Get JSON data
         x = int(self.request.get('x'))
         y = int(self.request.get('y'))
         data = self.request.get('data')
 
+        #base64 decode image
         data = base64.b64decode(data)
 
+        #Write image to blobstore
         file_name = files.blobstore.create(mime_type='image/png')
         with files.open(file_name, 'a') as f:
             f.write(data)
 
         files.finalize(file_name)
+
+        #Get blob key for newly created blob in blobstore
         blob_key = files.blobstore.get_blob_key(file_name)
 
         # Check if tile is already in database
         query = Tile.gql("WHERE x = :1 AND y = :2", x, y)
         myTile = query.get()
         if myTile is None:
+
+            #Create new tile entry in database with key to new blob
             myTile = Tile(x=x, y=y, blob_key=blob_key,
                 rand_num=random.random())
             myTile.put()
         else:
+
+            #Update the blob key in the entry for this tile
             old_key = myTile.blob_key
             myTile.blob_key = blob_key
             myTile.put()
+
+            #Delete the blob previously associated with the tile
             google.appengine.ext.blobstore.delete(old_key)
 
-        #For live updates
+        #For live updates:
+        #Send a message to the channels indicating this tile has changed.
         channels = UpdateChannel.gql("").fetch(100)
         message = json.dumps({"x": x, "y": y, "Type": "Tile"})
         for ch in channels:
             ch_id = ch.channel_id
+
+            #if a channel is two hours old, delete it.
             d = parse_datetime(ch_id.split(",")[0])
             if d < datetime.now() + timedelta(hours=-2):
                 ch.key.delete()
             elif ch_id != self.session.get("channel_id"):
                 channel.send_message(ch.channel_id, message)
 
+        #No response data to send.
         self.response.set_status(200)
 
 

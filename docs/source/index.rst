@@ -16,11 +16,10 @@ Creators:
 Contents:
 ---------
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    
    main
    jquery
-   acceptance_tests
    unittests
 
 Indices and tables
