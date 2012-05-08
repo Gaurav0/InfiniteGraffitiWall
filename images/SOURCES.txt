@@ -12,3 +12,5 @@ Claim_Flag.png made by Yuriy Stejko in paint and gimp2
 Un_Claim_Flag.png made by Yuriy Stejko in paint and gimp2 from Claim_Flag.png
 eraser.svg from http://openclipart.org/people/wsnaccad/wsnaccad_eraser.svg
 favicon.ico http://www.favicon.cc/?action=icon&file_id=198538
+UnitTestTile.png made by Yuriy Stejko in paint (Only used as a fake tile in testing)
+UnitTestTile2.png made by Yuriy Stejko in paint (Only used as a fake tile in testing)

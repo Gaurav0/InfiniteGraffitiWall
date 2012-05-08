@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<title>Infinite Graffiti Wall</title>
+		<link rel="stylesheet" href="css/graffiti.css">
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
+		<link rel="icon" href="images/favicon-anim.ico" type="image/x-icon">
+	</head>
+	<body>
+        <h1> Python Unit Tests: </h1>
+        <h2> Tests will only work in the testing environment.</h2>
+        <font color=red>-To avoid problems comment out "('/PyUnitTest', PYTest)" before deploying.</font>
+        <h3> MainPage tests (Not complete yet.)</h3>
+        Testing if there is a responce (if page loads): {{ MainPage_test1 }} <br>
+        Checking to make sure it's the right page (by HTML Components): {{ MainPage_test2 }} <br>
+        - Section Wall exists: {{ MainPage_test3 }} <br>
+        - Directional Divs exist: {{ MainPage_test4 }} <br>
+        Checking to see if the returned data provides the correct location: (Can't make work yet...) {{ MainPage_test5 }} <br>
+        
+        <h3> GetTile tests </h3>
+        Testing GetTile (To retrieve a file which should be there): {{ GetTile_test1 }} <br>
+        Testing GetTile (To retrieve a file which should be there): {{ GetTile_test2 }} <br>
+        Testing GetTile with incorrect image (To assure validity of last test): {{ GetTile_test3 }} <br>
+        Testing GetTile (To assure that it fails to retreace a nonexistant tile correctly): {{ GetTile_test4 }}
+        
+        <h3> SaveTile (Not complete yet.)</h3>
+        Testing to see if the database object is created with the tile key:  <br>
+        
+        <h3> UserTileClaimNumber (Not complete yet.)</h3>
+        Testing to assure the system can handle users who have not previously claimed a tile:  <br>
+        Testing to assure the correct number of tiles is returned:  <br>
+        
+        <h3> CreateClaim (Not complete yet.)</h3>
+        Testing to see if the database object is created:  <br>
+        Assure that the claim is on the correct tile:  <br>
+        
+        <h3> InformClaimOwner (Not complete yet.)</h3>
+        Test to assure the email is sent: <br>
+        Test to assure the email is sent only once per day: <br>
+        
+        <h3> InformClaimOwner (Not complete yet.)</h3>
+        Test to assure the email is sent: <br>
+        Test to assure the email is sent only once per day: <br>
+        
+        <h3> RemoveClaim (Not complete yet.)</h3>
+        Test if a user's claim on a tile s detected: <br>
+        
+        <h3> InformClaimOwner (Not complete yet.)</h3>
+        Test if a user's claim on a tile s is removed: <br>
+        
+        <h3> SendMessage (Not complete yet.)</h3>
+        Test if the message is sent out: <br>
+        
+    </body>
+</html>
