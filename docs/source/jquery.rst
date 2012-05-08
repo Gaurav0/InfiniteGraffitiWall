@@ -3,9 +3,13 @@ Jquery
 .. toctree::
    :maxdepth: 2
    
-.. js:function:: something
+.. js:function:: InfiniteViewport(canvas)
+
+	Get the current URL
+	
+
+
 
 Files
 -----
 | graffiti.js
-| testgraffiti.js
