@@ -10,4 +10,5 @@ kuba_arrow_button_down.svg, kuba_arrow_button_up.svg by Kuba from http://opencli
 kuba_arrow_button_down.png, kuba_arrow_button_up.png exported from above using Inkscape
 Claim_Flag.png made by Yuriy Stejko in paint and gimp2
 Un_Claim_Flag.png made by Yuriy Stejko in paint and gimp2 from Claim_Flag.png
+eraser.svg from http://openclipart.org/people/wsnaccad/wsnaccad_eraser.svg
 favicon.ico http://www.favicon.cc/?action=icon&file_id=198538

@@ -55,6 +55,7 @@ function InfiniteViewport(canvas) {
     
     // store and handle canvases
     this.canvases = {};
+    this.oldcanvases = {};
     
     this.getCanvas = function(x, y) {
         if (this.canvases[x])
@@ -89,6 +90,7 @@ function InfiniteViewport(canvas) {
         var newCanvas = document.createElement("canvas");
         newCanvas.width = TILE_SIZE;
         newCanvas.height = TILE_SIZE;
+        newCanvas.setAttribute("data-cloned", "false");
         return newCanvas;
     };
     
@@ -103,9 +105,41 @@ function InfiniteViewport(canvas) {
         }
         img.src = "/tile?x=" + x + "&y=" + y;
     };
-    
-    //Draws the spray onto the wall
-    this.drawSpray = function(screenX, screenY) {
+   
+	this.cloneCanvas = function(oldCanvas, x, y) {
+		var newCanvas = document.createElement('canvas');
+        newCanvas.width = TILE_SIZE;
+        newCanvas.height = TILE_SIZE;
+    	var context = newCanvas.getContext('2d');
+    	context.drawImage(oldCanvas, 0, 0);
+		if (!this.oldcanvases[x])
+			this.oldcanvases[x] = {};
+		this.oldcanvases[x][y] = newCanvas;
+		oldCanvas.setAttribute("data-cloned", "true");
+	};
+
+	this.swapCanvases = function() {
+		for (var x in this.canvases)
+			for (var y in this.canvases[x])
+				if (this.oldcanvases[x])
+					if (this.oldcanvases[x][y]) {
+						var tmp = this.oldcanvases[x][y];
+						this.oldcanvases[x][y] = this.canvases[x][y];
+						this.canvases[x][y] = tmp;
+					}
+	};
+	
+	this.resetCanvases = function() {
+		this.oldcanvases = {};
+		for (var x in this.canvases)
+			for (var y in this.canvases[x])
+				this.canvases[x][y].setAttribute("data-cloned", "false");
+	}
+	
+	// Any changes to the wall go through this function
+	// Callback: the function to edit one tile; should take arguments
+	// context, centerX, centerY, radius, color
+	this.editWall = function(screenX, screenY, callback) {
         var worldX = this.posX + screenX;
         var worldY = this.posY + screenY;
         var tx = Math.floor(worldX / TILE_SIZE);
@@ -117,19 +151,32 @@ function InfiniteViewport(canvas) {
                 //Determine the actual borders of the tile 
                 var canvasX = worldX - tileX * TILE_SIZE;
                 var canvasY = worldY - tileY * TILE_SIZE;
-                //if falls within bounds of tie
+                //if falls within bounds of tile
                 if (canvasX > -this.radius && canvasX < TILE_SIZE + this.radius &&
                         canvasY > -this.radius && canvasY < TILE_SIZE + this.radius) {
                     var cornerX = screenX - canvasX;
                     var cornerY = screenY - canvasY;
                     var currentCanvas = this.getCanvas(tileX, tileY);
+					// clone canvas
+                    if (currentCanvas.getAttribute("data-cloned") == "false")
+                        this.cloneCanvas(currentCanvas, tileX, tileY);
                     var currentCtx = currentCanvas.getContext("2d");
-                    sprayDetail(currentCtx, canvasX, canvasY, this.radius, this.color);
+                    callback(currentCtx, canvasX, canvasY, this.radius, this.color);
                     this.ctx.clearRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
                     this.ctx.drawImage(currentCanvas, cornerX, cornerY);                
                     currentCanvas.setAttribute("data-saved", "false");
                 }
             }
+    };
+ 
+    //Draws the spray onto the wall
+    this.drawSpray = function(screenX, screenY) {
+    	this.editWall(screenX, screenY, sprayDetail)
+    };
+    
+    //Erases stuff on the wall
+    this.erase = function(screenX, screenY) {
+    	this.editWall(screenX, screenY, erase)
     };
     
     var buffer = document.createElement('canvas');
@@ -248,7 +295,7 @@ function InfiniteViewport(canvas) {
             }
     };
     
-    //Registers the caim into the database
+    //Registers the claim into the database
     this.claimTile = function (screenX, screenY) {
         //Locates overall position on the wall
         var worldX = this.posX + screenX;
@@ -408,6 +455,23 @@ function InfiniteViewport(canvas) {
     };
 }
 
+function erase(context, centerX, centerY, radius, color) {
+	context.save();
+	context.beginPath();
+	context.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+	context.closePath();
+	context.clip();
+	context.clearRect(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
+	context.restore();
+}
+
+function drawCircularOutline(context, centerX, centerY, radius, color) {
+	context.beginPath();
+	context.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+	context.closePath();
+	context.strokeStyle = "#000000";
+	context.stroke();
+}
 
 function sprayDetail(context, centerX, centerY, radius, color) {
 
@@ -455,8 +519,10 @@ $(document).ready(function() {
     var $splitter = $("#splitter");
     var $sizepicker = $("#sizepicker");
     var $spraycan_mode = $("#spraycan_mode");
+    var $eraser_mode = $("#eraser_mode");
     var $claim_mode = $("#claim_mode");
     var $unclaim_mode = $("#unclaim_mode");
+    var $undo = $("#undo_button");
     
     // Disable dragging can image in Firefox
     $canimg.bind("dragstart", function(e) {
@@ -473,9 +539,10 @@ $(document).ready(function() {
     updateBackgroundPosition();
     updatePreview();
     
-    if(user_login == 1)
-    {
-        document.getElementById('mode_paint').src = "images/spraycan.png";
+
+    document.getElementById('mode_paint').src = "images/spraycan.png";
+    document.getElementById('mode_erase').src = "images/eraser.png";
+    if(user_login == 1) {
         document.getElementById('mode_claim').src = "images/Claim_Flag.png";
         document.getElementById('mode_unclaim').src = "images/Un_Claim_Flag.png";
     }
@@ -693,11 +760,23 @@ $(document).ready(function() {
     // Draw to canvas on mousedown, drag
     $wall.mousedown(function(e) {
         if (Mode == "paint") {
-        	if (checkInBounds(e.pageX, e.pageY))
+        	if (checkInBounds(e.pageX, e.pageY)) {
+        		$undo.text("Undo");
+        		view.resetCanvases();
             	view.drawSpray(e.pageX, e.pageY);
+        	}
             mouseDown = true;
             if ($("#enableSound").attr("checked"))
                 spray.play();
+            if (saveTimeout != null)
+                window.cancelAnimationFrame(saveTimeout);
+        } else if (Mode == "erase") {
+        	if (checkInBounds(e.pageX, e.pageY)) {
+        		$undo.text("Undo");
+        		view.resetCanvases();
+        		view.erase(e.pageX, e.pageY)
+        	}
+        	mouseDown = true;
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
         } else if (Mode == "claim") {
@@ -708,7 +787,7 @@ $(document).ready(function() {
     });
     
     $wall.mouseup(function(e) {
-        if (Mode == "paint") {
+        if (Mode == "paint" || Mode == "erase") {
             mouseDown = false;
             spray.pause();
             if (saveTimeout != null)
@@ -720,16 +799,36 @@ $(document).ready(function() {
     });
     
     $wall.mousemove(function(e) {
-        if(Mode == "paint") {
+        if(Mode == "paint" || Mode == "erase") {
             if (mouseDown) {
-        		if (checkInBounds(e.pageX, e.pageY))
-            		view.drawSpray(e.pageX, e.pageY);
+        		if (checkInBounds(e.pageX, e.pageY)) {
+        			if (Mode == "erase")
+        				view.erase(e.pageX, e.pageY)
+        			else
+        				view.drawSpray(e.pageX, e.pageY);
+        		}
                 if (saveTimeout != null)
                     window.cancelAnimationFrame(saveTimeout);
                 e.preventDefault();
             }
         }
     });
+    
+	// Undo / Redo
+    
+	$undo.click(function() {
+		view.swapCanvases();
+		view.redraw();
+		if ($undo.text() == "Undo")
+			$undo.text("Redo");
+		else
+			$undo.text("Undo");
+        if (saveTimeout != null)
+            window.cancelAnimationFrame(saveTimeout);
+        saveTimeout = window.setTimeout(function() {
+            view.saveCanvases();
+        }, IDLE_TIME);
+	});
     
     // Prevent scroll on touch move
     $("body").get(0).addEventListener("touchmove", function(e) {
@@ -781,6 +880,15 @@ $(document).ready(function() {
             document.getElementById('cursor').src = "images/spraycan.png";
             Mode = "paint";
             view.redraw();
+            updatePreview();
+        }
+    });
+    $("#eraser_mode").click(function() {
+        if(Mode != "erase") {
+            document.getElementById('cursor').src = "images/eraser.png";
+            Mode = "erase";
+            view.redraw();
+            updatePreview();
         }
     });
     $("#claim_mode").click(function() {
@@ -869,8 +977,12 @@ $(document).ready(function() {
         var preview = document.getElementById("preview");
         var previewCtx = preview.getContext("2d");
         previewCtx.clearRect(0, 0, preview.width, preview.height);
-        sprayDetail(previewCtx, preview.width / 2, preview.height / 2,
-            view.radius, view.color);
+        if (Mode == "paint")
+	        sprayDetail(previewCtx, preview.width / 2, preview.height / 2,
+	            view.radius, view.color);
+        else if (Mode == "erase")
+        	drawCircularOutline(previewCtx, preview.width / 2, preview.height / 2,
+    	        view.radius);
     }
     
     // colorpicker
@@ -907,6 +1019,7 @@ $(document).ready(function() {
             $sidewalk.removeClass("use3dTransforms");
     });
     
+
     //Chat functionality: Send message, enter or press buttn
     $("#ChatInput").keypress(function(e){
         if(e.which == 13){
