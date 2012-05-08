@@ -135,9 +135,11 @@ function InfiniteViewport(canvas) {
 			for (var y in this.canvases[x])
 				this.canvases[x][y].setAttribute("data-cloned", "false");
 	}
- 
-    //Draws the spray onto the wall
-    this.drawSpray = function(screenX, screenY) {
+	
+	// Any changes to the wall go through this function
+	// Callback: the function to edit one tile; should take arguments
+	// context, centerX, centerY, radius, color
+	this.editWall = function(screenX, screenY, callback) {
         var worldX = this.posX + screenX;
         var worldY = this.posY + screenY;
         var tx = Math.floor(worldX / TILE_SIZE);
@@ -159,40 +161,22 @@ function InfiniteViewport(canvas) {
                     if (currentCanvas.getAttribute("data-cloned") == "false")
                         this.cloneCanvas(currentCanvas, tileX, tileY);
                     var currentCtx = currentCanvas.getContext("2d");
-                    sprayDetail(currentCtx, canvasX, canvasY, this.radius, this.color);
+                    callback(currentCtx, canvasX, canvasY, this.radius, this.color);
                     this.ctx.clearRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
                     this.ctx.drawImage(currentCanvas, cornerX, cornerY);                
                     currentCanvas.setAttribute("data-saved", "false");
                 }
             }
     };
+ 
+    //Draws the spray onto the wall
+    this.drawSpray = function(screenX, screenY) {
+    	this.editWall(screenX, screenY, sprayDetail)
+    };
     
     //Erases stuff on the wall
     this.erase = function(screenX, screenY) {
-        var worldX = this.posX + screenX;
-        var worldY = this.posY + screenY;
-        var tx = Math.floor(worldX / TILE_SIZE);
-        var ty = Math.floor(worldY / TILE_SIZE);
-        window.localStorage.setItem("x", tx);
-        window.localStorage.setItem("y", ty);
-        for (var tileX = tx - 1; tileX <= tx + 1; ++tileX)
-            for (var tileY = ty - 1; tileY <= ty + 1; ++tileY) {
-                //Determine the actual borders of the tile 
-                var canvasX = worldX - tileX * TILE_SIZE;
-                var canvasY = worldY - tileY * TILE_SIZE;
-                //if falls within bounds of tie
-                if (canvasX > -this.radius && canvasX < TILE_SIZE + this.radius &&
-                        canvasY > -this.radius && canvasY < TILE_SIZE + this.radius) {
-                    var cornerX = screenX - canvasX;
-                    var cornerY = screenY - canvasY;
-                    var currentCanvas = this.getCanvas(tileX, tileY);
-                    var currentCtx = currentCanvas.getContext("2d");
-                    erase(currentCtx, canvasX, canvasY, this.radius);
-                    this.ctx.clearRect(cornerX, cornerY, TILE_SIZE, TILE_SIZE);
-                    this.ctx.drawImage(currentCanvas, cornerX, cornerY);                
-                    currentCanvas.setAttribute("data-saved", "false");
-                }
-            }
+    	this.editWall(screenX, screenY, erase)
     };
     
     var buffer = document.createElement('canvas');
@@ -471,7 +455,7 @@ function InfiniteViewport(canvas) {
     };
 }
 
-function erase(context, centerX, centerY, radius) {
+function erase(context, centerX, centerY, radius, color) {
 	context.save();
 	context.beginPath();
 	context.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
@@ -787,8 +771,11 @@ $(document).ready(function() {
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
         } else if (Mode == "erase") {
-        	if (checkInBounds(e.pageX, e.pageY))
+        	if (checkInBounds(e.pageX, e.pageY)) {
+        		$undo.text("Undo");
+        		view.resetCanvases();
         		view.erase(e.pageX, e.pageY)
+        	}
         	mouseDown = true;
             if (saveTimeout != null)
                 window.cancelAnimationFrame(saveTimeout);
@@ -836,6 +823,11 @@ $(document).ready(function() {
 			$undo.text("Redo");
 		else
 			$undo.text("Undo");
+        if (saveTimeout != null)
+            window.cancelAnimationFrame(saveTimeout);
+        saveTimeout = window.setTimeout(function() {
+            view.saveCanvases();
+        }, IDLE_TIME);
 	});
     
     // Prevent scroll on touch move
