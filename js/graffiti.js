@@ -108,20 +108,33 @@ function InfiniteViewport(canvas) {
    
 	this.cloneCanvas = function(oldCanvas, x, y) {
 		var newCanvas = document.createElement('canvas');
+        newCanvas.width = TILE_SIZE;
+        newCanvas.height = TILE_SIZE;
     	var context = newCanvas.getContext('2d');
     	context.drawImage(oldCanvas, 0, 0);
-		if (this.oldcanvases[x])
-			if (this.oldcanvases[x][y])
-				this.oldcanvases[x][y] = newCanvas;
+		if (!this.oldcanvases[x])
+			this.oldcanvases[x] = {};
+		this.oldcanvases[x][y] = newCanvas;
+		oldCanvas.setAttribute("data-cloned", "true");
 	};
 
 	this.swapCanvases = function() {
 		for (var x in this.canvases)
 			for (var y in this.canvases[x])
 				if (this.oldcanvases[x])
-					if (this.oldcanvases[x][y]) 
+					if (this.oldcanvases[x][y]) {
+						var tmp = this.oldcanvases[x][y];
 						this.oldcanvases[x][y] = this.canvases[x][y];
-	};    
+						this.canvases[x][y] = tmp;
+					}
+	};
+	
+	this.resetCanvases = function() {
+		this.oldcanvases = {};
+		for (var x in this.canvases)
+			for (var y in this.canvases[x])
+				this.canvases[x][y].setAttribute("data-cloned", "false");
+	}
  
     //Draws the spray onto the wall
     this.drawSpray = function(screenX, screenY) {
@@ -479,6 +492,7 @@ $(document).ready(function() {
     var $spraycan_mode = $("#spraycan_mode");
     var $claim_mode = $("#claim_mode");
     var $unclaim_mode = $("#unclaim_mode");
+    var $undo = $("#undo_button");
     
     // Disable dragging can image in Firefox
     $canimg.bind("dragstart", function(e) {
@@ -715,8 +729,11 @@ $(document).ready(function() {
     // Draw to canvas on mousedown, drag
     $wall.mousedown(function(e) {
         if (Mode == "paint") {
-        	if (checkInBounds(e.pageX, e.pageY))
+        	if (checkInBounds(e.pageX, e.pageY)) {
+        		$undo.text("Undo");
+        		view.resetCanvases();
             	view.drawSpray(e.pageX, e.pageY);
+        	}
             mouseDown = true;
             if ($("#enableSound").attr("checked"))
                 spray.play();
@@ -753,12 +770,15 @@ $(document).ready(function() {
         }
     });
     
-	// Undo
-	$("#undo_button").click(function() {
+	// Undo / Redo
+    
+	$undo.click(function() {
 		view.swapCanvases();
 		view.redraw();
-		console.log("Undid");
-
+		if ($undo.text() == "Undo")
+			$undo.text("Redo");
+		else
+			$undo.text("Undo");
 	});
     
     // Prevent scroll on touch move

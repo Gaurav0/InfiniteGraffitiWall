@@ -283,12 +283,6 @@ body {
 
 #undo_button {
 	position:absolute;
-	right: 170px;
-	top: 10px;
-}
-
-#redo_button {
-	position:absolute;
 	right: 110px;
 	top: 10px;
 }
