@@ -20,6 +20,7 @@ from google.appengine.api import files
 from google.appengine.api import users
 from google.appengine.api import channel
 from google.appengine.api import mail
+
 #testing imports. They should have nothing to do with the online system.
 import unittest
 from google.appengine.ext import db
@@ -423,7 +424,7 @@ class PYTest(webapp2.RequestHandler):
         #Swaps the fake systems in for the real systems
         #Should make this only work offline
         self.testbed.activate()
-        
+
         #Initializes the fake blobstore and datastore
         self.testbed.init_blobstore_stub()
         self.testbed.init_datastore_v3_stub()
@@ -431,21 +432,27 @@ class PYTest(webapp2.RequestHandler):
         ##########################
         # MainPage Unit Testing
         ##########################
-        
+
         AllParts = 0
-        #Unit test for MainPage (MainPage_test1) Checks to assure that the main page can load
+
+        #Unit test for MainPage (MainPage_test1)
+        #Checks to assure that the main page can load
         try:
             response = self.testapp.get('/')
             MainPage_test1 = "<font color=green>Passed</font>"
-            #Unit test for MainPage (MainPage_test3) Checks to assure that the page has a section "wall"
+
+            #Unit test for MainPage (MainPage_test3)
+            #Checks to assure that the page has a section "wall"
             try:
                 response.mustcontain('<section id="wall">')
                 MainPage_test3 = "<font color=green>Passed</font>"
                 AllParts = AllParts + 1
             except:
-                MainPage_test3 = "<font color=red>Failed, the main page did not contain a section with ID wall.</font>"
-                
-            #Unit test for MainPage (MainPage_test4) Checks to assure that the page has a the directional scrolling divs
+                MainPage_test3 = ("<font color=red>Failed, the main " +
+                    "page did not contain a section with ID wall.</font>")
+
+            #Unit test for MainPage (MainPage_test4)
+            #Checks to assure that the page has the directional scrolling divs
             try:
                 response.mustcontain('<div id="left">')
                 response.mustcontain('<div id="right">')
@@ -458,97 +465,119 @@ class PYTest(webapp2.RequestHandler):
                 MainPage_test4 = "<font color=green>Passed</font>"
                 AllParts = AllParts + 1
             except:
-                MainPage_test4 = "<font color=red>Failed, the main page did not contain a section with ID wall.</font>"
-            
-            #Unit test for MainPage (MainPage_test2) Checks to assure that the page has the specified sections
+                MainPage_test4 = ("<font color=red>Failed, the main page " +
+                    "did not contain a section with ID wall.</font>")
+
+            #Unit test for MainPage (MainPage_test2)
+            #Checks to assure that the page has the specified sections
             if AllParts == 2:
                 MainPage_test2 = "<font color=green>Passed</font>"
             else:
-                MainPage_test2 = "<font color=red>Failed, this is not the page as it was intended..</font>"
-                
+                MainPage_test2 = ("<font color=red>Failed, this is " +
+                    "not the page as it was intended..</font>")
+
         except:
-            MainPage_test1 = "<font color=red>Failed, the main page did not respond at all.</font>"
-            MainPage_test3 = "<font color=red>Can't be run if test 1 fails.</font>"
-        
+            MainPage_test1 = ("<font color=red>Failed, the main page " +
+                "did not respond at all.</font>")
+            MainPage_test3 = ("<font color=red>Can't be run " +
+                "if test 1 fails.</font>")
+
         try:
             response = self.testapp.get('/@-12,-1')
             try:
-                response.mustcontain('<input id="locX" type="hidden" value="-12">')
-                response.mustcontain('<input id="locY" type="hidden" value="-1">')
+                response.mustcontain(
+                    '<input id="locX" type="hidden" value="-12">')
+                response.mustcontain(
+                    '<input id="locY" type="hidden" value="-1">')
                 MainPage_test5 = "<font color=green>Passed</font>"
             except:
-                MainPage_test5 = "<font color=red> The start location was not correct. </font>"
+                MainPage_test5 = ("<font color=red> The start location " +
+                    "was not correct. </font>")
         except:
-            MainPage_test5 = "<font color=red> The location based page failed to load. </font>"
-        
+            MainPage_test5 = ("<font color=red> The location based page " +
+                "failed to load. </font>")
+
         ##########################
         # GetTile Unit Testing
         ##########################
 
-        #Createing fake tile to test tile reading
+        #Creating fake tile to test tile reading
         with open("UnitTestTile.png", "rb") as image_file:
             imageFile = image_file.read()
-        
+
         with open("UnitTestTile2.png", "rb") as image_file2:
             imageFile2 = image_file2.read()
         image_file2.close()
-            
+
         image_file.close()
-        
+
         blob_key = 'TestBlobkey'
-        
+
         self.testbed.get_stub('blobstore').CreateBlob(blob_key, imageFile)
-        
-        Tile(x=0, y=0, blob_key=blobstore.BlobKey(blob_key), rand_num=random.random()).put()
-        
-        params={'x': 0, 'y': 0}
-        
-        #Unit test for get tile (GetTile_test1) Checks to assure that the file can load at all
+
+        Tile(x=0, y=0, blob_key=blobstore.BlobKey(blob_key),
+             rand_num=random.random()).put()
+
+        params = {'x': 0, 'y': 0}
+
+        #Unit test for get tile (GetTile_test1)
+        #Checks to assure that the file can load at all
         try:
             response = self.testapp.get('/tile', params)
             GetTile_test1 = "<font color=green>Passed</font>"
-            #Unit test for get tile (GetTile_test2) Checks to assure that the file can load correctly
+
+            #Unit test for get tile (GetTile_test2)
+            #Checks to assure that the file can load correctly
             try:
                 response.mustcontain(imageFile)
                 GetTile_test2 = "<font color=green>Passed</font>"
             except:
-                GetTile_test2 = "<font color=red>Failed, the responce did not contain the test image file</font>"
-            
-            #Unit test for get tile (GetTile_test3) Checks to assure that the mach in test 1 is not erroneous
+                GetTile_test2 = ("<font color=red>Failed, the " +
+                    "response did not contain the test image file</font>")
+
+            #Unit test for get tile (GetTile_test3)
+            #Checks to assure that the mach in test 1 is not erroneous
             try:
                 response.mustcontain(imageFile2)
-                GetTile_test3 = "<font color=red>Failed, the tile retreaved does not correspond to the tile put in.</font>"
+                GetTile_test3 = ("<font color=red>Failed, the tile " +
+                    "retrieved does not correspond to the tile put in.</font>")
             except:
                 GetTile_test3 = "<font color=green>Passed</font>"
         except:
-            GetTile_test1 = "<font color=red>Failed, there was no responce from the mock database.</font>"
-            GetTile_test2 = "<font color=red>Can't be run if test 1 fails.</font>"
+            GetTile_test1 = ("<font color=red>Failed, there was no " +
+                "response from the mock database.</font>")
+            GetTile_test2 = ("<font color=red>Can't be run " +
+                "if test 1 fails.</font>")
             GetTile_test3 = GetTile_test2
-        
-        #Unit test for get tile (GetTile_test4) Checks to assure that a tile that does not exist in the database does not load
-        params={'x': 0, 'y': 1}
-        
+
+        #Unit test for get tile (GetTile_test4)
+        #Checks to assure that a tile that does not
+        #exist in the database does not load
+        params = {'x': 0, 'y': 1}
+
         try:
             self.testapp.get('/tile', params)
-            GetTile_test4 = "<font color=red>The load did not fail as it was intended to</font>"
+            GetTile_test4 = ("<font color=red>The load did not " +
+                "fail as it was intended to</font>")
         except:
             GetTile_test4 = "<font color=green>Passed</font>"
-        
-        #Swaps the real systems back in, and deactivates the fake testing system.
+
+        #Swaps the real systems back in,
+        #and deactivates the fake testing system.
         self.testbed.deactivate()
 
         template = jinja_environment.get_template('PYUnitTest.html')
         self.response.out.write(template.render(
-            MainPage_test1 = MainPage_test1,
-            MainPage_test2 = MainPage_test2,
-            MainPage_test3 = MainPage_test3,
-            MainPage_test4 = MainPage_test4,
-            MainPage_test5 = MainPage_test5,
-            GetTile_test1 = GetTile_test1,
-            GetTile_test2 = GetTile_test2,
-            GetTile_test3 = GetTile_test3,
-            GetTile_test4 = GetTile_test4
-            ))
+            MainPage_test1=MainPage_test1,
+            MainPage_test2=MainPage_test2,
+            MainPage_test3=MainPage_test3,
+            MainPage_test4=MainPage_test4,
+            MainPage_test5=MainPage_test5,
+            GetTile_test1=GetTile_test1,
+            GetTile_test2=GetTile_test2,
+            GetTile_test3=GetTile_test3,
+            GetTile_test4=GetTile_test4
+        ))
 
 config = {}
 config['webapp2_extras.sessions'] = {
