@@ -723,11 +723,35 @@ class PYTest(webapp2.RequestHandler):
             self.testbed.init_mail_stub()
             self.mail_stub = self.testbed.get_stub(testbed.MAIL_SERVICE_NAME)
 
+            params = {'x': 0, 'y': 0}
+            #Create a fake user with 1 tile claimed
+            day_time = datetime.today() - timedelta(1)
+            UserData(user=user, lastemail=day_time, Number_Tiles=1).put()
+            Claim(user=user, x=0, y=0).put()
+            
             try:
                 response = self.testapp.post('/informclaim', params)
-                InformClaimOwner_test1 = ("<font color=green>Passed</font>")
+                
+                messages = self.mail_stub.get_sent_messages(to=user.email())
+                if len(messages) == 1:
+                    InformClaimOwner_test1 = ("<font color=green>Passed</font>")
+                    try:
+                        response = self.testapp.post('/informclaim', params)
+                        
+                        messages = self.mail_stub.get_sent_messages(to=user.email())
+                        if len(messages) == 1:
+                            InformClaimOwner_test2 = ("<font color=green>Passed</font>")
+                        else:
+                            InformClaimOwner_test2 = ("<font color=red>Failed, a second message was sent on the same day.</font>")
+                    except:
+                        InformClaimOwner_test2 = ("<font color=red>Failed, there was no response from InformClaimOwner.</font>")
+                else:
+                    InformClaimOwner_test1 = ("<font color=red>Failed, the informing email was not sent to the target user.</font>")
+                    InformClaimOwner_test2  = ("<font color=red>Test 2 requires test 1 to succeed.</font>")
+                    
             except:
-                InformClaimOwner_test1 = ("<font color=red>Failed, there was no response from CreateClaim.</font>")
+                InformClaimOwner_test1 = ("<font color=red>Failed, there was no response from InformClaimOwner.</font>")
+                InformClaimOwner_test2  = ("<font color=red>Test 2 requires test 1 to succeed.</font>")
 
             #Swaps the real systems back in,
             #and deactivates the fake testing system.
@@ -750,7 +774,8 @@ class PYTest(webapp2.RequestHandler):
                 UserTileClaimNumber_test2=UserTileClaimNumber_test2,
                 CreateClaim_test1=CreateClaim_test1,
                 CreateClaim_test2=CreateClaim_test2,
-                InformClaimOwner_test1=InformClaimOwner_test1
+                InformClaimOwner_test1=InformClaimOwner_test1,
+                InformClaimOwner_test2=InformClaimOwner_test2
             ))
         else:
             #If not, show login button
