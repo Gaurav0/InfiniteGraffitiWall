@@ -526,11 +526,11 @@ class PYTest(webapp2.RequestHandler):
         with open("UnitTestTile.png", "rb") as image_file:
             imageFile = image_file.read()
 
+        image_file.close()
+
         with open("UnitTestTile2.png", "rb") as image_file2:
             imageFile2 = image_file2.read()
         image_file2.close()
-
-        image_file.close()
 
         blob_key = 'TestBlobkey'
 
@@ -591,28 +591,50 @@ class PYTest(webapp2.RequestHandler):
         self.testbed.init_blobstore_stub()
         self.testbed.init_datastore_v3_stub()
 
-        #We can't actualy create an object in the test bed blobstore through the normal means
-        #So we can only test that an object is created in the database
-        #And that it has a valid blobstore key
-
-        #Creating fake tile to test tile reading
+        #We can't actualy create an object in the test bed Datastore
         with open("UnitTestTile.png", "rb") as image_file:
-            imageFile = image_file.read()
-
-        encodeimgFile = base64.b64encode(imageFile)
-
-        params = {'x': 100, 'y': 100, 'data': encodeimgFile}
+            imageFile = base64.b64encode(image_file.read())
 
         image_file.close()
 
-        #Unit test for get tile (GetTile_test1)
-        #Checks to assure that the file can load at all
+        #The perameters to create a blob at x=0,y=0
+        params = {'x': 0, 'y': 0, 'data': imageFile}
+
+        #Test if there is even a responce from /save 
         try:
             response = self.testapp.post('/save', params)
+            if response.status_int == 200:
+                #test to see if the created tile actualy exists
+                query = Tile.gql("WHERE x = :1 AND y = :2", 0, 0)
+                myTile = query.get()
+                if myTile is None:
+                    SaveTile_test1 = ("<font color=red>The tile data could not be retrieved from the database.</font>")
+                    SaveTile_test2 = ("<font color=red>Test 2 requires test 1 to succeed.</font>")
+                else:
+                    SaveTile_test1 = ("<font color=green>Passed</font>")
+                    oldblobkey = myTile.blob_key
+                    try:
+                        response = self.testapp.post('/save', params)
+                        if response.status_int == 200:
+                            query = Tile.gql("WHERE x = :1 AND y = :2", 0, 0)
+                            myTile = query.get()
+                            if myTile.blob_key == oldblobkey:
+                                SaveTile_test2 = ("<font color=red>The tile was not replaced.</font>")
+                            else:
+                                SaveTile_test2 = ("<font color=green>Passed</font>")
+                        else:
+                            SaveTile_test2 = ("<font color=red>/save did not return a 200 responce.</font>")
+                    except:
+                        SaveTile_test1 = ("<font color=red>Failed, there was no " +
+                        "response from SaveTile.</font>")
+            else:
+                SaveTile_test1 = ("<font color=red>/save did not return a 200 responce.</font>")
+                SaveTile_test2 = ("<font color=red>Test 2 requires test 1 to succeed.</font>")
         except:
-            SaveTile_test1 = ("<font color=red>Failed, SaveTile " +
-                "did not respond at all.</font>")
-
+            SaveTile_test1 = ("<font color=red>Failed, there was no " +
+                "response from SaveTile.</font>")
+            SaveTile_test2 = ("<font color=red>Test 2 requires test 1 to succeed.</font>")
+        
         #Swaps the real systems back in,
         #and deactivates the fake testing system.
         self.testbed.deactivate()
@@ -628,7 +650,8 @@ class PYTest(webapp2.RequestHandler):
             GetTile_test2=GetTile_test2,
             GetTile_test3=GetTile_test3,
             GetTile_test4=GetTile_test4,
-            SaveTile_test1=SaveTile_test1
+            SaveTile_test1=SaveTile_test1,
+            SaveTile_test2=SaveTile_test2
         ))
 
 config = {}
