@@ -676,8 +676,42 @@ class PYTest(webapp2.RequestHandler):
                     UserTileClaimNumber_test2 = ("<font color=red>The correct number of tiles was not returned.</font>")
             except:
                 UserTileClaimNumber_test2 = ("<font color=red>Failed, there was no response from UserTileClaimNumber.</font>")
+
+            ##########################
+            # CreateClaim Unit Testing
+            ##########################
+
+            #Reinitializes the fake blobstore and datastore for the next test
+            self.testbed.init_blobstore_stub()
+            self.testbed.init_datastore_v3_stub()
+
+            params = {'x': 0, 'y': 0}
+            day_time = datetime.today() - timedelta(1)
+            UserData(user=user, lastemail=day_time, Number_Tiles=0).put()
             
-            
+            try:
+                response = self.testapp.post('/claim', params)
+                try:
+                    query = Claim.gql("WHERE user = :1", user)
+                    thisClaimData = query.get()
+                    if thisClaimData is not None:
+                        CreateClaim_test1 = ("<font color=green>Passed</font>")
+                        query = Claim.gql("WHERE user = :1 AND x=:2 AND y=:3", user, 0, 0)
+                        thisClaimData2 = query.get()
+                        if thisClaimData2 is not None:
+                            CreateClaim_test2 = ("<font color=green>Passed</font>")
+                        else:
+                            CreateClaim_test2 = ("<font color=red>The correct database claim did not exist.</font>")
+                    else:
+                        CreateClaim_test1 = ("<font color=red>Failed, no claim created for the given user.</font>")
+                        CreateClaim_test2 = ("<font color=red>Test1 must succeed for test 2 to run.</font>")
+                except:
+                    CreateClaim_test1 = ("<font color=red>Failed, database error.</font>")
+                    CreateClaim_test2 = ("<font color=red>Test1 must succeed for test 2 to run.</font>")
+            except:
+                CreateClaim_test1 = ("<font color=red>Failed, there was no response from CreateClaim.</font>")
+                CreateClaim_test2 = ("<font color=red>Test1 must succeed for test 2 to run.</font>")
+
             #Swaps the real systems back in,
             #and deactivates the fake testing system.
             self.testbed.deactivate()
@@ -696,7 +730,9 @@ class PYTest(webapp2.RequestHandler):
                 SaveTile_test1=SaveTile_test1,
                 SaveTile_test2=SaveTile_test2,
                 UserTileClaimNumber_test1=UserTileClaimNumber_test1,
-                UserTileClaimNumber_test2=UserTileClaimNumber_test2
+                UserTileClaimNumber_test2=UserTileClaimNumber_test2,
+                CreateClaim_test1=CreateClaim_test1,
+                CreateClaim_test2=CreateClaim_test2
             ))
         else:
             #If not, show login button
