@@ -712,6 +712,23 @@ class PYTest(webapp2.RequestHandler):
                 CreateClaim_test1 = ("<font color=red>Failed, there was no response from CreateClaim.</font>")
                 CreateClaim_test2 = ("<font color=red>Test1 must succeed for test 2 to run.</font>")
 
+            ##########################
+            # InformClaimOwner Unit Testing
+            ##########################
+
+            #Reinitializes the fake blobstore and datastore for the next test
+            self.testbed.init_blobstore_stub()
+            self.testbed.init_datastore_v3_stub()
+            #For this test we need to check if we are sending mail.
+            self.testbed.init_mail_stub()
+            self.mail_stub = self.testbed.get_stub(testbed.MAIL_SERVICE_NAME)
+
+            try:
+                response = self.testapp.post('/informclaim', params)
+                InformClaimOwner_test1 = ("<font color=green>Passed</font>")
+            except:
+                InformClaimOwner_test1 = ("<font color=red>Failed, there was no response from CreateClaim.</font>")
+
             #Swaps the real systems back in,
             #and deactivates the fake testing system.
             self.testbed.deactivate()
@@ -732,7 +749,8 @@ class PYTest(webapp2.RequestHandler):
                 UserTileClaimNumber_test1=UserTileClaimNumber_test1,
                 UserTileClaimNumber_test2=UserTileClaimNumber_test2,
                 CreateClaim_test1=CreateClaim_test1,
-                CreateClaim_test2=CreateClaim_test2
+                CreateClaim_test2=CreateClaim_test2,
+                InformClaimOwner_test1=InformClaimOwner_test1
             ))
         else:
             #If not, show login button
