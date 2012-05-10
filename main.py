@@ -482,8 +482,25 @@ class PYTest(webapp2.RequestHandler):
             MainPage_test3 = ("<font color=red>Can't be run " +
                 "if test 1 fails.</font>")
 
+        #Unit test for MainPage (MainPage_test4)
+        #Check to assure that the random tile  is retrieved correctly
+        
+        #Creating fake tile to test tile reading
+        with open("UnitTestTile.png", "rb") as image_file:
+            imageFile = image_file.read()
+        
+        image_file.close()
+        
+        blob_key = 'TestBlobkey'
+
+        self.testbed.get_stub('blobstore').CreateBlob(blob_key, imageFile)
+        
+        #rand_num=1 to be always selected in a random selection
+        Tile(x=-12, y=-1, blob_key=blobstore.BlobKey(blob_key),
+             rand_num=1).put()
+
         try:
-            response = self.testapp.get('/@-12,-1')
+            response = self.testapp.get('/')
             try:
                 response.mustcontain(
                     '<input id="locX" type="hidden" value="-12">')
@@ -500,6 +517,10 @@ class PYTest(webapp2.RequestHandler):
         ##########################
         # GetTile Unit Testing
         ##########################
+
+        #Reinitializes the fake blobstore and datastore for the next test
+        self.testbed.init_blobstore_stub()
+        self.testbed.init_datastore_v3_stub()
 
         #Creating fake tile to test tile reading
         with open("UnitTestTile.png", "rb") as image_file:
@@ -562,6 +583,36 @@ class PYTest(webapp2.RequestHandler):
         except:
             GetTile_test4 = "<font color=green>Passed</font>"
 
+        ##########################
+        # SaveTile Unit Testing
+        ##########################
+
+        #Reinitializes the fake blobstore and datastore for the next test
+        self.testbed.init_blobstore_stub()
+        self.testbed.init_datastore_v3_stub()
+
+        #We can't actualy create an object in the test bed blobstore through the normal means
+        #So we can only test that an object is created in the database
+        #And that it has a valid blobstore key
+
+        #Creating fake tile to test tile reading
+        with open("UnitTestTile.png", "rb") as image_file:
+            imageFile = image_file.read()
+
+        encodeimgFile = base64.b64encode(imageFile)
+
+        params = {'x': 100, 'y': 100, 'data': encodeimgFile}
+
+        image_file.close()
+
+        #Unit test for get tile (GetTile_test1)
+        #Checks to assure that the file can load at all
+        try:
+            response = self.testapp.post('/save', params)
+        except:
+            SaveTile_test1 = ("<font color=red>Failed, SaveTile " +
+                "did not respond at all.</font>")
+
         #Swaps the real systems back in,
         #and deactivates the fake testing system.
         self.testbed.deactivate()
@@ -576,7 +627,8 @@ class PYTest(webapp2.RequestHandler):
             GetTile_test1=GetTile_test1,
             GetTile_test2=GetTile_test2,
             GetTile_test3=GetTile_test3,
-            GetTile_test4=GetTile_test4
+            GetTile_test4=GetTile_test4,
+            SaveTile_test1=SaveTile_test1
         ))
 
 config = {}
