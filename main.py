@@ -645,6 +645,7 @@ class PYTest(webapp2.RequestHandler):
             self.testbed.init_blobstore_stub()
             self.testbed.init_datastore_v3_stub()
 
+            #Check if the system can handle a user who has not been entered yet
             try:
                 response = self.testapp.get('/howmenytiles')
                 query = UserData.gql("WHERE user = :1", user)
@@ -658,10 +659,25 @@ class PYTest(webapp2.RequestHandler):
                         UserTileClaimNumber_test1 = ("<font color=red>UserTileClaimNumber did not create a user information with 0 tiles claimed.</font>")
             except:
                 UserTileClaimNumber_test1 = ("<font color=red>Failed, there was no response from UserTileClaimNumber.</font>")
+
+            #Reinitializes the fake datastore for the next test
+            self.testbed.init_datastore_v3_stub()
             
+            #Assure data about users is retrieved correctly
             day_time = datetime.today() - timedelta(1)
-            thisUser = UserData(user=user, lastemail=day_time, Number_Tiles=6)
-                        
+            UserData(user=user, lastemail=day_time, Number_Tiles=6).put()
+            try:
+                response = self.testapp.get('/howmenytiles')
+                try:
+                    #Check if the correct number of tiles information was contianed in the resoponce
+                    response.mustcontain(6)
+                    UserTileClaimNumber_test2 = ("<font color=green>Passed</font>")
+                except:
+                    UserTileClaimNumber_test2 = ("<font color=red>The correct number of tiles was not returned.</font>")
+            except:
+                UserTileClaimNumber_test2 = ("<font color=red>Failed, there was no response from UserTileClaimNumber.</font>")
+            
+            
             #Swaps the real systems back in,
             #and deactivates the fake testing system.
             self.testbed.deactivate()
@@ -679,7 +695,8 @@ class PYTest(webapp2.RequestHandler):
                 GetTile_test4=GetTile_test4,
                 SaveTile_test1=SaveTile_test1,
                 SaveTile_test2=SaveTile_test2,
-                UserTileClaimNumber_test1 = UserTileClaimNumber_test1
+                UserTileClaimNumber_test1=UserTileClaimNumber_test1,
+                UserTileClaimNumber_test2=UserTileClaimNumber_test2
             ))
         else:
             #If not, show login button
