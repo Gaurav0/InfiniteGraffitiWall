@@ -795,9 +795,34 @@ class PYTest(webapp2.RequestHandler):
             #Reinitializes the fake blobstore and datastore for the next test
             self.testbed.init_blobstore_stub()
             self.testbed.init_datastore_v3_stub()
-            
-            TileClaimedByUser_test1 = ("<font color=purple>Passed</font>")
-            
+
+            params = {'x': 0, 'y': 0}
+            #Create a fake user with 1 tile claimed
+            day_time = datetime.today() - timedelta(1)
+            UserData(user=user, lastemail=day_time, Number_Tiles=1).put()
+            Claim(user=user, x=0, y=0).put()
+
+            try:
+                response = self.testapp.get('/hasclaimontile', params)
+                try:
+                    response.mustcontain(1)
+                    TileClaimedByUser_test1 = ("<font color=green>Passed</font>")
+                except:
+                    TileClaimedByUser_test1 = ("<font color=red>Failed, did not detect user's claim.</font>")
+            except:
+                TileClaimedByUser_test1 = ("<font color=red>Failed, there was no response from TileClaimedByUser.</font>")
+
+            params = {'x': 1, 'y': 0}
+            try:
+                response = self.testapp.get('/hasclaimontile', params)
+                try:
+                    response.mustcontain(0)
+                    TileClaimedByUser_test2 = ("<font color=green>Passed</font>")
+                except:
+                    TileClaimedByUser_test2 = ("<font color=red>Failed, did not detect user's claim.</font>")
+            except:
+                TileClaimedByUser_test2 = ("<font color=red>Failed, there was no response from TileClaimedByUser.</font>")
+
             #Swaps the real systems back in,
             #and deactivates the fake testing system.
             self.testbed.deactivate()
@@ -823,7 +848,8 @@ class PYTest(webapp2.RequestHandler):
                 InformClaimOwner_test2=InformClaimOwner_test2,
                 RemoveClaim_test1=RemoveClaim_test1,
                 RemoveClaim_test2=RemoveClaim_test2,
-                TileClaimedByUser_test1=TileClaimedByUser_test1
+                TileClaimedByUser_test1=TileClaimedByUser_test1,
+                TileClaimedByUser_test2=TileClaimedByUser_test2
             ))
         else:
             #If not, show login button
