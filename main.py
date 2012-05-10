@@ -777,8 +777,27 @@ class PYTest(webapp2.RequestHandler):
                     RemoveClaim_test1 = ("<font color=red> The claim was not removed.</font>")
             except:
                 RemoveClaim_test1 = ("<font color=red>Failed, there was no response from RemoveClaim.</font>")
-            RemoveClaim_test2 = ("<font color=Purple>Passed</font>")
+            
+            try:
+                query = UserData.gql("WHERE user = :1", user)
+                thisUserData = query.get()
+                if thisUserData.Number_Tiles == 0:
+                    RemoveClaim_test2 = ("<font color=green>Passed</font>")
+                else:
+                    RemoveClaim_test2 = ("<font color=red>Failed, The user's Number_Tiles was not decremented correctly.</font>")
+            except:
+                RemoveClaim_test2 = ("<font color=red>Failed, there was no response from the mock database.</font>")
 
+            ##########################
+            # TileClaimedByUser Unit Testing
+            ##########################
+
+            #Reinitializes the fake blobstore and datastore for the next test
+            self.testbed.init_blobstore_stub()
+            self.testbed.init_datastore_v3_stub()
+            
+            TileClaimedByUser_test1 = ("<font color=purple>Passed</font>")
+            
             #Swaps the real systems back in,
             #and deactivates the fake testing system.
             self.testbed.deactivate()
@@ -803,7 +822,8 @@ class PYTest(webapp2.RequestHandler):
                 InformClaimOwner_test1=InformClaimOwner_test1,
                 InformClaimOwner_test2=InformClaimOwner_test2,
                 RemoveClaim_test1=RemoveClaim_test1,
-                RemoveClaim_test2=RemoveClaim_test2
+                RemoveClaim_test2=RemoveClaim_test2,
+                TileClaimedByUser_test1=TileClaimedByUser_test1
             ))
         else:
             #If not, show login button
