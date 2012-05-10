@@ -62,6 +62,42 @@ Document Ready
 .. js:function:: "#unclaim_mode".click()
 
 	* Sets cursor to unclaim wall mode
+	
+.. js:function:: "#minimize".click()
+
+	* Hides the sidewalk
+	
+.. js:function:: "tab.click()
+
+	* Restores the sidewalk
+	
+.. js:function:: $splitter.draggable()
+
+	* Ablitity to change the size the sidewalk
+	
+.. js:function:: updatePreview()
+
+	* Shows the size and color of the spray
+	
+.. js:function:: "#colorpicker".CanvasColorPicker()
+
+	* Ablitity to choose color for the spray
+	
+.. js:function:: "#sizepicker".slider()
+
+	* Ablitity to choose size for the spray
+
+.. js:function:: "#use3dTransforms".change()
+
+	* Ablitity to change size from 3D to 2D
+	
+.. js:function:: "#ChatInput".keypress()
+
+	* Ablitity to write a message
+	
+.. js:function:: "#Submit".click()
+
+	* Ablitity to send message written 
 
 
 
