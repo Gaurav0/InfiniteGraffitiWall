@@ -754,14 +754,30 @@ class PYTest(webapp2.RequestHandler):
                 InformClaimOwner_test2  = ("<font color=red>Test 2 requires test 1 to succeed.</font>")
 
             ##########################
-            # InformClaimOwner Unit Testing
+            # RemoveClaim Unit Testing
             ##########################
 
             #Reinitializes the fake blobstore and datastore for the next test
             self.testbed.init_blobstore_stub()
             self.testbed.init_datastore_v3_stub()
 
-            RemoveClaim_test1 = ("<font color=green>Passed</font>")
+            params = {'x': 0, 'y': 0}
+            #Create a fake user with 1 tile claimed
+            day_time = datetime.today() - timedelta(1)
+            UserData(user=user, lastemail=day_time, Number_Tiles=1).put()
+            Claim(user=user, x=0, y=0).put()
+
+            try:
+                response = self.testapp.post('/unclaim', params)
+                query = Claim.gql("WHERE user = :1 AND x=:2 AND y=:3", user, 0, 0)
+                thisClaimData = query.get()
+                if thisClaimData is None:
+                    RemoveClaim_test1 = ("<font color=green>Passed</font>")
+                else:
+                    RemoveClaim_test1 = ("<font color=red> The claim was not removed.</font>")
+            except:
+                RemoveClaim_test1 = ("<font color=red>Failed, there was no response from RemoveClaim.</font>")
+            RemoveClaim_test2 = ("<font color=Purple>Passed</font>")
 
             #Swaps the real systems back in,
             #and deactivates the fake testing system.
@@ -786,7 +802,8 @@ class PYTest(webapp2.RequestHandler):
                 CreateClaim_test2=CreateClaim_test2,
                 InformClaimOwner_test1=InformClaimOwner_test1,
                 InformClaimOwner_test2=InformClaimOwner_test2,
-                RemoveClaim_test1=RemoveClaim_test1
+                RemoveClaim_test1=RemoveClaim_test1,
+                RemoveClaim_test2=RemoveClaim_test2
             ))
         else:
             #If not, show login button
