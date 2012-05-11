@@ -22,6 +22,21 @@ Canvas
 	
 	* Checks if a claim exists
 	
+.. js:function:: erase(context, centerX, centerY, radius, color)
+
+	* function to erase on the wall
+
+.. js:function:: drawCircularOutline(context, centerX, centerY, radius, color)
+
+	* defines the spray 
+	
+	:default: 	color = red,
+				size = 12
+
+.. js:function:: sprayDetail(context, centerX, centerY, radius, color)
+
+	*function to change the spray color and size
+	
 Document Ready
 --------------
 
@@ -77,7 +92,7 @@ Document Ready
 	
 .. js:function:: updatePreview()
 
-	* Shows the size and color of the spray
+	* Shows the size and color of the spray on the preview
 	
 .. js:function:: "#colorpicker".CanvasColorPicker()
 
@@ -99,18 +114,7 @@ Document Ready
 
 	* Ablitity to send message written 
 
-
-
-
-
 	
-	
-	
-	
-	
-	
-	
-
 
 Files
 -----
