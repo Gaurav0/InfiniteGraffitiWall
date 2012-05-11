@@ -21,7 +21,8 @@ Contents:
    UserDocumentation
    main
    jquery
-   unittests
+   jqueryunittests
+   pythonunittests
 
 Indices and tables
 ==================

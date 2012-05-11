@@ -1,5 +1,5 @@
-Unittests
-=========
+Jquery Unittests
+================
 
 | mouse over
 | mouse move
