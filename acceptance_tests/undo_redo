@@ -3,17 +3,47 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://infinitegraffitiwall.appspot.com/" />
-<title>Login_Logout</title>
+<link rel="selenium.base" href="https://infinitegraffitiwall.appspot.com/" />
+<title>UndoRedo</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Login_Logout</td></tr>
+<tr><td rowspan="1" colspan="3">UndoRedo</td></tr>
 </thead><tbody>
 <tr>
-	<td>clickAndWait</td>
-	<td>xpath=(//a[contains(text(),'login')])[2]</td>
+	<td>mouseDownAt</td>
+	<td>wall</td>
+	<td>100,100</td>
+</tr>
+<tr>
+	<td>mouseMoveAt</td>
+	<td>wall</td>
+	<td>104,104</td>
+</tr>
+<tr>
+	<td>mouseMoveAt</td>
+	<td>wall</td>
+	<td>108,108</td>
+</tr>
+<tr>
+	<td>mouseMoveAt</td>
+	<td>wall</td>
+	<td>112,112</td>
+</tr>
+<tr>
+	<td>mouseMoveAt</td>
+	<td>wall</td>
+	<td>116,116</td>
+</tr>
+<tr>
+	<td>mouseMoveAt</td>
+	<td>wall</td>
+	<td>120,120</td>
+</tr>
+<tr>
+	<td>mouseUpAt</td>
+	<td>wall</td>
 	<td></td>
 </tr>
 <tr>
@@ -22,28 +52,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>id=Email</td>
-	<td>igw473@gmail.com</td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=Passwd</td>
-	<td>infinitegraffitiwall</td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>id=signIn</td>
+	<td>click</td>
+	<td>id=undo_button</td>
 	<td></td>
 </tr>
 <tr>
@@ -52,13 +62,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>xpath=(//a[contains(text(),'logout')])[2]</td>
+	<td>click</td>
+	<td>id=undo_button</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
 	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=undo_button</td>
 	<td></td>
 </tr>
 </tbody></table>
