@@ -19,4 +19,4 @@ An online graffiti wall, infinite in size, through which a user can scroll, and 
 Dependancies
 ------------
 WebTest must be installed: http://webtest.pythonpaste.org/en/latest/index.html
-The webtest floder from the installation location must be moved into the project folder. (It is not a standard library avalable on google app engine.)
+The webtest folder from the installation location must be moved into the project folder. (It is not a standard library available on google app engine.)
