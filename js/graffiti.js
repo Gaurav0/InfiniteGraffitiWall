@@ -455,6 +455,7 @@ function InfiniteViewport(canvas) {
     };
 }
 
+//function to erase on the wall
 function erase(context, centerX, centerY, radius, color) {
 	context.save();
 	context.beginPath();
@@ -465,6 +466,9 @@ function erase(context, centerX, centerY, radius, color) {
 	context.restore();
 }
 
+//defines the spray
+//default: 	color = red
+//			size = 12
 function drawCircularOutline(context, centerX, centerY, radius, color) {
 	context.beginPath();
 	context.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
@@ -473,6 +477,7 @@ function drawCircularOutline(context, centerX, centerY, radius, color) {
 	context.stroke();
 }
 
+//function to changing the spray color and size
 function sprayDetail(context, centerX, centerY, radius, color) {
 
     var newCanvas = document.createElement("canvas");
@@ -840,7 +845,7 @@ $(document).ready(function() {
     var lastX1 = -1;
     var lastY1 = -1;
     
-    // Scroll with two fingers on touch move
+    // Scroll with two fingers on touch move (for mobile devices)
     $wall.get(0).addEventListener("touchmove", function(e) {
     	var touches = e.targetTouches;
     	if (touches.length == 2) {
@@ -875,6 +880,7 @@ $(document).ready(function() {
     });
 
     //Mode buttons
+	//Sets cursor to spraycan mode
     $("#spraycan_mode").click(function() {
         if(Mode != "paint") {
             document.getElementById('cursor').src = "images/spraycan.png";
@@ -883,6 +889,7 @@ $(document).ready(function() {
             updatePreview();
         }
     });
+	//Sets cursor to eraser mode
     $("#eraser_mode").click(function() {
         if(Mode != "erase") {
             document.getElementById('cursor').src = "images/eraser.png";
@@ -891,6 +898,7 @@ $(document).ready(function() {
             updatePreview();
         }
     });
+	//Sets cursor to claim mode
     $("#claim_mode").click(function() {
         if(Mode != "claim") {
             document.getElementById('cursor').src = "images/Claim_Flag.png";
@@ -898,6 +906,7 @@ $(document).ready(function() {
             view.redraw();
         }
     });
+	//Sets cursor to unclaim mode
     $("#unclaim_mode").click(function() {
         if(Mode != "unclaim") {
             document.getElementById('cursor').src = "images/Un_Claim_Flag.png";
@@ -908,7 +917,7 @@ $(document).ready(function() {
     
     var splitterPos;
     
-    // Minimize sidewalk
+    // Minimize sidewalk & Hides the sidewalk
     $("#minimize").click(function() {
         splitterPos = parseInt($splitter.draggable("widget").css("bottom"));
         $sidewalk.animate({ height: 0 }, "slow", "easeInOutCubic");
@@ -957,7 +966,7 @@ $(document).ready(function() {
         e.stopPropagation();
     });
     
-    // Splitter
+    // Ablitity to change the size of the sidewalk
     $splitter.draggable({
         helper: "clone",
         axis: "y",
@@ -972,7 +981,8 @@ $(document).ready(function() {
             view.resize();
         }
     });
-
+	
+	// shows the size and color of the spray on the preview
     function updatePreview() {
         var preview = document.getElementById("preview");
         var previewCtx = preview.getContext("2d");
@@ -985,7 +995,7 @@ $(document).ready(function() {
     	        view.radius);
     }
     
-    // colorpicker
+    // Ability to choose color for the spray
     $("#colorpicker").CanvasColorPicker({
         flat: true,
         width: 300,
@@ -999,7 +1009,7 @@ $(document).ready(function() {
         
     });
     
-    //sizepicker
+    //Abliity to choose size for the spray
     $("#sizepicker").slider({
         value: 12,
         min: 4,
@@ -1011,7 +1021,7 @@ $(document).ready(function() {
             updatePreview();
         }
     });
-    
+    // Ablitity to change size from 3D to 2D
     $("#use3dTransforms").change(function (e) {
         if ($(this).attr("checked"))
             $sidewalk.addClass("use3dTransforms");
@@ -1037,7 +1047,7 @@ $(document).ready(function() {
             });
         }
     });
-      
+    //Ablitity to send messages written
     $("#Submit").click(function() {
         console.log("Sending message (" + document.getElementById('ChatInput').value + ") ...");
         $.ajax({

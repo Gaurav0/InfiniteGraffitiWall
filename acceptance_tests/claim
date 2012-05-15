@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://infinitegraffitiwall.appspot.com/" />
-<title>Login_Logout</title>
+<title>claim</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Login_Logout</td></tr>
+<tr><td rowspan="1" colspan="3">claim</td></tr>
 </thead><tbody>
 <tr>
 	<td>clickAndWait</td>
@@ -52,8 +52,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>xpath=(//a[contains(text(),'logout')])[2]</td>
+	<td>click</td>
+	<td>id=mode_claim</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseDownAt</td>
+	<td>wall</td>
+	<td>100,100</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>3000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
 	<td></td>
 </tr>
 <tr>
@@ -61,6 +76,12 @@
 	<td>1000</td>
 	<td></td>
 </tr>
+<tr>
+	<td>click</td>
+	<td>id=mode_paint</td>
+	<td></td>
+</tr>
+
 </tbody></table>
 </body>
 </html>
