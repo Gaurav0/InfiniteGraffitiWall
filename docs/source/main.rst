@@ -8,36 +8,66 @@ Main files
 	
 	.. py:method:: MainPage.dispatchs(self)
 	
-		* Get a session store for this request.
-		* Dispatch the request.
-		* Save all sessions.
+	| Call to either / or /@x,y.
+	| The first is opens the graffiti wall at a random tile.
+	| The second is opens the graffiti wall at tile x, y
 		
 	.. py:method:: MainPage.session(self)
 	
-		* Returns a session using the default cookie key.
+	:returns: a session using the default cookie key.
 		
 	.. py:method:: MainPage.get(self, location)
 	
-		* Checks if user is logged in.
-		* Checks for live updates.
-		* Checks for random inits.
+	| Shows login button if not logged in, otherwise shows logout.
+	| Creates a new channel for use with live updates and chat.
+	| If location is unspecified, use a random initial tile.
+	| Output created using template index.html
+
+	:param: location: x, y of tile to display when opening the graffiti wall
+		
 		
 .. py:class:: TestPage(webapp2.RequestHandler)
 	
+| Call to /unittests
+| Returns a page which will run client side QUnit tests
+	
 	.. py:method:: TestPage.get(self)
-		
-		* Checks if user is logged in.
-		* Tests the page
+	
+	| Shows login button if not logged in, otherwise shows logout.
+	| Output created using template unittests.html
 		
 .. py:class:: GetTile(webapp2.RequestHandler)
 
+	| Call to /tile
+
+	:returns: a png
+
 	.. py:method:: GetTile.get(self)
 		
-		* Gets tiles from blobstore
+	| Generate a response to /tile?x=<tileX>&y=<tileY>
+	| If a record exists in the datastore for tileX, tileY,
+	
+	:returns: a png image from the blobstore corresponding to that tile.
+	
+	| Otherwise, 
+	
+	:returns: a 404 error status.	
 		
 .. py:class:: SaveTile(webapp2.RequestHandler)
 
+| Call to /save
+| Expects a post containing JSON data in the following format:
+| {
+
+	:type: x: <tileX>,	
+	:type: y: <tileY>,
+	:type: data: <base64 encoded png>
+
+| }
+
 	.. py:method:: SaveTile.dispatchs(self)
+	
+	| Enable session handling for this request
 	
 		* Get a session store for this request.
 		* Dispatch the request.
@@ -49,8 +79,13 @@ Main files
 		
 	.. py:method:: SaveTile.post(self)
 	
-		* Check if tile is already in database.
-		* Checks for live updates
+	| Saves the image sent via JSON in the blobstore.
+	| If an entry for (x, y) is not in the Tile table of the datastore,
+	| create it with the blob key for the image.
+	| Otherwise update the entry with the new blob key and
+	| delete the existing associated blob.
+	| Send messages to any open channel that a change has been made to the tile.
+	| Delete any channels that may have been open for more than two hours.
 		
 .. py:class:: UserTileClaimNumber(webapp2.RequestHandler)
 		
@@ -86,7 +121,7 @@ Main files
 
 	.. py:method:: SendMessage.post(self)
 		
-		* Get the contetnts of the message
+		* Get the contents of the message
 		* if there is a user, set him as sender, else use guest user
 		* Distribute the message to all users
 
